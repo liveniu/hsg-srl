@@ -1,0 +1,253 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.75
+  max_distance_m: 2.0
+  distance_sigma: 1.0
+  shape_sigma: 0.35
+cameras:
+- name: C01
+  image: data/external/synthehicle_core/media/Town03_O_day_C01.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C01/out_rgb/video.mp4
+  image_roi:
+  - - 12
+    - 728
+  - - 184
+    - 598
+  - - 18
+    - 345
+  - - 8
+    - 255
+  - - 132
+    - 240
+  - - 262
+    - 234
+  - - 330
+    - 238
+  - - 1077
+    - 374
+  - - 1178
+    - 363
+  - - 1630
+    - 228
+  - - 1845
+    - 240
+  - - 1744
+    - 428
+  - - 1845
+    - 506
+  - - 1748
+    - 1064
+  - - 21
+    - 1071
+- name: C02
+  image: data/external/synthehicle_core/media/Town03_O_day_C02.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C02/out_rgb/video.mp4
+  image_roi:
+  - - 10
+    - 141
+  - - 382
+    - 76
+  - - 746
+    - 177
+  - - 846
+    - 196
+  - - 1520
+    - 34
+  - - 1887
+    - 88
+  - - 1678
+    - 412
+  - - 1750
+    - 489
+  - - 1905
+    - 524
+  - - 1540
+    - 1072
+  - - 18
+    - 1070
+  - - 28
+    - 410
+  - - 182
+    - 332
+- name: C03
+  image: data/external/synthehicle_core/media/Town03_O_day_C03.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C03/out_rgb/video.mp4
+  image_roi:
+  - - 21
+    - 584
+  - - 30
+    - 1048
+  - - 1809
+    - 1060
+  - - 1900
+    - 372
+  - - 1696
+    - 278
+  - - 1881
+    - 66
+  - - 1524
+    - 15
+  - - 1113
+    - 159
+  - - 536
+    - 20
+  - - 33
+    - 50
+  - - 24
+    - 159
+  - - 284
+    - 360
+- name: C04
+  image: data/external/synthehicle_core/media/Town03_O_day_C04.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C04/out_rgb/video.mp4
+  image_roi:
+  - - 15
+    - 114
+  - - 332
+    - 28
+  - - 760
+    - 146
+  - - 1274
+    - 39
+  - - 1450
+    - 38
+  - - 1797
+    - 80
+  - - 1902
+    - 180
+  - - 1432
+    - 1054
+  - - 12
+    - 1070
+  - - 22
+    - 416
+  - - 242
+    - 310
+- name: C05
+  image: data/external/synthehicle_core/media/Town03_O_day_C05.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C05/out_rgb/video.mp4
+  image_roi:
+  - - 69
+    - 286
+  - - 32
+    - 628
+  - - 231
+    - 657
+  - - 26
+    - 998
+  - - 1830
+    - 1047
+  - - 1605
+    - 681
+  - - 1900
+    - 626
+  - - 1899
+    - 270
+  - - 1316
+    - 279
+  - - 1168
+    - 21
+  - - 744
+    - 28
+  - - 546
+    - 262
+- name: C06
+  image: data/external/synthehicle_core/media/Town03_O_day_C06.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C06/out_rgb/video.mp4
+  image_roi:
+  - - 22
+    - 248
+  - - 598
+    - 219
+  - - 771
+    - 34
+  - - 1080
+    - 42
+  - - 1254
+    - 220
+  - - 1722
+    - 234
+  - - 1878
+    - 236
+  - - 1890
+    - 454
+  - - 1582
+    - 534
+  - - 1902
+    - 934
+  - - 1881
+    - 1056
+  - - 38
+    - 1060
+  - - 44
+    - 896
+  - - 362
+    - 519
+  - - 26
+    - 477
+- name: C07
+  image: data/external/synthehicle_core/media/Town03_O_day_C07.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C07/out_rgb/video.mp4
+  image_roi:
+  - - 80
+    - 1070
+  - - 1652
+    - 1068
+  - - 1407
+    - 572
+  - - 1806
+    - 501
+  - - 1569
+    - 178
+  - - 1156
+    - 180
+  - - 1062
+    - 52
+  - - 846
+    - 56
+  - - 704
+    - 178
+  - - 249
+    - 189
+  - - 40
+    - 177
+  - - 14
+    - 513
+  - - 344
+    - 591
+- name: C08
+  image: data/external/synthehicle_core/media/Town03_O_day_C08.png
+  video: data/external/synthehicle_core/train/Town03-O-day/C08/out_rgb/video.mp4
+  image_roi:
+  - - 50
+    - 216
+  - - 759
+    - 219
+  - - 916
+    - 54
+  - - 1125
+    - 69
+  - - 1268
+    - 208
+  - - 1836
+    - 244
+  - - 1858
+    - 736
+  - - 1748
+    - 855
+  - - 1802
+    - 1058
+  - - 214
+    - 1071
+  - - 309
+    - 766
+  - - 60
+    - 670

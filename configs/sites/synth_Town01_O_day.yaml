@@ -1,0 +1,99 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.75
+  max_distance_m: 2.0
+  distance_sigma: 1.0
+  shape_sigma: 0.35
+cameras:
+- name: C01
+  image: data/external/synthehicle_core/media/Town01_O_day_C01.png
+  video: data/external/synthehicle_core/train/Town01-O-day/C01/out_rgb/video.mp4
+  image_roi:
+  - - 9
+    - 429
+  - - 822
+    - 450
+  - - 990
+    - 242
+  - - 1070
+    - 244
+  - - 1209
+    - 376
+  - - 1599
+    - 838
+  - - 1716
+    - 1034
+  - - 339
+    - 1042
+  - - 10
+    - 808
+- name: C02
+  image: data/external/synthehicle_core/media/Town01_O_day_C02.png
+  video: data/external/synthehicle_core/train/Town01-O-day/C02/out_rgb/video.mp4
+  image_roi:
+  - - 591
+    - 222
+  - - 154
+    - 1059
+  - - 1347
+    - 1076
+  - - 1384
+    - 690
+  - - 1869
+    - 608
+  - - 1802
+    - 420
+  - - 924
+    - 480
+  - - 668
+    - 234
+- name: C03
+  image: data/external/synthehicle_core/media/Town01_O_day_C03.png
+  video: data/external/synthehicle_core/train/Town01-O-day/C03/out_rgb/video.mp4
+  image_roi:
+  - - 16
+    - 548
+  - - 645
+    - 549
+  - - 890
+    - 144
+  - - 966
+    - 148
+  - - 1150
+    - 484
+  - - 1806
+    - 540
+  - - 1893
+    - 970
+  - - 460
+    - 846
+  - - 22
+    - 825
+- name: C04
+  image: data/external/synthehicle_core/media/Town01_O_day_C04.png
+  video: data/external/synthehicle_core/train/Town01-O-day/C04/out_rgb/video.mp4
+  image_roi:
+  - - 28
+    - 360
+  - - 1882
+    - 219
+  - - 1912
+    - 315
+  - - 1246
+    - 434
+  - - 1761
+    - 990
+  - - 612
+    - 1030
+  - - 573
+    - 501
+  - - 51
+    - 510

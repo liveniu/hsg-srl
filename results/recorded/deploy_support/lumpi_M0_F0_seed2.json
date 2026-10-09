@@ -1,0 +1,17 @@
+{
+  "site": "lumpi_M0",
+  "seed": 2,
+  "trained": false,
+  "uses_test_gt": false,
+  "cameras": [
+    "C08",
+    "C09",
+    "C10"
+  ],
+  "rule": "retained_validation_pair_support",
+  "S": [],
+  "deploy": "geo",
+  "n_train_pairs": 0,
+  "n_val_pair_endpoints": 0,
+  "n_edges": 3
+}

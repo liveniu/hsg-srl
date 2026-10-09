@@ -1,0 +1,23 @@
+.idea/
+.vscode/
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Licensed videos and extracted geometry databases stay on the machine that runs them.
+data/external/
+data/work/
+
+# Fresh experiment output. Published arrays under results/ are part of the git release.
+results/runs/
+
+# Zenodo staging. The deposit is uploaded separately.
+zenodo_upload/
+paper/
+
+# Detector weights and TensorRT engines. Residual checkpoints used by the tables stay.
+*.engine
+*.onnx
+*.pt
+!results/recorded/checkpoints/*.pt

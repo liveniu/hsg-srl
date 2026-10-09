@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+title: >-
+  Geometry-Guided Metric Localization With Self-Supervised Residual
+  Learning for Roadside Multi-Camera Vehicle Tracking
+message: If you use this artifact, please cite the accompanying manuscript.
+type: software
+license: MIT
+repository-code: https://github.com/liveniu/hsg-srl.git
+authors:
+  - family-names: Niu
+    given-names: Jin
+    affiliation: Zhejiang University
+abstract: >-
+  Reproducibility package for HSG-SRL. Licensed roadside videos are
+  downloaded separately. The geometry databases for the published tables
+  are at https://doi.org/10.5281/zenodo.23008421.
+references:
+  - type: dataset
+    title: HSG-SRL frozen geometry databases
+    doi: 10.5281/zenodo.23008421
+    year: 2026
+    authors:
+      - family-names: Niu
+        given-names: Jin
+        affiliation: Zhejiang University
+keywords:
+  - roadside perception
+  - multi-camera tracking
+  - vehicle localization

@@ -1,0 +1,27 @@
+{
+  "site": "synth_Town05_O_day",
+  "seed": 0,
+  "trained": true,
+  "uses_test_gt": false,
+  "cameras": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06"
+  ],
+  "rule": "retained_validation_pair_support",
+  "S": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C05",
+    "C06"
+  ],
+  "deploy": "model",
+  "n_train_pairs": 24244,
+  "n_val_pair_endpoints": 5698,
+  "n_edges": 15
+}

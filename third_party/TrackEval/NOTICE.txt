@@ -1,0 +1,11 @@
+HOTA metric modules included with this package.
+
+J. Luiten et al., "HOTA: A higher order metric for evaluating multi-object tracking," Int. J. Comput. Vis., vol. 129, no. 2, pp. 548-578, 2021.
+https://arxiv.org/abs/2009.07736
+
+Implementation: TrackEval, commit 12c8791b303e0a0b50f753af204249e622d0281a (29 Nov 2022).
+https://github.com/JonathonLuiten/TrackEval/tree/12c8791b303e0a0b50f753af204249e622d0281a
+
+trackeval/metrics/hota.py, trackeval/metrics/_base_metric.py, trackeval/utils.py, and trackeval/_timing.py are unchanged copies of that commit. The two __init__.py files are empty so that importing trackeval.metrics.hota does not load the rest of the toolkit. The MIT license is LICENSE.
+
+A local NumPy compatibility assignment lives in src/evaluation/hota_trackeval.py and does not change the metric.

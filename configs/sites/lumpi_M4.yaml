@@ -1,0 +1,114 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.7
+  max_distance_m: 2.5
+  distance_sigma: 1.5
+  shape_sigma: 0.5
+cameras:
+- name: C05
+  image: data/external/LUMPI/media/M4_C05.png
+  video: data/external/LUMPI/Measurement4/cam/5/video.mp4
+- name: C06
+  image: data/external/LUMPI/media/M4_C06.png
+  video: data/external/LUMPI/Measurement4/cam/6/video.mp4
+  image_roi:
+  - - 229
+    - 538
+  - - 115
+    - 659
+  - - 328
+    - 642
+  - - 391
+    - 646
+  - - 316
+    - 682
+  - - 20
+    - 744
+  - - 5
+    - 1165
+  - - 338
+    - 1186
+  - - 442
+    - 1206
+  - - 1631
+    - 1199
+  - - 1626
+    - 857
+  - - 1447
+    - 751
+  - - 1526
+    - 696
+  - - 1626
+    - 660
+  - - 1616
+    - 496
+  - - 1399
+    - 500
+  - - 1352
+    - 493
+  - - 1374
+    - 469
+  - - 1616
+    - 452
+  - - 1576
+    - 397
+  - - 1349
+    - 437
+  - - 1391
+    - 392
+  - - 1243
+    - 357
+  - - 935
+    - 519
+  - - 939
+    - 504
+  - - 1166
+    - 370
+  - - 1044
+    - 365
+  - - 632
+    - 500
+- name: C07
+  image: data/external/LUMPI/media/M4_C07.png
+  video: data/external/LUMPI/Measurement4/cam/7/video.mp4
+  image_roi:
+  - - 10
+    - 606
+  - - 14
+    - 1171
+  - - 884
+    - 1168
+  - - 1230
+    - 933
+  - - 1622
+    - 791
+  - - 1625
+    - 498
+  - - 1179
+    - 588
+  - - 1048
+    - 583
+  - - 1617
+    - 432
+  - - 1482
+    - 360
+  - - 976
+    - 457
+  - - 866
+    - 463
+  - - 697
+    - 441
+  - - 306
+    - 252
+  - - 133
+    - 281
+  - - 278
+    - 545

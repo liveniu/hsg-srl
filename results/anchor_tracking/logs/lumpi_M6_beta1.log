@@ -1,0 +1,24 @@
+[remerge] --remerge
+    --source / --sub-source  ¡ú  remerge
+    --model  ¡ú  YOLO remerge
+    --classes / --conf / --iou / --imgsz / --device  ¡ú  YOLO
+    --clahe / --clahe-clip  ¡ú  remerge
+    --clip-margin / --clip-margin-ratio / --min-valid-streak  ¡ú  remerge DB
+    --record-every-n-frames / --db-batch-size / --db-flush-every-frames  ¡ú  remerge
+    --stats-every-frames  ¡ú  remerge
+    --test / --no-view / --view  ¡ú  remerge
+    --save-camera-dir / --save-bev-video / --save-bev-image  ¡ú  /remerge
+    --bev-background / --display-history-sec / --bev-history-samples  ¡ú  BEV remerge
+    --rtsp-transport  ¡ú  RTSP remerge
+    --anchor / --risk-scalar / --anchor-s0-m / --pixel-grazing-d0  ¡ú  remerge DB world
+    --g2-online-learn --g2-learn-* / --g2-online-checkpoint-out  ¡ú  remerge
+
+  [remerge] geometry=DB cameras + DB scene_overlap_pairs; no yaml/ROI coverage gate
+  [] score>=0.70  dist<=2.50m  sigma(dist/time/shape)=(0.75/0.60/0.35)  weights(dist/time/shape)=(0.45/0.25/0.30)
+[] stitch /
+  [BEV] canvas=1x1  scale=4.00px/m  overlap_pairs=[('C05', 'C06'), ('C05', 'C07'), ('C06', 'C07')]
+  [] observations=552753  local_tracks=3515  global_ids_before=3142  sync_batches=5399  world_coords=final
+
+  [] comparisons=15585  merges=68  unique_global_ids_after=3447
+  [] bulk global_id tracks=3515 â€¦
+  [] updated_rows=552753  global_ids 3142->3447  trajectory_merges=68

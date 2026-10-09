@@ -1,0 +1,42 @@
+# Published HSG-SRL settings. Scripts pass these values explicitly.
+# Do not train with the argparse defaults inside src/pipeline.
+
+hsg:
+  s0_m: 60
+  eta: 0.75
+  aspect_ratio: [0.5, 3]
+  anchor_mode: multiplicative_gating_offsetted
+residual:
+  widths: [7, 64, 64, 2]
+  parameters: 4802
+  max_residual_m: 1.0
+  epochs: 80
+  batch_size: 256
+  learning_rate: 0.001
+  lambda_magnitude: 0.10
+  lambda_mean: 1.00
+  lambda_pair: 0.50
+  lambda_temporal: 0.02
+  temporal_reuse: 512
+  min_train_pairs: 32
+pairs:
+  time_window_s: 0.35
+  bracket_gap_s: 0.70
+  geometric_gate_m: 2.0
+  teacher_confidence: 0.20
+  teacher_gap: 0.05
+deployment: retained validation-pair support
+split: [0.60, 0.10, 0.30]
+final_tracking:
+  score: 0.70
+  max_distance_m: 2.5
+  time_distance_shape_weights: [0.25, 0.45, 0.30]
+  time_distance_shape_scales: [0.6, 0.75, 0.35]
+  stitch: false
+  similarity: max(0, 1 - d / 2.5)
+detector:
+  model: YOLO26l
+  imgsz: [384, 640]
+  classes: [2, 5, 7]
+  batch: l0hn_yolo_001
+gt_batch: l0hn_gt_001

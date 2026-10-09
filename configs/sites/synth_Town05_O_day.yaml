@@ -1,0 +1,255 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.75
+  max_distance_m: 2.0
+  distance_sigma: 1.0
+  shape_sigma: 0.35
+cameras:
+- name: C01
+  image: data/external/synthehicle_core/media/Town05_O_day_C01.png
+  video: data/external/synthehicle_core/train/Town05-O-day/C01/out_rgb/video.mp4
+  image_roi:
+  - - 183
+    - 18
+  - - 478
+    - 20
+  - - 410
+    - 86
+  - - 506
+    - 159
+  - - 813
+    - 226
+  - - 867
+    - 249
+  - - 1294
+    - 32
+  - - 1604
+    - 12
+  - - 1671
+    - 24
+  - - 1570
+    - 140
+  - - 1395
+    - 394
+  - - 1898
+    - 591
+  - - 1887
+    - 1058
+  - - 1368
+    - 1068
+  - - 1077
+    - 945
+  - - 831
+    - 1059
+  - - 18
+    - 1070
+  - - 12
+    - 722
+  - - 357
+    - 496
+  - - 12
+    - 284
+  - - 8
+    - 110
+- name: C02
+  image: data/external/synthehicle_core/media/Town05_O_day_C02.png
+  video: data/external/synthehicle_core/train/Town05-O-day/C02/out_rgb/video.mp4
+  image_roi:
+  - - 159
+    - 129
+  - - 202
+    - 22
+  - - 309
+    - 28
+  - - 405
+    - 63
+  - - 516
+    - 44
+  - - 510
+    - 70
+  - - 554
+    - 98
+  - - 969
+    - 198
+  - - 1233
+    - 158
+  - - 1410
+    - 100
+  - - 1635
+    - 84
+  - - 1905
+    - 80
+  - - 1910
+    - 153
+  - - 1701
+    - 196
+  - - 1563
+    - 326
+  - - 1576
+    - 387
+  - - 1906
+    - 482
+  - - 1899
+    - 1066
+  - - 1660
+    - 1066
+  - - 1142
+    - 796
+  - - 754
+    - 1060
+  - - 15
+    - 1060
+  - - 27
+    - 609
+  - - 543
+    - 386
+- name: C03
+  image: data/external/synthehicle_core/media/Town05_O_day_C03.png
+  video: data/external/synthehicle_core/train/Town05-O-day/C03/out_rgb/video.mp4
+  image_roi:
+  - - 51
+    - 184
+  - - 40
+    - 48
+  - - 176
+    - 28
+  - - 332
+    - 86
+  - - 908
+    - 225
+  - - 1462
+    - 14
+  - - 1726
+    - 26
+  - - 1449
+    - 345
+  - - 1908
+    - 478
+  - - 1887
+    - 1078
+  - - 1683
+    - 1066
+  - - 1124
+    - 807
+  - - 792
+    - 1056
+  - - 21
+    - 1066
+  - - 21
+    - 618
+  - - 436
+    - 412
+- name: C04
+  image: data/external/synthehicle_core/media/Town05_O_day_C04.png
+  video: data/external/synthehicle_core/train/Town05-O-day/C04/out_rgb/video.mp4
+  image_roi:
+  - - 22
+    - 579
+  - - 32
+    - 1064
+  - - 908
+    - 1071
+  - - 1126
+    - 978
+  - - 1408
+    - 1071
+  - - 1894
+    - 1072
+  - - 1900
+    - 543
+  - - 1640
+    - 434
+  - - 1882
+    - 130
+  - - 1698
+    - 57
+  - - 1042
+    - 258
+  - - 634
+    - 148
+  - - 669
+    - 28
+  - - 369
+    - 54
+  - - 186
+    - 74
+  - - 208
+    - 177
+  - - 486
+    - 411
+- name: C05
+  image: data/external/synthehicle_core/media/Town05_O_day_C05.png
+  video: data/external/synthehicle_core/train/Town05-O-day/C05/out_rgb/video.mp4
+  image_roi:
+  - - 12
+    - 237
+  - - 21
+    - 544
+  - - 350
+    - 570
+  - - 69
+    - 1054
+  - - 1821
+    - 1071
+  - - 1492
+    - 556
+  - - 1908
+    - 524
+  - - 1890
+    - 243
+  - - 1224
+    - 232
+  - - 1072
+    - 36
+  - - 810
+    - 39
+  - - 684
+    - 212
+- name: C06
+  image: data/external/synthehicle_core/media/Town05_O_day_C06.png
+  video: data/external/synthehicle_core/train/Town05-O-day/C06/out_rgb/video.mp4
+  image_roi:
+  - - 38
+    - 231
+  - - 764
+    - 232
+  - - 868
+    - 104
+  - - 984
+    - 69
+  - - 1152
+    - 48
+  - - 1282
+    - 42
+  - - 1306
+    - 82
+  - - 1185
+    - 96
+  - - 1120
+    - 142
+  - - 1191
+    - 224
+  - - 1908
+    - 261
+  - - 1906
+    - 460
+  - - 1456
+    - 500
+  - - 1436
+    - 555
+  - - 1749
+    - 1052
+  - - 309
+    - 1068
+  - - 573
+    - 506
+  - - 18
+    - 477

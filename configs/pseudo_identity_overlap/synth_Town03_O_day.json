@@ -1,0 +1,46 @@
+{
+  "site": "synth_Town03_O_day",
+  "edges": [
+    {
+      "a": "C01",
+      "b": "C02",
+      "edge": "C01:C02"
+    },
+    {
+      "a": "C01",
+      "b": "C03",
+      "edge": "C01:C03"
+    },
+    {
+      "a": "C01",
+      "b": "C04",
+      "edge": "C01:C04"
+    },
+    {
+      "a": "C01",
+      "b": "C05",
+      "edge": "C01:C05"
+    },
+    {
+      "a": "C01",
+      "b": "C06",
+      "edge": "C01:C06"
+    },
+    {
+      "a": "C01",
+      "b": "C07",
+      "edge": "C01:C07"
+    },
+    {
+      "a": "C01",
+      "b": "C08",
+      "edge": "C01:C08"
+    },
+    {
+      "a": "C02",
+      "b": "C07",
+      "edge": "C02:C07"
+    }
+  ],
+  "role": "sparse overlap stored in the confirmatory geometry database; pseudo-identities were associated on these edges"
+}

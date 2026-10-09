@@ -1,0 +1,29 @@
+{
+  "site": "lumpi_M5",
+  "cameras": [
+    "C05",
+    "C06",
+    "C07"
+  ],
+  "edges": [
+    {
+      "a": "C05",
+      "b": "C06",
+      "edge": "C05:C06",
+      "inter_area_m2": 67518.04781112394
+    },
+    {
+      "a": "C06",
+      "b": "C07",
+      "edge": "C06:C07",
+      "inter_area_m2": 35910.83197480213
+    },
+    {
+      "a": "C05",
+      "b": "C07",
+      "edge": "C05:C07",
+      "inter_area_m2": 26225.86009012541
+    }
+  ],
+  "rule": "projected FOV hull intersection at least 1000 m^2; not an MST"
+}

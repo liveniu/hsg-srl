@@ -1,0 +1,153 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.7
+  max_distance_m: 2.5
+  distance_sigma: 1.5
+  shape_sigma: 0.5
+cameras:
+- name: C08
+  image: data/external/LUMPI/media/M3_C08.png
+  video: data/external/LUMPI/Measurement3/cam/8/video.mp4
+  image_roi:
+  - - 662
+    - 117
+  - - 1067
+    - 530
+  - - 1039
+    - 603
+  - - 933
+    - 668
+  - - 26
+    - 860
+  - - 8
+    - 1227
+  - - 814
+    - 1230
+  - - 1390
+    - 1079
+  - - 1509
+    - 438
+  - - 933
+    - 179
+  - - 743
+    - 83
+- name: C09
+  image: data/external/LUMPI/media/M3_C09.png
+  video: data/external/LUMPI/Measurement3/cam/9/video.mp4
+  image_roi:
+  - - 478
+    - 338
+  - - 442
+    - 459
+  - - 651
+    - 452
+  - - 656
+    - 471
+  - - 18
+    - 610
+  - - 9
+    - 1023
+  - - 338
+    - 963
+  - - 746
+    - 1002
+  - - 944
+    - 1071
+  - - 1905
+    - 1076
+  - - 1912
+    - 646
+  - - 1737
+    - 548
+  - - 1902
+    - 488
+  - - 1906
+    - 303
+  - - 1658
+    - 312
+  - - 1614
+    - 286
+  - - 1876
+    - 252
+  - - 1864
+    - 208
+  - - 1598
+    - 230
+  - - 1512
+    - 164
+  - - 1310
+    - 268
+  - - 1278
+    - 264
+  - - 1388
+    - 192
+  - - 1210
+    - 176
+  - - 868
+    - 302
+- name: C10
+  image: data/external/LUMPI/media/M3_C10.png
+  video: data/external/LUMPI/Measurement3/cam/10/video.mp4
+  image_roi:
+  - - 489
+    - 360
+  - - 447
+    - 466
+  - - 656
+    - 447
+  - - 646
+    - 477
+  - - 24
+    - 597
+  - - 12
+    - 976
+  - - 478
+    - 957
+  - - 716
+    - 1000
+  - - 914
+    - 1070
+  - - 1686
+    - 1070
+  - - 1826
+    - 618
+  - - 1732
+    - 549
+  - - 1845
+    - 507
+  - - 1904
+    - 310
+  - - 1708
+    - 330
+  - - 1626
+    - 308
+  - - 1624
+    - 284
+  - - 1910
+    - 260
+  - - 1842
+    - 231
+  - - 1606
+    - 237
+  - - 1485
+    - 177
+  - - 1317
+    - 285
+  - - 1268
+    - 290
+  - - 1377
+    - 220
+  - - 1236
+    - 189
+  - - 981
+    - 272
+  - - 831
+    - 310

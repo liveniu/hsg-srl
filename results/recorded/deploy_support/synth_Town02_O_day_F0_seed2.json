@@ -1,0 +1,21 @@
+{
+  "site": "synth_Town02_O_day",
+  "seed": 2,
+  "trained": true,
+  "uses_test_gt": false,
+  "cameras": [
+    "C01",
+    "C02",
+    "C03"
+  ],
+  "rule": "retained_validation_pair_support",
+  "S": [
+    "C01",
+    "C02",
+    "C03"
+  ],
+  "deploy": "model",
+  "n_train_pairs": 1317,
+  "n_val_pair_endpoints": 658,
+  "n_edges": 3
+}

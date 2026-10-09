@@ -1,0 +1,21 @@
+# BoT-SORT for fixed roadside cameras.
+#
+# Same as the ultralytics default except gmc_method: none. Global motion
+# compensation estimates frame-to-frame camera motion by sparse optical flow on
+# the full-resolution frame every frame, which dominates runtime here and has
+# nothing to compensate for on a tripod-mounted camera.
+
+tracker_type: botsort
+track_high_thresh: 0.25
+track_low_thresh: 0.1
+new_track_thresh: 0.25
+track_buffer: 30
+match_thresh: 0.8
+fuse_score: True
+
+gmc_method: none
+
+proximity_thresh: 0.5
+appearance_thresh: 0.8
+with_reid: False
+model: auto

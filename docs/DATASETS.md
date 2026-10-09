@@ -1,0 +1,20 @@
+# Datasets
+
+Videos and labels are not in this package. Download them under their own licenses.
+
+YOLO26l detections are not identical across machines. The geometry databases below freeze the detections used for the published tables:
+
+https://doi.org/10.5281/zenodo.23008421
+
+After extraction, place each recording at `data/work/sites/<recording>/`. Each directory contains `geometry.db`, `origin.db`, the 60/10/30 split, `det_gt_match_report.json`, and `reference_verdict.txt`.
+
+| Variable | Default directory | Contents |
+| --- | --- | --- |
+| `HSGSRL_LUMPI_ROOT` | `data/external/LUMPI` | Measurements 0-6 |
+| `HSGSRL_SYNTHEHICLE_ROOT` | `data/external/synthehicle_core` | Town01-O-day through Town05-O-day, plus calibration |
+
+LUMPI: https://data.uni-hannover.de/en/dataset/lumpi
+
+The official test clips do not contain the 3-D boxes used here, so they are not imported.
+
+Place a YOLO26l weight at `data/models/yolo26l.pt`. A TensorRT engine must be built on the machine that runs it.

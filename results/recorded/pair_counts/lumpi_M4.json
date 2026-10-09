@@ -1,0 +1,26 @@
+{
+  "site": "lumpi_M4",
+  "cameras": [
+    "C06",
+    "C07"
+  ],
+  "edges": [
+    "C06:C07"
+  ],
+  "n_train_obs": 234054,
+  "n_val_obs": 41217,
+  "n_train_pairs": 27576,
+  "n_val_pairs": 4796,
+  "n_temporal": 230977,
+  "components": [
+    [
+      "C06",
+      "C07"
+    ]
+  ],
+  "weights": {
+    "C06": 9966.8591273278,
+    "C07": 5934.708809733391
+  },
+  "uses_test_gt": false
+}

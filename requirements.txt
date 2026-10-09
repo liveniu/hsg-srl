@@ -1,0 +1,5 @@
+# Full reproduction, including detection. The Jetson and the 4090 use their
+# own environments; see docs/ORIN.md and docs/BEVHEIGHT.md.
+-r requirements-minimal.txt
+ultralytics>=8.3.0
+Pillow>=10.1.0

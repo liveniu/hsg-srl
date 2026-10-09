@@ -1,0 +1,31 @@
+{
+  "site": "synth_Town02_O_day",
+  "cameras": [
+    "C01",
+    "C02",
+    "C03"
+  ],
+  "edges": [
+    "C01:C02",
+    "C01:C03",
+    "C02:C03"
+  ],
+  "n_train_obs": 20279,
+  "n_val_obs": 4560,
+  "n_train_pairs": 1317,
+  "n_val_pairs": 329,
+  "n_temporal": 19712,
+  "components": [
+    [
+      "C01",
+      "C02",
+      "C03"
+    ]
+  ],
+  "weights": {
+    "C01": 472.1512661278248,
+    "C02": 409.89423201978207,
+    "C03": 229.19052320718765
+  },
+  "uses_test_gt": false
+}

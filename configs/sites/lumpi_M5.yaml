@@ -1,0 +1,167 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.7
+  max_distance_m: 2.5
+  distance_sigma: 1.5
+  shape_sigma: 0.5
+cameras:
+- name: C05
+  image: data/external/LUMPI/media/M5_C05.png
+  video: data/external/LUMPI/Measurement5/cam/5/video.mp4
+  image_roi:
+  - - 12
+    - 440
+  - - 12
+    - 561
+  - - 164
+    - 640
+  - - 177
+    - 682
+  - - 14
+    - 790
+  - - 252
+    - 1077
+  - - 627
+    - 898
+  - - 816
+    - 938
+  - - 915
+    - 993
+  - - 1208
+    - 1068
+  - - 1905
+    - 1070
+  - - 1911
+    - 880
+  - - 1209
+    - 687
+  - - 1176
+    - 650
+  - - 1202
+    - 616
+  - - 1911
+    - 567
+  - - 1844
+    - 414
+  - - 855
+    - 489
+  - - 586
+    - 456
+  - - 538
+    - 510
+  - - 609
+    - 528
+  - - 555
+    - 552
+  - - 428
+    - 542
+  - - 108
+    - 480
+- name: C06
+  image: data/external/LUMPI/media/M5_C06.png
+  video: data/external/LUMPI/Measurement5/cam/6/video.mp4
+  image_roi:
+  - - 170
+    - 546
+  - - 136
+    - 653
+  - - 393
+    - 638
+  - - 405
+    - 648
+  - - 19
+    - 738
+  - - 5
+    - 1162
+  - - 286
+    - 1174
+  - - 407
+    - 1207
+  - - 1630
+    - 1199
+  - - 1634
+    - 878
+  - - 1438
+    - 748
+  - - 1439
+    - 715
+  - - 1632
+    - 657
+  - - 1626
+    - 483
+  - - 1411
+    - 518
+  - - 1339
+    - 500
+  - - 1367
+    - 474
+  - - 1622
+    - 447
+  - - 1591
+    - 420
+  - - 1344
+    - 430
+  - - 1244
+    - 370
+  - - 1043
+    - 477
+  - - 1008
+    - 474
+  - - 1126
+    - 413
+  - - 996
+    - 384
+  - - 808
+    - 451
+  - - 582
+    - 511
+- name: C07
+  image: data/external/LUMPI/media/M5_C07.png
+  video: data/external/LUMPI/Measurement5/cam/7/video.mp4
+  image_roi:
+  - - 5
+    - 646
+  - - 5
+    - 1172
+  - - 861
+    - 1179
+  - - 1098
+    - 984
+  - - 1475
+    - 839
+  - - 1623
+    - 796
+  - - 1632
+    - 493
+  - - 1152
+    - 596
+  - - 1080
+    - 593
+  - - 1070
+    - 571
+  - - 1639
+    - 428
+  - - 1530
+    - 355
+  - - 979
+    - 459
+  - - 826
+    - 461
+  - - 676
+    - 422
+  - - 369
+    - 291
+  - - 155
+    - 311
+  - - 297
+    - 548
+  - - 136
+    - 624

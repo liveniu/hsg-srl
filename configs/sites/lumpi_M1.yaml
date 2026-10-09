@@ -1,0 +1,173 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.7
+  max_distance_m: 2.5
+  distance_sigma: 1.5
+  shape_sigma: 0.5
+cameras:
+- name: C08
+  image: data/external/LUMPI/media/M1_C08.png
+  video: data/external/LUMPI/Measurement1/cam/8/video.mp4
+  image_roi:
+  - - 370
+    - 512
+  - - 295
+    - 601
+  - - 475
+    - 600
+  - - 543
+    - 606
+  - - 23
+    - 748
+  - - 14
+    - 1128
+  - - 333
+    - 1088
+  - - 673
+    - 1158
+  - - 823
+    - 1222
+  - - 1416
+    - 1217
+  - - 1505
+    - 638
+  - - 1530
+    - 466
+  - - 1448
+    - 428
+  - - 1484
+    - 398
+  - - 1549
+    - 391
+  - - 1538
+    - 365
+  - - 1453
+    - 369
+  - - 1363
+    - 310
+  - - 1151
+    - 428
+  - - 1106
+    - 422
+  - - 1244
+    - 334
+  - - 1145
+    - 300
+  - - 726
+    - 459
+- name: C09
+  image: data/external/LUMPI/media/M1_C09.png
+  video: data/external/LUMPI/Measurement1/cam/9/video.mp4
+  image_roi:
+  - - 574
+    - 358
+  - - 496
+    - 466
+  - - 723
+    - 464
+  - - 726
+    - 494
+  - - 21
+    - 624
+  - - 12
+    - 994
+  - - 476
+    - 946
+  - - 777
+    - 999
+  - - 938
+    - 1070
+  - - 1838
+    - 1076
+  - - 1916
+    - 802
+  - - 1912
+    - 496
+  - - 1910
+    - 366
+  - - 1797
+    - 360
+  - - 1720
+    - 339
+  - - 1736
+    - 312
+  - - 1916
+    - 297
+  - - 1898
+    - 260
+  - - 1718
+    - 272
+  - - 1614
+    - 198
+  - - 1398
+    - 306
+  - - 1358
+    - 304
+  - - 1548
+    - 196
+  - - 1395
+    - 171
+  - - 1020
+    - 304
+- name: C10
+  image: data/external/LUMPI/media/M1_C10.png
+  video: data/external/LUMPI/Measurement1/cam/10/video.mp4
+  image_roi:
+  - - 502
+    - 364
+  - - 410
+    - 474
+  - - 644
+    - 466
+  - - 651
+    - 496
+  - - 44
+    - 614
+  - - 16
+    - 1004
+  - - 318
+    - 962
+  - - 724
+    - 1020
+  - - 874
+    - 1068
+  - - 1902
+    - 1066
+  - - 1914
+    - 717
+  - - 1720
+    - 592
+  - - 1908
+    - 542
+  - - 1905
+    - 351
+  - - 1688
+    - 376
+  - - 1628
+    - 338
+  - - 1898
+    - 306
+  - - 1880
+    - 273
+  - - 1612
+    - 288
+  - - 1536
+    - 201
+  - - 1320
+    - 318
+  - - 1270
+    - 316
+  - - 1473
+    - 198
+  - - 1310
+    - 194
+  - - 915
+    - 314

@@ -1,0 +1,16 @@
+{
+  "site": "lumpi_M5",
+  "edges": [
+    {
+      "a": "C05",
+      "b": "C06",
+      "edge": "C05:C06"
+    },
+    {
+      "a": "C06",
+      "b": "C07",
+      "edge": "C06:C07"
+    }
+  ],
+  "role": "sparse overlap stored in the confirmatory geometry database; pseudo-identities were associated on these edges"
+}

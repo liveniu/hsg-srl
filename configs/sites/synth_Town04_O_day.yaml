@@ -1,0 +1,147 @@
+# Camera videos and ground masks for one recording.
+# Licensed media are not included. Point video/image at your download
+# under data/external/.
+
+scale_px_per_meter: 4.0
+seam_blend_px: 15
+canvas_margin_px: 60
+output: results/runs/bev.png
+debug_dir: results/runs/debug
+trajectory_merge:
+  score_threshold: 0.75
+  max_distance_m: 2.0
+  distance_sigma: 1.0
+  shape_sigma: 0.35
+cameras:
+- name: C01
+  image: data/external/synthehicle_core/media/Town04_O_day_C01.png
+  video: data/external/synthehicle_core/train/Town04-O-day/C01/out_rgb/video.mp4
+  image_roi:
+  - - 20
+    - 324
+  - - 285
+    - 525
+  - - 22
+    - 732
+  - - 16
+    - 1070
+  - - 1888
+    - 1066
+  - - 1820
+    - 728
+  - - 1402
+    - 501
+  - - 1608
+    - 226
+  - - 1587
+    - 204
+  - - 1430
+    - 180
+  - - 867
+    - 378
+  - - 160
+    - 210
+  - - 24
+    - 244
+- name: C02
+  image: data/external/synthehicle_core/media/Town04_O_day_C02.png
+  video: data/external/synthehicle_core/train/Town04-O-day/C02/out_rgb/video.mp4
+  image_roi:
+  - - 332
+    - 444
+  - - 418
+    - 274
+  - - 411
+    - 165
+  - - 882
+    - 338
+  - - 1032
+    - 358
+  - - 1544
+    - 124
+  - - 1791
+    - 171
+  - - 1410
+    - 560
+  - - 1890
+    - 852
+  - - 1870
+    - 1050
+  - - 165
+    - 1064
+  - - 90
+    - 820
+  - - 446
+    - 566
+- name: C03
+  image: data/external/synthehicle_core/media/Town04_O_day_C03.png
+  video: data/external/synthehicle_core/train/Town04-O-day/C03/out_rgb/video.mp4
+  image_roi:
+  - - 236
+    - 296
+  - - 382
+    - 218
+  - - 924
+    - 375
+  - - 1208
+    - 225
+  - - 1230
+    - 154
+  - - 1390
+    - 146
+  - - 1498
+    - 285
+  - - 1371
+    - 482
+  - - 1400
+    - 570
+  - - 1906
+    - 776
+  - - 1894
+    - 1059
+  - - 1364
+    - 1070
+  - - 1029
+    - 914
+  - - 642
+    - 1076
+  - - 9
+    - 892
+  - - 532
+    - 537
+- name: C04
+  image: data/external/synthehicle_core/media/Town04_O_day_C04.png
+  video: data/external/synthehicle_core/train/Town04-O-day/C04/out_rgb/video.mp4
+  image_roi:
+  - - 102
+    - 186
+  - - 279
+    - 100
+  - - 820
+    - 272
+  - - 998
+    - 292
+  - - 1420
+    - 114
+  - - 1604
+    - 178
+  - - 1428
+    - 408
+  - - 1521
+    - 550
+  - - 1899
+    - 706
+  - - 1906
+    - 1044
+  - - 1434
+    - 1070
+  - - 984
+    - 926
+  - - 586
+    - 1074
+  - - 15
+    - 1070
+  - - 20
+    - 780
+  - - 429
+    - 466

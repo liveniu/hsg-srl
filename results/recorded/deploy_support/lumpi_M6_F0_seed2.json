@@ -1,0 +1,21 @@
+{
+  "site": "lumpi_M6",
+  "seed": 2,
+  "trained": true,
+  "uses_test_gt": false,
+  "cameras": [
+    "C05",
+    "C06",
+    "C07"
+  ],
+  "rule": "retained_validation_pair_support",
+  "S": [
+    "C05",
+    "C06",
+    "C07"
+  ],
+  "deploy": "model",
+  "n_train_pairs": 37294,
+  "n_val_pair_endpoints": 8376,
+  "n_edges": 3
+}

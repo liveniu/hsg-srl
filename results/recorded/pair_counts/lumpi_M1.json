@@ -1,0 +1,25 @@
+{
+  "site": "lumpi_M1",
+  "cameras": [
+    "C08",
+    "C09",
+    "C10"
+  ],
+  "edges": [
+    "C08:C09",
+    "C08:C10",
+    "C09:C10"
+  ],
+  "n_train_obs": 454417,
+  "n_val_obs": 81282,
+  "n_train_pairs": 0,
+  "n_val_pairs": 0,
+  "n_temporal": 450910,
+  "components": [],
+  "weights": {
+    "C08": 0.0,
+    "C09": 0.0,
+    "C10": 0.0
+  },
+  "uses_test_gt": false
+}

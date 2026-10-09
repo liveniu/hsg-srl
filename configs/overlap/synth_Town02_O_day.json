@@ -1,0 +1,29 @@
+{
+  "site": "synth_Town02_O_day",
+  "cameras": [
+    "C01",
+    "C02",
+    "C03"
+  ],
+  "edges": [
+    {
+      "a": "C02",
+      "b": "C03",
+      "edge": "C02:C03",
+      "inter_area_m2": 72070.87752635294
+    },
+    {
+      "a": "C01",
+      "b": "C02",
+      "edge": "C01:C02",
+      "inter_area_m2": 24392.845065532063
+    },
+    {
+      "a": "C01",
+      "b": "C03",
+      "edge": "C01:C03",
+      "inter_area_m2": 23074.23225804248
+    }
+  ],
+  "rule": "projected FOV hull intersection at least 1000 m^2; not an MST"
+}
