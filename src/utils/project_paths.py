@@ -1,4 +1,8 @@
-'YAMLdata/ ``../`` \n ``py tools/print_ChArUco.py`` \n``<>/data/charuco/``'
+"""Resolve paths from the artifact root.
+
+YAML paths, data/, and default outputs are relative to this package, not the
+process working directory. tools/print_ChArUco.py writes under data/charuco/.
+"""
 
 from __future__ import annotations
 
@@ -9,7 +13,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]  # artifact root
 
 
 def resolve_project_path(path: str | Path, *, base: Path | None = None) -> Path:
-    'base'
+    """Resolve a relative path from the artifact root, or from base."""
     p = Path(path)
     if p.is_absolute():
         return p

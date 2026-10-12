@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Label-free diagnostics for mined cross-view pairs.
 
-The diagnostic reads projected pair coordinates. It does not use ground truth
-as a training target.
+The filename keeps the internal tag g2. The published pair miner is
+scripts/freeze_pairs.py. This diagnostic reads projected pair coordinates
+and does not use ground truth as a training target.
 """
 
 from __future__ import annotations

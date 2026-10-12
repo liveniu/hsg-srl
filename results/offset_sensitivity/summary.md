@@ -21,9 +21,9 @@ Recomputed HSG common-bias vectors match the released `common_bias=` lines. Cloc
 | Town04 | (+0.1556, -0.4096) | no | (+0.1710, -0.5129) | no | (-0.1324, -0.0193) | no | 0.0444 / 0.2859 | 0.3079 / 0.8918 |
 | Town05 | (-0.1280, -0.0723) | no | (-0.1340, -0.1268) | no | (+0.0489, -0.0342) | no | 0.0375 / 0.2355 | 0.2144 / 0.5687 |
 
-## Table III strata, median / RMSE (m)
+## Reference translation by stratum, median / RMSE (m)
 
-Rows are the GT treatment. Columns are pooled over the stratum.
+Rows are the ground-truth treatment. The HSG and beta=0.50 columns are the stratum comparison. beta=0.50 is the fixed interior midpoint. The other columns repeat the same rescore for the remaining fixed anchors.
 
 ### LUMPI-pole
 
@@ -79,7 +79,7 @@ Rows are the GT treatment. Columns are pooled over the stratum.
 | Offset from beta=0.50 | 0.631 / 0.932 | 0.615 / 1.068 | 0.833 / 1.122 | 1.746 / 1.960 | 1.843 / 2.745 |
 | Offset from beta=1 | 0.829 / 1.219 | 0.892 / 1.302 | 0.964 / 1.199 | 1.741 / 1.865 | 2.345 / 3.011 |
 
-## Per-recording median, HSG vs beta=0.50 (m)
+## Per-recording median, HSG / fixed interior midpoint (beta=0.50) (m)
 
 | Recording | Published HSG / beta=0.50 | No offset | From beta=0.50 | From beta=1 |
 | --- | ---: | ---: | ---: | ---: |

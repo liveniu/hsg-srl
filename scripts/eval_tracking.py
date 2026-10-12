@@ -25,13 +25,12 @@ from protocol import (
     DET_BATCH,
     GT_BATCH,
     MAX_T,
-    PAPER_MERGE_DISTANCE_M,
-    PAPER_MERGE_SCORE,
     SITES,
     geometry_db,
     match_report,
     origin_db,
     overlap_path,
+    paper_merge_args,
     site_dir,
 )
 
@@ -142,10 +141,8 @@ def main() -> None:
         "--remerge-from-db",
         "--remerge-quiet",
         "--no-view",
-        "--no-stitch",
         "--remerge-world-coords", "final",
-        "--merge-score-threshold", str(PAPER_MERGE_SCORE),
-        "--merge-max-distance", str(PAPER_MERGE_DISTANCE_M),
+        *paper_merge_args(),
     ]
     env = os.environ.copy()
     env["PYTHONPATH"] = str(SRC_ROOT) + os.pathsep + env.get("PYTHONPATH", "")

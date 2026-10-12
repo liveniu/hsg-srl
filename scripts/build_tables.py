@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build Tables III--V and the per-recording bootstrap from the recorded results.
+"""Build the localization, fixed-anchor, and tracking summaries from the recorded results.
 
 This does not retrain. Localization uses results/recorded/loc_support.
 Tracking uses results/recorded/identity_hota25_support.csv, which stores one
@@ -91,39 +91,13 @@ def main() -> None:
         "",
         "Localization and tracking use the published deployment: a trained residual on every camera that has a retained validation pair.",
         "",
-        "## Table III fixed anchors, median / RMSE (m)",
-        "",
-        "| Anchor | LUMPI-pole | LUMPI-A | LUMPI-B | Synthehicle |",
-        "| --- | ---: | ---: | ---: | ---: |",
-    ]
-    anchor_names = (
-        ("center", "Box center, beta=0"),
-        ("bottom", "Bottom center, beta=1"),
-        ("b050", "Fixed beta=0.50"),
-        ("b070", "Fixed beta=0.70"),
-    )
-    # HSG is not in ipm_baseline; it is the geo column of the support arrays.
-    strata = ("LUMPI-pole", "LUMPI-A", "LUMPI-B", "Synth")
-    for key, label in anchor_names:
-        cells = []
-        for stratum in strata:
-            data = ipm["pooled"][stratum][key]
-            cells.append(f"{data['median']:.3f} / {data['rmse']:.3f}")
-        lines.append(f"| {label} | " + " | ".join(cells) + " |")
-    hsg_cells = []
-    for stratum in strata:
-        values = np.concatenate([arrays[site]["geo"] for site in groups[stratum]])
-        summary = stats(values)
-        hsg_cells.append(f"{summary['median']:.3f} / {summary['rmse']:.3f}")
-    lines.append("| HSG | " + " | ".join(hsg_cells) + " |")
-
-    lines += [
-        "",
-        "## Table IV localization, HSG-SRL is the three-seed mean +/- sample SD",
+        "## Localization, HSG-SRL is the three-seed mean +/- sample SD",
         "",
         "| Stratum | IPM median | HSG median | HSG-SRL median | HSG p90 | HSG-SRL p90 | HSG RMSE | HSG-SRL RMSE |",
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
+    # HSG is not in ipm_baseline; it is the geo column of the support arrays.
+    strata = ("LUMPI-pole", "LUMPI-A", "LUMPI-B", "Synth")
     labels = {
         "LUMPI-pole": "LUMPI-pole",
         "LUMPI-A": "LUMPI-A",
@@ -150,7 +124,33 @@ def main() -> None:
 
     lines += [
         "",
-        "## Table V recording-macro TrackEval BEV-HOTA",
+        "## Fixed anchors, median / RMSE (m)",
+        "",
+        "| Anchor | LUMPI-pole | LUMPI-A | LUMPI-B | Synthehicle |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ]
+    anchor_names = (
+        ("bottom", "Bottom-center projection (IPM)"),
+        ("center", "Box-center projection"),
+        ("b050", "Fixed interior midpoint"),
+        ("b070", "STMC-derived fixed anchor"),
+    )
+    hsg_cells = []
+    for stratum in strata:
+        values = np.concatenate([arrays[site]["geo"] for site in groups[stratum]])
+        summary = stats(values)
+        hsg_cells.append(f"{summary['median']:.3f} / {summary['rmse']:.3f}")
+    lines.append("| HSG (per-detection) | " + " | ".join(hsg_cells) + " |")
+    for key, label in anchor_names:
+        cells = []
+        for stratum in strata:
+            data = ipm["pooled"][stratum][key]
+            cells.append(f"{data['median']:.3f} / {data['rmse']:.3f}")
+        lines.append(f"| {label} | " + " | ".join(cells) + " |")
+
+    lines += [
+        "",
+        "## Recording-macro TrackEval BEV-HOTA",
         "",
         "| Data / method | 0.5 m | 1 m | 1.5 m | 2 m | mean of four |",
         "| --- | ---: | ---: | ---: | ---: | ---: |",
@@ -189,7 +189,7 @@ def main() -> None:
 
     lines += [
         "",
-        "## Table S6 per-recording median and seed-0 bootstrap interval for HSG-SRL minus HSG",
+        "## Per-recording median and seed-0 bootstrap interval for HSG-SRL minus HSG",
         "",
         "| Recording | HSG | HSG-SRL mean +/- SD | Seed-0 difference [interval] |",
         "| --- | ---: | ---: | ---: |",
@@ -233,7 +233,7 @@ def main() -> None:
 
     lines += [
         "",
-        "## Table S9 detection and association accuracy",
+        "## Detection and association accuracy",
         "",
         "| Data / gate | HSG DetA | HSG-SRL DetA | HSG AssA | HSG-SRL AssA |",
         "| --- | ---: | ---: | ---: | ---: |",
@@ -250,7 +250,7 @@ def main() -> None:
             )
     lines += [
         "",
-        "## Table S10 localization accuracy of retained matches",
+        "## Localization accuracy of retained matches",
         "",
         "| Data / gate | HSG LocA | HSG-SRL LocA |",
         "| --- | ---: | ---: |",
@@ -264,7 +264,7 @@ def main() -> None:
             )
     lines += [
         "",
-        "## Table S11 per-recording BEV-HOTA",
+        "## Per-recording BEV-HOTA",
         "",
         "| Recording | HSG 0.5 m | HSG-SRL 0.5 m | HSG 2 m | HSG-SRL 2 m |",
         "| --- | ---: | ---: | ---: | ---: |",

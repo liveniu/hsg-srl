@@ -1,10 +1,11 @@
-# Published HSG-SRL settings. Scripts pass these values explicitly.
-# Do not train with the argparse defaults inside src/pipeline.
+# Published HSG-SRL settings. scripts/train_recording.py uses these values.
+# Do not replace that trainer with src/pipeline/geometry_guided_residual_mlp.py train.
 
 hsg:
   s0_m: 60
   eta: 0.75
   aspect_ratio: [0.5, 3]
+  # Internal name of the published HSG anchor. center and bottom_center are controls.
   anchor_mode: multiplicative_gating_offsetted
 residual:
   widths: [7, 64, 64, 2]

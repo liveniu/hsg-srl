@@ -10,7 +10,7 @@ from pathlib import Path
 from bootstrap import ARTIFACT_ROOT
 
 CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\u3000-\u303f\uff00-\uffef]")
-SKIP_DIRS = {".git", ".venv", "__pycache__", "work", "external", "runs"}
+SKIP_DIRS = {".git", ".idea", ".vscode", ".venv", "__pycache__", "work", "external", "runs"}
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".pdf", ".pt", ".db", ".pyc", ".npz"}
 
 

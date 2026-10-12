@@ -307,9 +307,9 @@ def render(per_site: dict, pooled: dict, residual: dict) -> str:
 
     lines += [
         "",
-        "## Table III strata, median / RMSE (m)",
+        "## Reference translation by stratum, median / RMSE (m)",
         "",
-        "Rows are the GT treatment. Columns are pooled over the stratum.",
+        "Rows are the ground-truth treatment. The HSG and beta=0.50 columns are the stratum comparison. beta=0.50 is the fixed interior midpoint. The other columns repeat the same rescore for the remaining fixed anchors.",
         "",
     ]
     strata = ("LUMPI-pole", "LUMPI-A", "LUMPI-B", "Synth", "LUMPI-real", "All")
@@ -335,7 +335,7 @@ def render(per_site: dict, pooled: dict, residual: dict) -> str:
         lines.append("")
 
     lines += [
-        "## Per-recording median, HSG vs beta=0.50 (m)",
+        "## Per-recording median, HSG / fixed interior midpoint (beta=0.50) (m)",
         "",
         "| Recording | Published HSG / beta=0.50 | No offset | From beta=0.50 | From beta=1 |",
         "| --- | ---: | ---: | ---: | ---: |",

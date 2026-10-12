@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build FAB2 split, GT, topology, checkpoint and comparability manifests."""
+"""Build the chronological split and detector-to-ground-truth manifests.
+
+The filename keeps the internal tag fab2. This is the split used by the
+published 60/10/30 protocol, not a separate method.
+"""
 
 from __future__ import annotations
 
@@ -500,7 +504,7 @@ def _build_comparability_rows(scenes: list[str], args: argparse.Namespace) -> tu
                 sup = "none"
                 missing = ""
                 status = "ready"
-                position = "Table II A-layer"
+                position = "frozen-geometry comparison"
                 coord = "world_x/world_y"
             elif "hsg" in low or "srl" in low or "ours" in low:
                 layer = "A"
@@ -508,7 +512,7 @@ def _build_comparability_rows(scenes: list[str], args: argparse.Namespace) -> tu
                 sup = "unlabeled MVC train split"
                 missing = "checkpoint/final_world_x_y if not generated"
                 status = "ready_after_checkpoint"
-                position = "Table II A-layer"
+                position = "frozen-geometry comparison"
                 coord = "final_world_x/final_world_y"
             else:
                 layer = "B_or_C"

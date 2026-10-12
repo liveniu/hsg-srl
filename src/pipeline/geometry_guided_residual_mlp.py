@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """Bounded ground-coordinate residual for HSG-SRL.
 
-Paper training uses scripts/train_recording.py and configs/paper_defaults.yaml.
-Do not train by calling this file directly. Its command-line defaults belong to
-an earlier residual setup and are not the published method.
+Paper training is scripts/train_recording.py. That script fits the frozen
+pairs, writes the F0 checkpoint and deploy file, and does not call this
+command line. F0 is the filename tag for this residual, not a second method.
+
+This train subcommand is a separate database trainer. Its numeric defaults
+now match the published loss, but it still requires --split-manifest and
+mines pairs from the geometry database. Supplying those numbers does not
+make the command the paper fit. There is no camera-translation stage in the
+published method; --camera-translation-json is not used by the paper scripts.
 """
 
 from __future__ import annotations
@@ -144,12 +150,12 @@ class TrainConfig:
     lr: float = 1e-3
     epochs: int = 80
     batch_size: int = 256
-    lambda_reg: float = 0.05                                 
+    lambda_reg: float = 0.10
     lambda_smooth: float = 0.02
-    lambda_mean_delta: float = 0.0  # Penalize batch-mean residual drift; 0 preserves old behavior.
-    lambda_pair_center: float = 0.0  # Penalize per-pair common-mode drift; 0 preserves old behavior.
-    max_residual_m: float = 1.5                                             
-    max_pair_dist_m: float | None = 3.0
+    lambda_mean_delta: float = 1.0
+    lambda_pair_center: float = 0.50
+    max_residual_m: float = 1.0
+    max_pair_dist_m: float | None = 2.0
     max_time_gap_sec: float = 0.35
     anchor_mode: str = "multiplicative_gating_offsetted"
                                           
@@ -614,7 +620,7 @@ class GeometryDataView:
         sensitivity_clip_m: float | None = None,
         extent_clip_m: float | None = None,
     ) -> list[MVCPair]:
-        'MVC fab1 ``t*``IV-C\n\n ``motion_compensation``:\n - ``linear_interpolate`` ``t*``\n bbox \n ** bracketing**``t*`` \n —— hold-first/\n hold-last \n ``2×max_time_gap_sec`` \n - ``nearest`` / ``off``cla1 (ix) \n\n ``time_offsets_sec````{(cam_a, cam_b): offset_sec}`` \n ``offset`` cam_b cam_a \n //``valid_for_mvc=False``'
+        'MVC pair time ``t*``\n\n ``motion_compensation``:\n - ``linear_interpolate`` ``t*``\n bbox \n ** bracketing**``t*`` \n —— hold-first/\n hold-last \n ``2×max_time_gap_sec`` \n - ``nearest`` / ``off``cla1 (ix) \n\n ``time_offsets_sec````{(cam_a, cam_b): offset_sec}`` \n ``offset`` cam_b cam_a \n //``valid_for_mvc=False``'
         offsets = time_offsets_sec or {}
         by_gid: dict[int, list[AnchorFeatures]] = defaultdict(list)
         for obs in observations:
@@ -704,6 +710,7 @@ class GeometryDataView:
 
     @staticmethod
     def default_overlap_pairs(camera_names: list[str]) -> set[tuple[str, str]]:
+        """Adjacent-camera chain. Not the published full overlap graph."""
         names = sorted(camera_names)
         return {tuple(sorted((names[i], names[i + 1]))) for i in range(len(names) - 1)}
 
@@ -716,7 +723,7 @@ if nn is not None:
     class GeometryGuidedResidualMLP(nn.Module):
         '3 MLPF (7) → ΔP (2) BEV'
 
-        def __init__(self, in_dim: int = 7, hidden: int = 64, max_residual_m: float = 1.5):
+        def __init__(self, in_dim: int = 7, hidden: int = 64, max_residual_m: float = 1.0):
             super().__init__()
             self.max_residual_m = max_residual_m
             self.net = nn.Sequential(
@@ -2178,7 +2185,37 @@ def apply_camera_translation_to_pairs(
     ]
 
 
+# Published numeric configuration. scripts/train_recording.py does not use
+# this command line. cmd_train rejects a run that changes these values.
+_PAPER_TRAIN = {
+    "max_residual_m": 1.0,
+    "max_pair_dist_m": 2.0,
+    "lambda_reg": 0.10,
+    "lambda_smooth": 0.02,
+    "lambda_mean_delta": 1.0,
+    "lambda_pair_center": 0.50,
+    "min_mvc_pairs": 32,
+}
+
+
+def _require_paper_train_flags(args: argparse.Namespace) -> None:
+    current = {key: getattr(args, key) for key in _PAPER_TRAIN}
+    if current != _PAPER_TRAIN:
+        differ = [
+            f"{key}={current[key]} (published {_PAPER_TRAIN[key]})"
+            for key in _PAPER_TRAIN
+            if current[key] != _PAPER_TRAIN[key]
+        ]
+        raise SystemExit(
+            "This train command cannot replace scripts/train_recording.py.\n"
+            "The published trainer fits the frozen pairs and does not call this "
+            "command line. This database trainer still requires --split-manifest.\n"
+            "Differing values: " + ", ".join(differ)
+        )
+
+
 def cmd_train(args: argparse.Namespace) -> None:
+    _require_paper_train_flags(args)
     _require_torch()
     if getattr(args, "seed", None) is not None:
         seed = int(args.seed)
@@ -2217,9 +2254,11 @@ def cmd_train(args: argparse.Namespace) -> None:
         raise SystemExit("--max-pairs must be >= 1 when provided")
     if not args.split_manifest and not args.allow_unsplit_training:
         raise SystemExit(
-            "--split-manifest is required for FAB2 frozen training so split filtering "
-            "and the GT identity guard are active. Pass --allow-unsplit-training only "
-            "for legacy diagnostics or supervised smoke tests."
+            "This train command cannot replace scripts/train_recording.py. "
+            "The published trainer fits the frozen pairs and does not call this "
+            "command line. This database trainer still requires --split-manifest "
+            "so split filtering and the ground-truth identity guard are active. "
+            "Pass --allow-unsplit-training only for a legacy diagnostic."
         )
     if args.time_start is not None and args.time_end is not None and args.time_start >= args.time_end:
         raise SystemExit("--time-start must be smaller than --time-end")
@@ -2673,10 +2712,22 @@ def cmd_infer(args: argparse.Namespace) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Geometry-Guided Residual MLP (g6 MVC)")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Geometry-guided residual MLP. Published fitting is "
+            "scripts/train_recording.py. This train subcommand cannot replace "
+            "it: it is a database trainer and still requires --split-manifest."
+        )
+    )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_train = sub.add_parser("train", help='SQLite MVC')
+    p_train = sub.add_parser(
+        "train",
+        help=(
+            "Database trainer. Not a substitute for scripts/train_recording.py. "
+            "Requires --split-manifest. Numeric defaults match the published loss."
+        ),
+    )
     p_train.add_argument("--db", default="cals.db")
     p_train.add_argument(
         "--batch",
@@ -2756,29 +2807,41 @@ def main() -> None:
     )
     p_train.add_argument("--epochs", type=int, default=80)
     p_train.add_argument("--lr", type=float, default=1e-3)
-    p_train.add_argument("--lambda-reg", type=float, default=0.05)
-    p_train.add_argument("--lambda-smooth", type=float, default=0.02)
+    p_train.add_argument(
+        "--lambda-reg",
+        type=float,
+        default=0.05,
+        help="Published magnitude weight, 0.10.",
+    )
+    p_train.add_argument(
+        "--lambda-smooth",
+        type=float,
+        default=0.02,
+        help="Temporal weight. The published value is 0.02.",
+    )
     p_train.add_argument(
         "--lambda-mean-delta",
         dest="lambda_mean_delta",
         type=float,
-        default=0.0,
-        help=(
-            "Penalize ||mean(delta)||^2 over each MVC batch to suppress global residual drift "
-            "(default: 0, disabled)."
-        ),
+        default=1.0,
+        help="Published mean-residual weight, 1. The term is ||mean residual||^2.",
     )
     p_train.add_argument(
         "--lambda-pair-center",
         dest="lambda_pair_center",
         type=float,
-        default=0.0,
+        default=0.50,
         help=(
-            "Penalize per-pair common-mode residual drift ||(delta_a + delta_b)/2||^2, "
-            "weighted by the lower teacher confidence (default: 0, disabled)."
+            "Published pair-center weight, 0.50. The term weights "
+            "||(residual_a + residual_b) / 2||^2 by the lower sensitivity."
         ),
     )
-    p_train.add_argument("--max-residual-m", type=float, default=1.5)
+    p_train.add_argument(
+        "--max-residual-m",
+        type=float,
+        default=1.0,
+        help="Published per-coordinate residual bound, 1 m.",
+    )
     p_train.add_argument("--max-time-gap", type=float, default=0.35)
     p_train.add_argument(
         "--max-pairs",
@@ -2801,7 +2864,10 @@ def main() -> None:
         dest="anchor_mode",
         choices=("multiplicative_gating_offsetted", "bottom_center", "center"),
         default="multiplicative_gating_offsetted",
-        help="Anchor mode for training/recomputed features; used by FAB2 core ablations.",
+        help=(
+            "Published HSG anchor is multiplicative_gating_offsetted. "
+            "center and bottom_center are fixed-anchor controls, not a second method."
+        ),
     )
     p_train.add_argument(
         "--s0-m",
@@ -2980,17 +3046,14 @@ def main() -> None:
     p_train.add_argument(
         "--max-pair-dist-m",
         type=float,
-        default=3.0,
-        help=(
-            'P_geo MVC 3.0m'
-            '--max-residual-m 1.5m'
-        ),
+        default=2.0,
+        help="Published geometric pair gate, 2 m.",
     )
     p_train.add_argument(
         "--min-mvc-pairs",
         type=int,
-        default=64,
-        help='MVC 64',
+        default=32,
+        help="Published minimum training support, 32 retained pairs.",
     )
     p_train.add_argument(
         "--skip-preflight-diagnostic",

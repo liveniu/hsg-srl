@@ -2,7 +2,7 @@
 
 Attachment is detection order: the first unused test box containing the projected ground point.
 Origin and z_ground are the import metadata stored with ground-truth batch l0hn_gt_001, subtracted once.
-Localization errors are on the attached test subset. HSG and HSG-SRL seed 0 on that subset are supplementary Table S12.
+Localization errors are on the attached test subset. HSG and HSG-SRL seed 0 on that subset are the supervised BEVHeight comparison.
 Full-set HOTA below is the published recording score. BEVHeight tracking is in hota_remerge.md.
 
 ## lumpi_M6

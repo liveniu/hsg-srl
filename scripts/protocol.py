@@ -1,9 +1,10 @@
 """Recording list and the constants used by the paper scripts.
 
-Library argparse defaults inside src/pipeline still describe an earlier
-residual setup (1.5 m bound, 3 m pair gate, residual weight 0.05). Those
-defaults are not the published method. Every paper stage below passes the
-values in this file.
+scripts/train_recording.py fits the frozen pairs and does not call
+src/pipeline/geometry_guided_residual_mlp.py. That module's train subcommand
+is a separate database trainer: its numeric defaults match the published
+loss, and it still requires --split-manifest. It rejects a run that changes
+the published loss values. Passing those values does not make it the paper fit.
 """
 
 from __future__ import annotations
@@ -39,10 +40,69 @@ SEEDS = (0, 1, 2)
 BOOT_DRAWS = 1000
 BOOT_SEED = 20260921
 
-# Final tracking replay. These flags are passed on the command line and do
-# not read configs/sites/*/trajectory_merge.
+# Final tracking replay. These flags are the published association gates and match MatchConfig.
+# They are still passed on the command line. A site YAML trajectory_merge
+# block is the pseudo-identity rebuild, not this replay, and it replaces a
+# flag only when that flag is left at its default.
 PAPER_MERGE_SCORE = 0.70
 PAPER_MERGE_DISTANCE_M = 2.5
+PAPER_MERGE_TIME_GAP_S = 1.2
+PAPER_MERGE_MIN_SAMPLES = 5
+PAPER_MERGE_SAMPLE_COUNT = 12
+PAPER_MERGE_TIME_SIGMA_S = 0.6
+PAPER_MERGE_DISTANCE_SIGMA_M = 0.75
+PAPER_MERGE_SHAPE_SIGMA = 0.35
+PAPER_MERGE_TIME_WEIGHT = 0.25
+PAPER_MERGE_DISTANCE_WEIGHT = 0.45
+PAPER_MERGE_SHAPE_WEIGHT = 0.30
+
+# Association used only while building pseudo-identities from a fresh
+# detection. These are the values in configs/sites/*/trajectory_merge.
+# They are not the final-tracking gates. The released geometry databases already contain
+# the trajectories produced with these gates.
+GEOMETRY_MERGE = {
+    "lumpi": {
+        "score": 0.70,
+        "max_distance_m": 2.5,
+        "distance_sigma_m": 1.5,
+        "shape_sigma": 0.50,
+    },
+    "synth": {
+        "score": 0.75,
+        "max_distance_m": 2.0,
+        "distance_sigma_m": 1.0,
+        "shape_sigma": 0.35,
+    },
+}
+
+
+def paper_merge_args() -> list[str]:
+    """Published final-tracking flags for a fusion replay."""
+    return [
+        "--no-stitch",
+        "--merge-score-threshold", f"{PAPER_MERGE_SCORE:.2f}",
+        "--merge-max-distance", f"{PAPER_MERGE_DISTANCE_M:.1f}",
+        "--merge-max-time-gap", f"{PAPER_MERGE_TIME_GAP_S:.1f}",
+        "--merge-min-samples", str(PAPER_MERGE_MIN_SAMPLES),
+        "--merge-sample-count", str(PAPER_MERGE_SAMPLE_COUNT),
+        "--merge-time-sigma", f"{PAPER_MERGE_TIME_SIGMA_S:.2f}",
+        "--merge-distance-sigma", f"{PAPER_MERGE_DISTANCE_SIGMA_M:.2f}",
+        "--merge-shape-sigma", f"{PAPER_MERGE_SHAPE_SIGMA:.2f}",
+        "--merge-time-weight", f"{PAPER_MERGE_TIME_WEIGHT:.2f}",
+        "--merge-distance-weight", f"{PAPER_MERGE_DISTANCE_WEIGHT:.2f}",
+        "--merge-shape-weight", f"{PAPER_MERGE_SHAPE_WEIGHT:.2f}",
+    ]
+
+
+def geometry_merge_args(kind: str) -> list[str]:
+    """Explicit pseudo-identity gates for a from-video geometry rebuild."""
+    spec = GEOMETRY_MERGE[kind]
+    return [
+        "--merge-score-threshold", f"{spec['score']:.2f}",
+        "--merge-max-distance", f"{spec['max_distance_m']:.1f}",
+        "--merge-distance-sigma", f"{spec['distance_sigma_m']:.2f}",
+        "--merge-shape-sigma", f"{spec['shape_sigma']:.2f}",
+    ]
 
 WORK = ARTIFACT_ROOT / "data" / "work" / "sites"
 EXTERNAL = ARTIFACT_ROOT / "data" / "external"

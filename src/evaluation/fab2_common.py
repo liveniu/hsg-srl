@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Shared utilities for the FAB2 offline evaluation tools.
+"""Shared utilities for the detector-to-ground-truth attachment.
 
-The helpers in this module keep the evaluation scripts tied to the existing
+The filename keeps the internal tag fab2. These helpers are the published
+attachment and split utilities. They keep the evaluation scripts tied to the existing
 trajectory SQLite schema while exporting paper-facing CSV files with stable
 fields.  The code intentionally treats GT as an external audit source: when a
 frozen ``gt_index.csv`` is provided it overrides any mutable DB identity field.

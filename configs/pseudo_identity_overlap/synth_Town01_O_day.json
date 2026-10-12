@@ -22,5 +22,5 @@
       "edge": "C03:C04"
     }
   ],
-  "role": "sparse overlap stored in the confirmatory geometry database; pseudo-identities were associated on these edges"
+  "role": "pseudo-identity edges stored in the released geometry databases; not the published full overlap graph"
 }

@@ -30,11 +30,11 @@ from db_access import connect_ro, load_adapted, load_bias, load_test_keys
 from eval_tracking import paper_edges
 from protocol import (
     DET_BATCH,
+    GROUPS,
     GT_BATCH,
     MAX_T,
-    PAPER_MERGE_DISTANCE_M,
-    PAPER_MERGE_SCORE,
     SITES,
+    paper_merge_args,
     site_dir,
 )
 
@@ -183,10 +183,8 @@ def replay(site: str, name: str, beta: float | None) -> list[dict]:
         "--remerge-from-db",
         "--remerge-quiet",
         "--no-view",
-        "--no-stitch",
         "--remerge-world-coords", "final",
-        "--merge-score-threshold", str(PAPER_MERGE_SCORE),
-        "--merge-max-distance", str(PAPER_MERGE_DISTANCE_M),
+        *paper_merge_args(),
     ]
     env = os.environ.copy()
     env["PYTHONPATH"] = str(SRC_ROOT) + os.pathsep + env.get("PYTHONPATH", "")
@@ -211,11 +209,90 @@ def replay(site: str, name: str, beta: float | None) -> list[dict]:
     return rows
 
 
+ANCHOR_LABELS = (
+    ("hsg", "HSG (per-detection)"),
+    ("beta0", "Box-center projection"),
+    ("beta050", "Fixed interior midpoint"),
+    ("beta070", "STMC-derived fixed anchor"),
+    ("beta1", "Bottom-center projection (IPM)"),
+)
+
+
+def _macro(sites: tuple[str, ...], anchor: str) -> dict[float, float]:
+    values = {gate: [] for gate in (0.5, 1.0, 1.5, 2.0)}
+    for site in sites:
+        path = OUT_ROOT / f"{site}_{anchor}.json"
+        if not path.exists():
+            raise SystemExit(f"missing {path}. Replay that recording before --summarize.")
+        rows = json.loads(path.read_text(encoding="utf-8"))
+        for row in rows:
+            values[float(row["gate"])].append(100.0 * float(row["hota"]))
+    return {gate: float(np.mean(samples)) for gate, samples in values.items()}
+
+
+def summarize() -> None:
+    """Write the geometry-only anchor-tracking summary. Does not read a geometry database."""
+    groups = {
+        "Real": tuple(site for site in SITES if site.startswith("lumpi_")),
+        "Synthetic": GROUPS["Synth"],
+        "All": tuple(SITES),
+    }
+    lines = [
+        "# Geometry-only TrackEval BEV-HOTA",
+        "",
+        "Built from results/anchor_tracking/*.json. Same detections, test keys, "
+        "ground-truth clock, reference bias, full overlap graph, and final-tracking "
+        "flags as the HSG rows. No residual.",
+        "",
+        "Recording-macro means on a 0-100 scale. The mean column is the unweighted "
+        "average of 0.5, 1, 1.5, and 2 m.",
+        "",
+        "| Data | Coordinate rule | 0.5 m | 1 m | 1.5 m | 2 m | Mean |",
+        "| --- | --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    cached = {}
+    for label, members in groups.items():
+        for anchor, name in ANCHOR_LABELS:
+            cached[(label, anchor)] = _macro(members, anchor)
+            row = cached[(label, anchor)]
+            mean = float(np.mean([row[gate] for gate in (0.5, 1.0, 1.5, 2.0)]))
+            cells = " | ".join(f"{row[gate]:.2f}" for gate in (0.5, 1.0, 1.5, 2.0))
+            lines.append(f"| {label} | {name} | {cells} | {mean:.2f} |")
+    lines += [
+        "",
+        "## Per recording, mean of four gates",
+        "",
+        "| Recording | Box center | Fixed interior midpoint | STMC-derived fixed anchor | Bottom center | HSG |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    order = ("beta0", "beta050", "beta070", "beta1", "hsg")
+    for site in SITES:
+        label = site.replace("lumpi_", "").replace("synth_", "").replace("_O_day", "")
+        cells = []
+        for anchor in order:
+            row = _macro((site,), anchor)
+            cells.append(f"{float(np.mean(list(row.values()))):.2f}")
+        lines.append(f"| {label} | " + " | ".join(cells) + " |")
+    dest = OUT_ROOT / "summary.md"
+    dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"[anchor-track] -> {dest}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--site", required=True, choices=sorted(SITES))
+    parser.add_argument("--site", default="", choices=["", *sorted(SITES)])
     parser.add_argument("--anchors", default="beta0,beta050,beta070,beta1,hsg")
+    parser.add_argument(
+        "--summarize",
+        action="store_true",
+        help="Write the geometry-only anchor-tracking summary from stored JSON. Does not rerun fusion.",
+    )
     args = parser.parse_args()
+    if args.summarize and not args.site:
+        summarize()
+        return
+    if not args.site:
+        raise SystemExit("pass --site, or --summarize to rebuild the anchor-tracking summary")
     selected = [item.strip() for item in args.anchors.split(",") if item.strip()]
     known = {name: beta for name, beta in ANCHORS}
     for name in selected:
@@ -223,6 +300,8 @@ def main() -> None:
             raise SystemExit(f"unknown anchor {name}")
     for name in selected:
         replay(args.site, name, known[name])
+    if args.summarize:
+        summarize()
 
 
 if __name__ == "__main__":

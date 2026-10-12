@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Associate detector tracks with LiDAR GT identities for the detector track.
+"""Attach detector tracks to ground-truth identities.
+
+The filename keeps the internal tag fab2. The attachment gates are documented
+in docs/REPRODUCTION.md. This is not a separate method.
+
+Associate detector tracks with ground-truth identities for the detector track.
 
 The GT-import track needs no association: every observation *is* a GT box, so
 ``outside_reference_x/y`` and the GT identity come for free. Feeding a detector

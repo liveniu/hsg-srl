@@ -1,13 +1,21 @@
 # Camera videos and ground masks for one recording.
 # Licensed media are not included. Point video/image at your download
 # under data/external/.
+# scale_px_per_meter is the BEV display canvas, not the dataset homography scale.
+# cameras[].image_roi is not the published overlap graph. Pair mining and
+# final tracking use configs/overlap.
 
 scale_px_per_meter: 4.0
 seam_blend_px: 15
 canvas_margin_px: 60
 output: results/runs/bev.png
 debug_dir: results/runs/debug
+# Pseudo-identity association for a from-video geometry rebuild only.
+# Final tracking does not read this block. scripts/eval_tracking.py passes
+# the published association gates on the command line: score 0.70, distance 2.5 m, scales
+# 0.6 s / 0.75 m / 0.35, weights 0.25 / 0.45 / 0.30, stitching off.
 trajectory_merge:
+  role: pseudo_identity_rebuild
   score_threshold: 0.75
   max_distance_m: 2.0
   distance_sigma: 1.0

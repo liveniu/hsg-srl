@@ -1,17 +1,17 @@
-"""HSG-SRL overlap: valid ground-FOV MST + strong chords. No yaml/ROI/AABB.
+"""Projected ground-field overlap used by HSG-SRL.
 
-Candidate edges: H-projected FOV convex hulls, intersection area >= A_min.
-Written graph: maximum spanning tree on those areas, plus chords whose area
-is >= rho * (largest tree-edge area). GT co-visibility is never a training edge.
-
-Does not read config/*.yaml or image_roi. Does not rewrite L0 origin.
+The published graph keeps every camera pair whose projected fields of view
+intersect by at least 1000 m^2. scripts/build_overlap.py writes that full
+edge list through candidate_edges. It is not a spanning tree, and it does
+not read a site YAML or an image ROI. configs/overlap is this graph.
+configs/pseudo_identity_overlap is only the edge set already stored in the
+released geometry databases.
 """
 from __future__ import annotations
 
 import sqlite3
 import sys
 from pathlib import Path
-from typing import Any
 
 import cv2 as cv
 import numpy as np
@@ -20,14 +20,12 @@ _ROOT = Path(__file__).resolve().parents[1]
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from utils.scene_geometry_db import save_scene_overlap_pairs
-
 A_MIN_M2 = 1000.0
-RHO_CHORD = 0.5
 MAX_WORLD_M = 250.0
 GRID_N = 25
 
-# Frozen fusion thresholds used with this graph (C–E remerge).
+# Published final-tracking gates. Replay scripts pass these on the command
+# line; they do not read them from here.
 MERGE_SCORE_THRESHOLD = 0.70
 MERGE_MAX_DISTANCE_M = 2.5
 
@@ -142,89 +140,3 @@ def candidate_edges(
                 edges.append((aa, bb, float(area)))
     edges.sort(key=lambda t: -t[2])
     return edges
-
-
-def mst_plus_chords(
-    cameras: list[str],
-    edges: list[tuple[str, str, float]],
-    *,
-    rho: float = RHO_CHORD,
-) -> dict[str, Any]:
-    parent = {c: c for c in cameras}
-
-    def find(x: str) -> str:
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
-
-    tree: list[tuple[str, str, float]] = []
-    leftover: list[tuple[str, str, float]] = []
-    for a, b, area in edges:
-        ra, rb = find(a), find(b)
-        if ra == rb:
-            leftover.append((a, b, area))
-            continue
-        parent[ra] = rb
-        tree.append((a, b, area))
-
-    max_tree = max((e[2] for e in tree), default=0.0)
-    thresh = rho * max_tree if max_tree > 0 else float("inf")
-    chords = [e for e in leftover if e[2] >= thresh]
-    dropped = [e for e in leftover if e[2] < thresh]
-    written = {(a, b) for a, b, _ in tree} | {(a, b) for a, b, _ in chords}
-    on_tree = {x for a, b, _ in tree for x in (a, b)}
-    return {
-        "tree": tree,
-        "chords": chords,
-        "dropped_chords": dropped,
-        "pairs": sorted(written),
-        "max_tree_area_m2": max_tree,
-        "chord_threshold_m2": thresh if max_tree > 0 else None,
-        "n_components": len({find(c) for c in cameras}),
-        "isolated": sorted(c for c in cameras if c not in on_tree),
-    }
-
-
-def compute_hsg_overlap(
-    conn: sqlite3.Connection,
-    site: str,
-    cameras: list[str],
-    *,
-    batch: str,
-    a_min: float = A_MIN_M2,
-    rho: float = RHO_CHORD,
-) -> dict[str, Any]:
-    cams = [str(c) for c in cameras]
-    edges = candidate_edges(conn, site, cams, batch=batch, a_min=a_min)
-    rec = mst_plus_chords(cams, edges, rho=rho)
-    rec.update({
-        "site": site,
-        "cameras": cams,
-        "a_min_m2": a_min,
-        "rho": rho,
-        "candidates": [(a, b, round(ar, 1)) for a, b, ar in edges],
-        "rule": "valid_ground_FOV_MST_plus_chords_ge_rho_max_tree",
-    })
-    rec["tree"] = [(a, b, round(ar, 1)) for a, b, ar in rec["tree"]]
-    rec["chords"] = [(a, b, round(ar, 1)) for a, b, ar in rec["chords"]]
-    rec["dropped_chords"] = [
-        (a, b, round(ar, 1)) for a, b, ar in rec["dropped_chords"]
-    ]
-    return rec
-
-
-def write_hsg_overlap(
-    conn: sqlite3.Connection,
-    site: str,
-    cameras: list[str],
-    *,
-    batch: str,
-    a_min: float = A_MIN_M2,
-    rho: float = RHO_CHORD,
-) -> dict[str, Any]:
-    rec = compute_hsg_overlap(
-        conn, site, cameras, batch=batch, a_min=a_min, rho=rho
-    )
-    save_scene_overlap_pairs(conn, site, rec["pairs"], replace=True)
-    return rec

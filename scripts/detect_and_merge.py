@@ -5,6 +5,11 @@ Detection is YOLO26l at 384x640 with BoT-SORT and camera-motion compensation
 off. The association overlap is configs/pseudo_identity_overlap, the same
 edges stored in the released geometry databases. Pair mining and tracking
 use configs/overlap.
+
+The geometry remerge passes the pseudo-identity gates in protocol.GEOMETRY_MERGE
+on the command line. Those gates are also stored in the site YAML. They are
+not the final-tracking settings. Final replay is scripts/eval_tracking.py,
+which does not read the site YAML.
 """
 
 from __future__ import annotations
@@ -30,6 +35,7 @@ from protocol import (
     OBS_TABLES,
     SITES,
     geometry_db,
+    geometry_merge_args,
     site_dir,
 )
 
@@ -169,6 +175,7 @@ def merge_site(site: str) -> None:
         "--scene", site,
         "--batch", DET_BATCH,
         "--remerge",
+        *geometry_merge_args(SITES[site]["kind"]),
     ]
     print(f"[geometry-remerge] {site}", flush=True)
     completed = subprocess.run(cmd, cwd=str(ARTIFACT_ROOT), env=_env())

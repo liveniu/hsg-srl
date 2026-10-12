@@ -67,13 +67,13 @@ _ORIN_STAGE_PROFILE = (
 
 
 def _load_orin_stage_profile():
-    """IV-F CSV sinks live with experiments_delta_orin, not in pipeline/."""
+    """Runtime CSV sinks live with experiments_delta_orin, not in pipeline/."""
     import importlib.util
 
     path = _ORIN_STAGE_PROFILE
     if not path.is_file():
         raise SystemExit(
-            "--stage-profile / --remerge-profile are Orin IV-F instrumentation; "
+            "--stage-profile / --remerge-profile are Orin runtime instrumentation; "
             f"missing {path}"
         )
     spec = importlib.util.spec_from_file_location("orin_ivf_stage_profile", path)
@@ -281,9 +281,17 @@ class MergeEvent:
 
 @dataclass
 class MatchConfig:
-    score_threshold: float = 0.78
+    """Published final-tracking gates.
+
+    score_threshold 0.70 and max_distance_m 2.5 are those gates.
+    scripts/eval_tracking.py also passes every association flag. A site YAML
+    trajectory_merge block is the pseudo-identity rebuild, not this replay.
+    That block replaces a flag only when the flag is left at the default below.
+    """
+
+    score_threshold: float = 0.70
     max_time_gap_sec: float = 1.2
-    max_distance_m: float = 1.5
+    max_distance_m: float = 2.5
     min_samples: int = 5
     sample_count: int = 12
     active_timeout_sec: float = 2.0
@@ -1240,7 +1248,7 @@ def compute_risk_scalar(
     grazing_d0: float = 50.0 / 1080.0,
     sensitivity_clip_m: float | None = None,
 ) -> RiskScalar:
-    '``risk_scalar_mode`` \n\n fab1 IV-B'
+    '``risk_scalar_mode`` \n\n projection sensitivity'
     x1, y1, x2, y2 = [float(v) for v in xyxy]
     cx = (x1 + x2) * 0.5
     cy = (y1 + y2) * 0.5
@@ -1346,7 +1354,7 @@ def local_box_extent_meters(
     anchor_xy: tuple[float, float] | None = None,
     extent_clip_m: float | None = None,
 ) -> tuple[float, float]:
-    '``w_m=w_px·‖J e_u‖````h_m=h_px·‖J e_v‖``fab1 IV-C\n\n ``extent_clip_m`` ``risk_alpha/kappa``'
+    '``w_m=w_px·‖J e_u‖````h_m=h_px·‖J e_v‖``\n\n ``extent_clip_m`` ``risk_alpha/kappa``'
     x1, y1, x2, y2 = [float(v) for v in xyxy]
     w_px = max(x2 - x1, 1e-6)
     h_px = max(y2 - y1, 1e-6)
@@ -2815,7 +2823,7 @@ def _jetson_gst_bgr_pipeline(video_path: str) -> str:
 
     drop=false + a short blocking queue: nvv4l2decoder with sync=false would
     otherwise drain the file during TensorRT/tracker load, then EOS after a
-    few leftover frames (IV-F r0 Town05 died at ~180 / 1800).
+    few leftover frames (an early Town05 timing run stopped near frame 180 of 1800).
     """
     loc = Path(video_path).expanduser().resolve().as_posix()
     return (
@@ -4994,14 +5002,34 @@ def parse_imgsz(value: str) -> int | list[int]:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description='See the HSG-SRL reproduction notes.',
+        description=(
+            "Detect, associate, or remerge trajectories. Published HSG-SRL "
+            "replays call this file from scripts/eval_tracking.py with the "
+            "published final-tracking gates and do not pass a site YAML."
+        ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog='----\n # YAML cameras[].video MP4 stream/sub_stream\n py pipeline/multi_camera_trajectory_fusion.py --config config/my_scene.yaml --db cals.db --scene parking --batch run_001 \\\n --source A=outputs/recorded/run/A.mp4 --model nn_models/yolo11n.pt --bev-background outputs/bev_mosaic.png\n\n # / CLAHE YOLO \n py pipeline/multi_camera_trajectory_fusion.py --config config/my_scene.yaml --db cals.db --scene parking --batch run_001 \\\n --clahe --clahe-clip 2.0 --model nn_models/yolo11n.pt --bev-background outputs/bev_mosaic.png\n\n # YOLO + BEV outputs/debug_tracking/\n py pipeline/multi_camera_trajectory_fusion.py --config config/my_scene.yaml --db cals.db --scene parking --batch run_001 \\\n --model nn_models/yolo11n.pt --device 0 --bev-background outputs/bev_mosaic.png --test --no-view\n\n------\n trajectory_observations batch ID\n trajectory_merges / linking \n trajectory_runtime_stats O(P*T) \n trajectory_batches scene/batch metadata',
+        epilog=(
+            "Published final replay (scripts/eval_tracking.py passes these):\n"
+            "  --remerge --remerge-from-db --no-stitch --remerge-world-coords final\n"
+            "  --merge-score-threshold 0.70 --merge-max-distance 2.5\n"
+            "  --merge-max-time-gap 1.2 --merge-min-samples 5 --merge-sample-count 12\n"
+            "  --merge-time-sigma 0.60 --merge-distance-sigma 0.75 --merge-shape-sigma 0.35\n"
+            "  --merge-time-weight 0.25 --merge-distance-weight 0.45 --merge-shape-weight 0.30\n"
+            "\n"
+            "A site YAML trajectory_merge block is the pseudo-identity rebuild, "
+            "not the final-tracking gates. It overrides a flag only when that flag is left at "
+            "the default. Pass a different value on the command line when the "
+            "rebuild gate must win. The defaults are the published final-tracking gates: "
+            "score 0.70 and distance 2.5 m."
+        ),
     )
     parser.add_argument(
         "--config",
         default=None,
-        help='YAML --remerge --remerge-from-db',
+        help=(
+            "Scene YAML. The final-tracking replay does not pass this. "
+            "A trajectory_merge entry overrides flags left at their library defaults."
+        ),
     )
     parser.add_argument("--db", default="cals.db", help='SQLite /')
     parser.add_argument("--scene", default="parking", help='ID parking')
@@ -5164,67 +5192,67 @@ def build_parser() -> argparse.ArgumentParser:
         "--merge-score-threshold",
         type=float,
         default=DEFAULT_MATCH_CONFIG.score_threshold,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published final-tracking score, 0.70. This is also the library default.",
     )
     parser.add_argument(
         "--merge-max-time-gap",
         type=float,
         default=DEFAULT_MATCH_CONFIG.max_time_gap_sec,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published fusion time gap, 1.2 s. This is also the library default.",
     )
     parser.add_argument(
         "--merge-max-distance",
         type=float,
         default=DEFAULT_MATCH_CONFIG.max_distance_m,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published final-tracking distance, 2.5 m. This is also the library default.",
     )
     parser.add_argument(
         "--merge-min-samples",
         type=int,
         default=DEFAULT_MATCH_CONFIG.min_samples,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published minimum overlap samples, 5. This is also the library default.",
     )
     parser.add_argument(
         "--merge-sample-count",
         type=int,
         default=DEFAULT_MATCH_CONFIG.sample_count,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published resample count, 12. This is also the library default.",
     )
     parser.add_argument(
         "--merge-time-sigma",
         type=float,
         default=DEFAULT_MATCH_CONFIG.time_sigma,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published time scale, 0.6 s. This is also the library default.",
     )
     parser.add_argument(
         "--merge-distance-sigma",
         type=float,
         default=DEFAULT_MATCH_CONFIG.distance_sigma,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published distance scale, 0.75 m. This is also the library default.",
     )
     parser.add_argument(
         "--merge-shape-sigma",
         type=float,
         default=DEFAULT_MATCH_CONFIG.shape_sigma,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published shape scale, 0.35. This is also the library default.",
     )
     parser.add_argument(
         "--merge-time-weight",
         type=float,
         default=DEFAULT_MATCH_CONFIG.time_weight,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published time weight, 0.25. This is also the library default.",
     )
     parser.add_argument(
         "--merge-distance-weight",
         type=float,
         default=DEFAULT_MATCH_CONFIG.distance_weight,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published distance weight, 0.45. This is also the library default.",
     )
     parser.add_argument(
         "--merge-shape-weight",
         type=float,
         default=DEFAULT_MATCH_CONFIG.shape_weight,
-        help='See the HSG-SRL reproduction notes.',
+        help="Published shape weight, 0.30. This is also the library default.",
     )
     parser.add_argument(
         "--merge-every-frames",
@@ -5496,7 +5524,11 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     g2 = parser.add_argument_group(
-        'g2 g6 MVC PyTorch',
+        "Optional residual flags",
+        "Not the published HSG-SRL protocol. Published fitting is "
+        "scripts/train_recording.py, and published inference loads that frozen "
+        "checkpoint. These flags do not add a camera translation stage and do "
+        "not learn the residual online.",
     )
     g2.add_argument(
         "--g2-checkpoint",

@@ -8,11 +8,11 @@ Checkpoint and support-file names use the tag `F0`. That tag is the HSG-SRL resi
 | --- | --- |
 | `loc/` | Frozen HSG errors for the published matched cohort. Each file contains only `geo`. A recomputation checks against this array. Residual errors are in `loc_support/`. |
 | `loc_support/` | Per-detection HSG and residual errors, with track clusters for the bootstrap. `scripts/build_tables.py` reads these. |
-| `identity_hota25.csv` | Geometry-only HSG tracking scores checked by `scripts/replay_trackeval.py` |
+| `identity_hota25.csv` | Geometry-only HSG tracking scores checked by `scripts/replay_trackeval.py`. The `25` is the 2.5 m similarity scale, not a second protocol. |
 | `identity_hota25_support.csv` | Published HSG-SRL tracking rows under retained validation-pair support |
 | `bins/` | Saved 10 Hz tracking inputs for those rows |
 | `checkpoints/` | Residual weights. Filenames contain `_F0_`. |
-| `residual_support.csv`, `deploy_support/` | Published retained validation-pair residual support |
+| `residual_support.csv`, `deploy_support/` | Published retained validation-pair residual support. `in_S` and `camera_output` are the camera rule. `deploy` is the same on every camera of a recording: `model` means that recording has a trained residual, including cameras whose output stays HSG. `D_before`, `D_after`, `D_G`, `D_r`, and `D_star` are stored diagnostics and do not select the camera. `uses_test_gt` is false. |
 | `pair_counts/` | Training and validation pair totals |
 | `ipm_baseline.json` | Fixed-anchor localization |
 | `../orin/runtime.md` | Board timings |

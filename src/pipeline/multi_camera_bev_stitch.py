@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Optional local-frame setup from a ChArUco board chain.
 
-This is the board procedure in supplementary Section S5. The main experiments
-use the datasets' calibrated metric frames and do not call this file.
+This is the optional ChArUco local-frame procedure. The main experiments
+use the datasets' calibrated metric frames and do not call this file. The
+reported board-fit residuals use manual corners. Ruler measurements are an
+optional helper and were not used for those residuals. The stored geometry
+tag fab1_metric_jacobian_v1 is an internal calibration label, not a method name.
 """
 
 from __future__ import annotations
@@ -30,6 +33,8 @@ from utils.image_io import imwrite
                                                
                                                
                                                                   
+# Stored calibration tag. Do not rename: saved board homographies record this
+# string. It is not a method name. The procedure is the optional ChArUco local frame.
 GEOMETRY_VERSION = "fab1_metric_jacobian_v1"
 CALIBRATION_DIAGNOSTICS_DIR = "outputs/calibration_diagnostics"
 
@@ -892,7 +897,7 @@ def locate_boards_from_ruler_measurements(
     boards_cfg: dict[str, dict[str, Any]],
     accumulated_overrides: dict[str, dict[int, list[float]]],
 ) -> dict[str, dict[int, list[float]]]:
-    'ruler_measurements \n\n from_board / from_corner\n to_cornerdistance_m\n\n corner \n · "outer_tl" / "outer_tr" / "outer_bl" / "outer_br" —— \n · 012… —— \n\n \n · to_corner ≥3 from_corner3 \n · 2 to_corner yaw\n\n auto_locate: true ruler_measurements\n auto_locate'
+    """Optional ruler placement. The reported board captures do not use ruler_measurements."""
     result: dict[str, dict[int, list[float]]] = {}
 
     for board_name, board_cfg in boards_cfg.items():

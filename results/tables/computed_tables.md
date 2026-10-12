@@ -2,17 +2,7 @@
 
 Localization and tracking use the published deployment: a trained residual on every camera that has a retained validation pair.
 
-## Table III fixed anchors, median / RMSE (m)
-
-| Anchor | LUMPI-pole | LUMPI-A | LUMPI-B | Synthehicle |
-| --- | ---: | ---: | ---: | ---: |
-| Box center, beta=0 | 1.439 / 2.045 | 1.282 / 2.081 | 2.124 / 2.829 | 3.117 / 4.482 |
-| Bottom center, beta=1 | 1.672 / 1.815 | 1.892 / 2.107 | 2.055 / 2.140 | 1.569 / 1.671 |
-| Fixed beta=0.50 | 0.528 / 0.834 | 0.684 / 1.013 | 0.709 / 1.054 | 0.792 / 1.590 |
-| Fixed beta=0.70 | 0.856 / 1.039 | 1.065 / 1.295 | 0.974 / 1.172 | 0.513 / 0.960 |
-| HSG | 0.542 / 0.785 | 0.568 / 0.911 | 0.667 / 0.876 | 0.657 / 1.063 |
-
-## Table IV localization, HSG-SRL is the three-seed mean +/- sample SD
+## Localization, HSG-SRL is the three-seed mean +/- sample SD
 
 | Stratum | IPM median | HSG median | HSG-SRL median | HSG p90 | HSG-SRL p90 | HSG RMSE | HSG-SRL RMSE |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -23,7 +13,17 @@ Localization and tracking use the published deployment: a trained residual on ev
 | All real | 1.891 | 0.604 | 0.553 +/- 0.005 | 1.324 | 1.287 +/- 0.004 | 0.861 | 0.837 +/- 0.004 |
 | All recordings | 1.857 | 0.609 | 0.565 +/- 0.004 | 1.350 | 1.312 +/- 0.006 | 0.882 | 0.857 +/- 0.004 |
 
-## Table V recording-macro TrackEval BEV-HOTA
+## Fixed anchors, median / RMSE (m)
+
+| Anchor | LUMPI-pole | LUMPI-A | LUMPI-B | Synthehicle |
+| --- | ---: | ---: | ---: | ---: |
+| HSG (per-detection) | 0.542 / 0.785 | 0.568 / 0.911 | 0.667 / 0.876 | 0.657 / 1.063 |
+| Bottom-center projection (IPM) | 1.672 / 1.815 | 1.892 / 2.107 | 2.055 / 2.140 | 1.569 / 1.671 |
+| Box-center projection | 1.439 / 2.045 | 1.282 / 2.081 | 2.124 / 2.829 | 3.117 / 4.482 |
+| Fixed interior midpoint | 0.528 / 0.834 | 0.684 / 1.013 | 0.709 / 1.054 | 0.792 / 1.590 |
+| STMC-derived fixed anchor | 0.856 / 1.039 | 1.065 / 1.295 | 0.974 / 1.172 | 0.513 / 0.960 |
+
+## Recording-macro TrackEval BEV-HOTA
 
 | Data / method | 0.5 m | 1 m | 1.5 m | 2 m | mean of four |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -34,7 +34,7 @@ Localization and tracking use the published deployment: a trained residual on ev
 | All / HSG | 24.22 | 40.53 | 48.15 | 51.31 | 41.05 |
 | All / HSG-SRL | 23.29 +/- 0.30 | 43.14 +/- 0.07 | 49.51 +/- 0.12 | 52.73 +/- 0.05 | 42.17 +/- 0.11 |
 
-## Table S6 per-recording median and seed-0 bootstrap interval for HSG-SRL minus HSG
+## Per-recording median and seed-0 bootstrap interval for HSG-SRL minus HSG
 
 | Recording | HSG | HSG-SRL mean +/- SD | Seed-0 difference [interval] |
 | --- | ---: | ---: | ---: |
@@ -51,7 +51,7 @@ Localization and tracking use the published deployment: a trained residual on ev
 | Town04 | 0.806 | 0.852 +/- 0.018 | +0.025 [-0.084, +0.179] |
 | Town05 | 0.562 | 0.575 +/- 0.024 | +0.007 [-0.078, +0.105] |
 
-## Table S9 detection and association accuracy
+## Detection and association accuracy
 
 | Data / gate | HSG DetA | HSG-SRL DetA | HSG AssA | HSG-SRL AssA |
 | --- | ---: | ---: | ---: | ---: |
@@ -64,7 +64,7 @@ Localization and tracking use the published deployment: a trained residual on ev
 | Synthetic / 1.5 m | 40.93 | 41.31 +/- 0.49 | 64.15 | 64.96 +/- 0.40 |
 | Synthetic / 2 m | 46.43 | 47.54 +/- 0.36 | 66.53 | 67.33 +/- 0.31 |
 
-## Table S10 localization accuracy of retained matches
+## Localization accuracy of retained matches
 
 | Data / gate | HSG LocA | HSG-SRL LocA |
 | --- | ---: | ---: |
@@ -77,7 +77,7 @@ Localization and tracking use the published deployment: a trained residual on ev
 | Synthetic / 1.5 m | 75.18 | 74.09 +/- 0.14 |
 | Synthetic / 2 m | 71.58 | 70.19 +/- 0.20 |
 
-## Table S11 per-recording BEV-HOTA
+## Per-recording BEV-HOTA
 
 | Recording | HSG 0.5 m | HSG-SRL 0.5 m | HSG 2 m | HSG-SRL 2 m |
 | --- | ---: | ---: | ---: | ---: |

@@ -68,14 +68,16 @@ def main() -> None:
         raise SystemExit("world projection is not finite")
 
     library = GeometryGuidedResidualMLP(in_dim=7, hidden=64)
-    if library.max_residual_m != 1.5:
-        raise SystemExit("library residual default changed; paper scripts must still pass 1.0 m")
+    if library.max_residual_m != R_MAX_M:
+        raise SystemExit("library residual default is not the published 1 m bound")
     model = GeometryGuidedResidualMLP(in_dim=7, hidden=64, max_residual_m=R_MAX_M)
     count = sum(parameter.numel() for parameter in model.parameters())
     if count != 4802:
         raise SystemExit(f"parameter count {count}")
-    if TrainConfig().max_pair_dist_m != 3.0 or TrainConfig().lambda_reg != 0.05:
-        raise SystemExit("library TrainConfig no longer carries the historical defaults")
+    if TrainConfig().max_pair_dist_m != PAIR_DIST_M or TrainConfig().lambda_reg != LAMBDA_MAG:
+        raise SystemExit("library TrainConfig no longer matches the published loss")
+    if TrainConfig().lambda_mean_delta != LAMBDA_MEAN or TrainConfig().lambda_pair_center != LAMBDA_PAIR:
+        raise SystemExit("library TrainConfig no longer matches the published loss")
     if (R_MAX_M, PAIR_DIST_M, LAMBDA_MAG, LAMBDA_MEAN, LAMBDA_PAIR, LAMBDA_TEMP, MIN_TRAIN_PAIRS) != (
         1.0, 2.0, 0.10, 1.0, 0.50, 0.02, 32,
     ):

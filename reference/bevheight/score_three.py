@@ -263,7 +263,7 @@ def main() -> None:
         "Hang: detection order, first unused test box containing the projected ground point.",
         "Origin and z_ground are the import metadata stored with ground-truth batch l0hn_gt_001, subtracted once.",
         "Localization errors are on attached test observations only. HSG and HSG-SRL seed 0 on that subset",
-        "are the comparison in supplementary Table S12.",
+        "are the supervised BEVHeight comparison on this attached subset.",
         "HSG, HSG-SRL, test keys, bias, and GT are read from data/work/sites.",
         "The residual camera set is the retained-validation-pair deploy file written by training.",
         "BEVHeight tracking HOTA is written by score_hota_remerge.py after the paper fusion.",
