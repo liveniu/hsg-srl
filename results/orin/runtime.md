@@ -1,42 +1,77 @@
-# Runtime
+# Component latency
 
-Milliseconds. Detector, HSG, and MLP are per camera frame. Fusion is per sync batch. Stream fps uses the sum of the three per-frame p50 times. Those stages were timed separately, so this is not one measured end-to-end loop. Fusion p95 is a batch tail and is not folded into fps.
+Milliseconds. The localization path is one measured camera frame: vectorized HSG for every box, then the overlap test, then the seed-0 residual. HSG, overlap, and MLP columns are slices of that same call. Their percentiles are not added to produce the path. Detector and fusion are separate passes. Fusion is one synchronized batch. No stream fps is computed from these percentiles.
 
-## Device and environment
+Detector, when present, is YOLO26l TensorRT FP16, 384×640, BoT-SORT with gmc_method none, one clip at a time. HSG and the residual run on CPU. Fusion is a dry-run remerge, score 0.70, max distance 2.5 m. Support S is the retained validation-pair set. This file does not claim power, memory, or station throughput.
 
-Read on the board, 2026-09-24.
+## Board check
 
-| item | value |
-| --- | --- |
-| board | NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super |
-| GPU | Orin, compute capability 8.7 |
-| power | `MAXN_SUPER` (nvpmodel id 2) |
-| memory | 7.4 GiB RAM, no swap |
-| L4T | R39.2.1, GCID 46758480, aarch64, userspace date 2026-08-07 |
-| TensorRT | 10.16.2.10+cuda13.2 (`libnvinfer10`); package `nvidia-tensorrt` 7.2.1-b49 |
-| engine | `data/models/yolo26l.engine`, 52 MB, built on this board 2026-09-24 15:58 |
-| Python | 3.12, `/home/jetson/Desktop/hsg_srl/.venv` |
-| PyTorch | 2.13.0+cu132. This build does not support CC 8.7 |
+```text
+=== board ===
+NVIDIA Jetson Orin Nano Engineering Reference Developer Kit Super
+=== jetpack / tensorrt packages ===
+# R39 (release), REVISION: 2.1, GCID: 46758480, BOARD: generic, EABI: aarch64, DATE: Fri Aug  7 05:54:22 AM UTC 2026
+# KERNEL_VARIANT: oot
+TARGET_USERSPACE_LIB_DIR=nvidia
+TARGET_USERSPACE_LIB_DIR_PATH=usr/lib/aarch64-linux-gnu/nvidia
+ii  libnvinfer-bin                                10.16.2.10-1+cuda13.2                            arm64        TensorRT binaries
+ii  libnvinfer-dev                                10.16.2.10-1+cuda13.2                            arm64        TensorRT development libraries
+ii  libnvinfer-dispatch-dev                       10.16.2.10-1+cuda13.2                            arm64        TensorRT development dispatch runtime libraries
+ii  libnvinfer-dispatch10                         10.16.2.10-1+cuda13.2                            arm64        TensorRT dispatch runtime library
+ii  libnvinfer-headers-dev                        10.16.2.10-1+cuda13.2                            arm64        TensorRT development headers
+ii  libnvinfer-headers-plugin-dev                 10.16.2.10-1+cuda13.2                            arm64        TensorRT plugin headers
+ii  libnvinfer-headers-python-plugin-dev          10.16.2.10-1+cuda13.2                            arm64        TensorRT Python plugin development headers
+ii  libnvinfer-lean-dev                           10.16.2.10-1+cuda13.2                            arm64        TensorRT lean runtime libraries
+ii  libnvinfer-lean10                             10.16.2.10-1+cuda13.2                            arm64        TensorRT lean runtime library
+ii  libnvinfer-plugin-dev                         10.16.2.10-1+cuda13.2                            arm64        TensorRT plugin libraries
+ii  libnvinfer-plugin10                           10.16.2.10-1+cuda13.2                            arm64        TensorRT plugin libraries
+ii  libnvinfer-safe-headers-dev                   10.16.2.10-1+cuda13.2                            arm64        TensorRT safety development headers
+ii  libnvinfer-vc-plugin-dev                      10.16.2.10-1+cuda13.2                            arm64        TensorRT vc-plugin library
+ii  libnvinfer-vc-plugin10                        10.16.2.10-1+cuda13.2                            arm64        TensorRT vc-plugin library
+ii  libnvinfer10                                  10.16.2.10-1+cuda13.2                            arm64        TensorRT runtime libraries
+ii  nvidia-l4t-core                               39.2.1-20260806224157                            arm64        NVIDIA Core Package
+ii  nvidia-tensorrt                               7.2.1-b49                                        arm64        NVIDIA TensorRT Meta Package
+ii  nvidia-tensorrt-dev                           7.2.1-b49                                        arm64        NVIDIA TensorRT dev Meta Package
+ii  python3-libnvinfer                            10.16.2.10-1+cuda13.2                            arm64        Python 3 bindings for TensorRT standard runtime
+ii  python3-libnvinfer-dev                        10.16.2.10-1+cuda13.2                            arm64        Python 3 development package for TensorRT standard runtime
+ii  python3-libnvinfer-dispatch                   10.16.2.10-1+cuda13.2                            arm64        Python 3 bindings for TensorRT dispatch runtime
+ii  python3-libnvinfer-lean                       10.16.2.10-1+cuda13.2                            arm64        Python 3 bindings for TensorRT lean runtime
+ii  tensorrt                                      10.16.2.10-1+cuda13.2                            arm64        Meta package for TensorRT
+ii  tensorrt-libs                                 10.16.2.10-1+cuda13.2                            arm64        Meta package for TensorRT runtime libraries
+=== trtexec ===
+trtexec /usr/bin/trtexec
+=== memory ===
+MemTotal:        7727188 kB
+SwapTotal:             0 kB
+=== power mode ===
+NV Power Mode: MAXN_SUPER
+2
+=== graphical session ===
+graphical.target active
+default-target graphical.target
+gdm active
+gdm3 active
+=== yolo engine ===
+-rw-rw-r-- 1 jetson jetson 54188692 Oct 21 12:55 /home/jetson/Desktop/experiments_fab4_orin_plus/data/models/yolo26l.engine
+=== timing interpreter ===
+python python3
+exe /home/jetson/Desktop/hsg_srl/.venv/bin/python3
+numpy OK
+cv2 OK
+yaml OK
+PIL OK
+torch OK
+torchvision OK
+ultralytics OK
+tensorrt OK
+numpy 1.26.4
+torch 2.13.0+cu132 cuda=True
+ultralytics 8.4.127
+tensorrt 10.16.2.10
+```
 
-HSG and the residual MLP in the table were timed on CPU. The detector is the TensorRT engine, not this PyTorch. The memory line is the board capacity, not the footprint of the timed process.
-
-What this run did fix:
-
-| item | value |
-| --- | --- |
-| detector | YOLO26l, TensorRT FP16 engine built on the board, workspace 512 MiB |
-| input | 384×640, one clip at a time, BoT-SORT, `gmc_method: none` |
-| detector call | `track`, `persist=True`; confidence and IoU were not overridden |
-| HSG | box center \(x\), \(s_0=60\) m, shape \(\eta=0.75\), aspect ratio in \([0.5, 3]\), CPU |
-| residual | HSG-SRL seed 0, \(7\to64\to64\to2\), per-axis bound 1 m, CPU |
-| fusion | full-graph remerge, dry run, score 0.70, max distance 2.5 m, CPU |
-| streams | M6: 3 cameras, 3 edges, residual timed on C06 and C07. Town05: 6 cameras, 15 edges, residual timed on all six |
-
-The M6 camera pair above is the set timed on the board. Published localization and tracking use `results/recorded/residual_support.csv`. For M6 seed 0 that file also applies the residual on C05. The MLP column is the per-frame cost on cameras where the residual ran, so it is not an average that includes skipped cameras.
-
-Detector frames are sequential single streams. The fps below is one camera, not the three or six streams at once.
-
-| site | detector p50/p95 | HSG p50/p95 | MLP p50/p95 | frame sum p50 | stream fps | fusion p50/p95 |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| lumpi_M6 | 30.41/37.55 | 3.21/4.49 | 0.60/0.64 | 34.22 | 29.2 | 0.40/37.16 |
-| synth_Town05_O_day | 26.66/31.93 | 1.26/2.37 | 0.59/0.64 | 28.51 | 35.1 | 0.16/22.08 |
+| site | edges | S | boxes/frame p50 | activation | detector p50/p95 | path p50/p95 | HSG p50/p95 | overlap p50/p95 | MLP p50/p95 | fusion p50/p95 |
+| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| lumpi_M6 | 3 | C05,C06,C07 | 16.00 | 0.9998 |  | 1.20/1.55 | 0.37/0.40 | 0.09/0.12 | 0.73/1.07 | 0.42/38.56 |
+| synth_Town05_O_day | 15 | C01,C02,C03,C04,C05,C06 | 6.00 | 0.9584 |  | 1.17/1.41 | 0.36/0.39 | 0.09/0.15 | 0.70/0.94 | 0.17/22.53 |
+| ko_per | 1 | SK1,SK4 | 7.00 | 0.2572 |  | 1.12/2.01 | 0.36/0.39 | 0.04/0.05 | 0.71/1.60 | 0.09/2.18 |

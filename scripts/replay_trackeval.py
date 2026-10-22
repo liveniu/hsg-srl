@@ -43,10 +43,20 @@ def main() -> None:
     by_hash = {hashlib.sha256(path.read_bytes()).hexdigest(): path for path in bins}
     rows = read_csv(RECORDED / "identity_hota25.csv")
     rows += read_csv(RECORDED / "identity_hota25_support.csv")
+    overlap_rows = read_csv(RECORDED / "identity_hota25_overlap.csv")
+    missing = [row for row in overlap_rows if not (row.get("input_sha256") or "").strip()]
+    if missing:
+        raise SystemExit(f"{len(missing)} overlap-gated rows have no TrackEval bin hash")
+    rows += overlap_rows
     maximum = 0.0
     checked = 0
+    skipped = 0
     for row in rows:
-        path = by_hash[row["input_sha256"]]
+        digest = (row.get("input_sha256") or "").strip()
+        if not digest:
+            skipped += 1
+            continue
+        path = by_hash[digest]
         with np.load(path) as blob:
             gt, pred = unpack(blob, "gt"), unpack(blob, "pr")
         scores = {item["gate"]: item for item in hota_trackeval(gt, pred)}
@@ -54,8 +64,14 @@ def main() -> None:
         for field in ("hota", "deta", "assa", "loca", "tp", "fp", "fn"):
             maximum = max(maximum, abs(actual[field] - float(row[field])))
         checked += 1
-    result = {"rows_checked": checked, "max_abs_difference": maximum}
-    if maximum > 1e-12:
+    koper_geo = [
+        row for row in read_csv(RECORDED / "identity_hota25.csv")
+        if row["site"] == "ko_per" and row["method"] == "Geo" and not (row.get("input_sha256") or "").strip()
+    ]
+    if koper_geo:
+        raise SystemExit("Ko-PER geometry rows have no TrackEval bin hash")
+    result = {"rows_checked": checked, "rows_skipped_without_hash": skipped, "max_abs_difference": maximum}
+    if maximum > 1e-9:
         raise SystemExit(json.dumps(result))
     print(json.dumps(result, indent=2))
 

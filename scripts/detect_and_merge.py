@@ -190,6 +190,8 @@ def main() -> None:
     parser.add_argument("--model", default=os.environ.get("HSG_YOLO_WEIGHTS", "data/models/yolo26l.pt"))
     parser.add_argument("--merge-only", action="store_true")
     args = parser.parse_args()
+    if SITES[args.site]["kind"] == "koper":
+        raise SystemExit("Ko-PER detection is scripts/detect_koper.py, then scripts/remerge_pseudo_identity.py")
     if not args.merge_only:
         cameras = [args.camera] if args.camera else list(SITES[args.site]["cameras"])
         for camera in cameras:

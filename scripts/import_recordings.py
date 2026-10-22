@@ -3,8 +3,10 @@
 
 LUMPI uses the dataset homography (--h-source model). Synthehicle daytime
 towns use the visible tight box (--bbox-source gt_tight) and the ground
-height fitted from the 3-D boxes (--z-ground auto). Official test clips are
-not imported: they do not support this protocol.
+height fitted from the 3-D boxes (--z-ground auto). Ko-PER Sequence1a-1d
+are concatenated on one camera-clock epoch, and the front-bumper bottom
+center is shifted backward by half the vehicle length. Official test clips
+are not imported: they do not support this protocol.
 """
 
 from __future__ import annotations
@@ -13,13 +15,23 @@ import subprocess
 import sys
 
 from bootstrap import ARTIFACT_ROOT, SRC_ROOT
-from protocol import GT_BATCH, SITES, lumpi_root, origin_db, synthehicle_root
+from protocol import GT_BATCH, SITES, koper_root, lumpi_root, origin_db, synthehicle_root
 
 
 def command(site: str) -> list[str]:
     spec = SITES[site]
     db = origin_db(site)
     db.parent.mkdir(parents=True, exist_ok=True)
+    if spec["kind"] == "koper":
+        script = SRC_ROOT / "importers" / "import_koper.py"
+        return [
+            sys.executable, str(script), "import",
+            "--all", "--together",
+            "--db", str(db),
+            "--batch", GT_BATCH,
+            "--h-source", "model",
+            "--data-root", str(koper_root()),
+        ]
     if spec["kind"] == "lumpi":
         script = SRC_ROOT / "importers" / "import_lumpi.py"
         return [

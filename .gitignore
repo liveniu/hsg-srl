@@ -8,6 +8,14 @@ __pycache__/
 # Licensed videos and extracted geometry databases stay on the machine that runs them.
 data/external/
 data/work/
+*.db-wal
+*.db-shm
+
+# Board copies of the geometry databases. Support, polygons, and the seed-0
+# checkpoint under reference/orin/data are part of the timing bundle.
+reference/orin/data/**/geometry.db
+reference/orin/work/
+reference/orin/.venv/
 
 # Fresh experiment output. Published arrays under results/ are part of the git release.
 results/runs/
@@ -21,3 +29,4 @@ paper/
 *.onnx
 *.pt
 !results/recorded/checkpoints/*.pt
+!reference/orin/data/**/checkpoint_seed0.pt

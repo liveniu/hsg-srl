@@ -1,0 +1,11 @@
+{
+  "site": "ko_per",
+  "role": "pseudo-identity edges copied from the published overlap graph",
+  "edges": [
+    {
+      "a": "SK1",
+      "b": "SK4",
+      "edge": "SK1:SK4"
+    }
+  ]
+}

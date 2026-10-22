@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Build the localization, fixed-anchor, and tracking summaries from the recorded results.
 
-This does not retrain. Localization uses results/recorded/loc_support.
-Tracking uses results/recorded/identity_hota25_support.csv, which stores one
-published HSG-SRL row per recording, seed, and gate.
+This does not retrain. Localization uses results/recorded/loc_support, which
+stores overlap-gated residual errors. Tracking uses
+results/recorded/identity_hota25_overlap.csv. The older
+identity_hota25_support.csv is the camera-support ablation and is still
+checked against the saved bins.
 """
 
 from __future__ import annotations
@@ -66,7 +68,10 @@ def clusters_of(cluster: np.ndarray) -> dict[int, np.ndarray]:
 def main() -> None:
     arrays = load_arrays()
     tracking_rows = read_csv(RECORDED / "identity_hota25.csv")
-    support_rows = read_csv(RECORDED / "identity_hota25_support.csv")
+    overlap_file = RECORDED / "identity_hota25_overlap.csv"
+    if not overlap_file.exists():
+        raise SystemExit(f"missing {overlap_file}. Run scripts/assemble_hota_tables.py.")
+    support_rows = read_csv(overlap_file)
     geo_track = {
         (row["site"], float(row["gate"])): row
         for row in tracking_rows if row["method"] == "Geo"
@@ -75,21 +80,16 @@ def main() -> None:
         (row["site"], int(row["seed"]), float(row["gate"])): row
         for row in support_rows if row["method"] == "HSG-SRL"
     }
-    support_replay_keys = {
-        (row["site"], int(row["seed"]))
-        for row in support_rows
-        if row["method"] == "HSG-SRL" and row.get("source") != "f0_replay"
-    }
     ipm = json.loads((RECORDED / "ipm_baseline.json").read_text(encoding="utf-8"))
 
     groups = dict(GROUPS)
     groups["LUMPI-real"] = tuple(site for site in SITES if site.startswith("lumpi_"))
-    groups["All"] = tuple(SITES)
 
     lines = [
         "# Tables rebuilt inside the artifact",
         "",
-        "Localization and tracking use the published deployment: a trained residual on every camera that has a retained validation pair.",
+        "Localization and tracking use the published deployment: a trained residual",
+        "on a supported camera only where the fixed HSG point lies in the frozen overlap union.",
         "",
         "## Localization, HSG-SRL is the three-seed mean +/- sample SD",
         "",
@@ -97,16 +97,16 @@ def main() -> None:
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     # HSG is not in ipm_baseline; it is the geo column of the support arrays.
-    strata = ("LUMPI-pole", "LUMPI-A", "LUMPI-B", "Synth")
+    strata = ("LUMPI", "LUMPI-pole", "LUMPI-A", "LUMPI-B", "Ko-PER", "Synth")
     labels = {
+        "LUMPI": "LUMPI",
         "LUMPI-pole": "LUMPI-pole",
         "LUMPI-A": "LUMPI-A",
         "LUMPI-B": "LUMPI-B",
+        "Ko-PER": "Ko-PER",
         "Synth": "Synthehicle",
-        "LUMPI-real": "All real",
-        "All": "All recordings",
     }
-    for stratum in strata + ("LUMPI-real", "All"):
+    for stratum in strata:
         members = groups[stratum]
         base = stats(np.concatenate([arrays[site]["geo"] for site in members]))
         seeds = []
@@ -126,24 +126,27 @@ def main() -> None:
         "",
         "## Fixed anchors, median / RMSE (m)",
         "",
-        "| Anchor | LUMPI-pole | LUMPI-A | LUMPI-B | Synthehicle |",
-        "| --- | ---: | ---: | ---: | ---: |",
+        "| Anchor | LUMPI | Ko-PER | Synthehicle |",
+        "| --- | ---: | ---: | ---: |",
     ]
     anchor_names = (
-        ("bottom", "Bottom-center projection (IPM)"),
         ("center", "Box-center projection"),
+        ("bottom", "Bottom-center projection (IPM)"),
+        ("alpha", "Sensitivity only"),
+        ("shape", "Shape only"),
         ("b050", "Fixed interior midpoint"),
         ("b070", "STMC-derived fixed anchor"),
     )
+    anchor_strata = ("LUMPI", "Ko-PER", "Synth")
     hsg_cells = []
-    for stratum in strata:
+    for stratum in anchor_strata:
         values = np.concatenate([arrays[site]["geo"] for site in groups[stratum]])
         summary = stats(values)
         hsg_cells.append(f"{summary['median']:.3f} / {summary['rmse']:.3f}")
     lines.append("| HSG (per-detection) | " + " | ".join(hsg_cells) + " |")
     for key, label in anchor_names:
         cells = []
-        for stratum in strata:
+        for stratum in anchor_strata:
             data = ipm["pooled"][stratum][key]
             cells.append(f"{data['median']:.3f} / {data['rmse']:.3f}")
         lines.append(f"| {label} | " + " | ".join(cells) + " |")
@@ -156,9 +159,9 @@ def main() -> None:
         "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     track_groups = {
-        "Real": groups["LUMPI-real"],
-        "Synthetic": groups["Synth"],
-        "All": groups["All"],
+        "LUMPI": groups["LUMPI"],
+        "Ko-PER": groups["Ko-PER"],
+        "Synthehicle": groups["Synth"],
     }
     for label, members in track_groups.items():
         geo_vals = {}
@@ -194,20 +197,13 @@ def main() -> None:
         "| Recording | HSG | HSG-SRL mean +/- SD | Seed-0 difference [interval] |",
         "| --- | ---: | ---: | ---: |",
     ]
-    archived_rng = np.random.default_rng(BOOT_SEED)
     archived = {}
     for site in SITES:
-        by_track = clusters_of(arrays[site]["cluster"])
-        for seed in SEEDS:
-            draw = paired_bootstrap(by_track, arrays[site]["geo"], arrays[site][f"f0_s{seed}"], rng=archived_rng)
-            if seed == 0:
-                archived[site] = draw
-    splice_rng = np.random.default_rng(BOOT_SEED)
-    for site in SITES:
-        if (site, 0) not in support_replay_keys:
-            continue
         archived[site] = paired_bootstrap(
-            clusters_of(arrays[site]["cluster"]), arrays[site]["geo"], arrays[site]["f0_s0"], rng=splice_rng,
+            clusters_of(arrays[site]["cluster"]),
+            arrays[site]["geo"],
+            arrays[site]["f0_s0"],
+            rng=np.random.default_rng(BOOT_SEED),
         )
     for site in SITES:
         base = stats(arrays[site]["geo"])["median"]
@@ -238,7 +234,7 @@ def main() -> None:
         "| Data / gate | HSG DetA | HSG-SRL DetA | HSG AssA | HSG-SRL AssA |",
         "| --- | ---: | ---: | ---: | ---: |",
     ]
-    for label, members in (("Real", groups["LUMPI-real"]), ("Synthetic", groups["Synth"])):
+    for label, members in track_groups.items():
         for gate in (0.5, 1.0, 1.5, 2.0):
             deta_f = macro_metric(members, gate, "f0", "deta")
             assa_f = macro_metric(members, gate, "f0", "assa")
@@ -255,7 +251,7 @@ def main() -> None:
         "| Data / gate | HSG LocA | HSG-SRL LocA |",
         "| --- | ---: | ---: |",
     ]
-    for label, members in (("Real", groups["LUMPI-real"]), ("Synthetic", groups["Synth"])):
+    for label, members in track_groups.items():
         for gate in (0.5, 1.0, 1.5, 2.0):
             loca_f = macro_metric(members, gate, "f0", "loca")
             lines.append(

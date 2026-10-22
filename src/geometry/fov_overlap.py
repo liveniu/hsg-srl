@@ -1,9 +1,12 @@
 """Projected ground-field overlap used by HSG-SRL.
 
-The published graph keeps every camera pair whose projected fields of view
-intersect by at least 1000 m^2. scripts/build_overlap.py writes that full
-edge list through candidate_edges. It is not a spanning tree, and it does
-not read a site YAML or an image ROI. configs/overlap is this graph.
+configs/overlap is the published graph. Pair mining and final tracking read
+that frozen edge list and do not apply another area cutoff.
+scripts/build_overlap.py can write a working copy for a from-video run.
+That builder keeps LUMPI and Synthehicle edges of at least 1000 m^2 and
+Ko-PER edges of at least 500 m^2. A_MIN_M2 below is the LUMPI/Synthehicle
+default passed through unless the caller sets a_min. The graph is not a
+spanning tree and does not read a site YAML or an image ROI.
 configs/pseudo_identity_overlap is only the edge set already stored in the
 released geometry databases.
 """

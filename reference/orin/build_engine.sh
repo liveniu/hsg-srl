@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Build the paper detector on this board: YOLO26l, imgsz 384x640, FP16.
-# Do not copy an engine from Windows.
+# Do not copy an engine from Windows. The localization timer does not load it.
 set -euo pipefail
 BUNDLE="$(cd "$(dirname "$0")" && pwd)"
-PT="${BUNDLE}/data/models/yolo26l.pt"
+PT="${HSG_YOLO_PT:-${BUNDLE}/data/models/yolo26l.pt}"
 ONNX="${BUNDLE}/data/models/yolo26l.onnx"
-OUT="${BUNDLE}/data/models/yolo26l.engine"
+OUT="${HSG_ORIN_ENGINE:-${BUNDLE}/data/models/yolo26l.engine}"
 IMGSZ_H=384
 IMGSZ_W=640
 if [[ -z "${PYTHON:-}" && -x "${BUNDLE}/.venv/bin/python" ]]; then
@@ -61,6 +61,7 @@ fi
 
 if [[ ! -f "${OUT}" ]]; then
   echo "failed to write ${OUT}"
+  echo "place yolo26l.pt at data/models/yolo26l.pt or set HSG_YOLO_PT"
   exit 1
 fi
 echo "wrote ${OUT}"

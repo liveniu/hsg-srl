@@ -22,10 +22,19 @@ BH = Path(__file__).resolve().parent
 sys.path.insert(0, str(ARTIFACT / "scripts"))
 sys.path.insert(0, str(ARTIFACT / "src"))
 
-from db_access import connect_ro, load_adapted, load_bias, load_mlp, load_test_keys  # noqa: E402
+from db_access import (  # noqa: E402
+    camera_polygons,
+    connect_ro,
+    deploy_file,
+    load_adapted,
+    load_bias,
+    load_mlp,
+    load_test_keys,
+)
 from protocol import DET_BATCH, GT_BATCH, MAX_T, SITES, geometry_db, match_report, origin_db  # noqa: E402
 from evaluation.bev_hota import load_gt_bins, load_time_maps_from_match_report  # noqa: E402
 from evaluation.hota_trackeval import hota_trackeval  # noqa: E402
+from geometry.overlap_gate import inside_mask  # noqa: E402
 from pipeline.geometry_guided_residual_mlp import compute_geometry_base, xywh_to_xyxy  # noqa: E402
 
 def site_match_report(site: str):
@@ -162,9 +171,11 @@ def attach(site: str, obs: list[dict]) -> tuple[list[dict], dict]:
 
 
 def f0_errors(site: str, hung: list[dict]) -> np.ndarray:
+    """Seed-0 residual on the published camera set, masked by the frozen overlap union."""
     adapted, sizes = load_adapted(site)
-    dep = json.loads((ARTIFACT / "data" / "work" / "sites" / site / "deploy" / f"{site}_F0.json").read_text(encoding="utf-8"))
+    dep = json.loads(deploy_file(site, 0).read_text(encoding="utf-8"))
     opened = set(dep.get("S") or [])
+    polygons = camera_polygons(site)
     mlp = load_mlp(site, 0) if dep.get("deploy") == "model" else None
     feats = []
     for o in hung:
@@ -187,7 +198,11 @@ def f0_errors(site: str, hung: list[dict]) -> np.ndarray:
                 j += 1
     err = []
     for i, o in enumerate(hung):
-        pos = o["geo"] if i not in residual else o["geo"] + residual[i]
+        pos = o["geo"]
+        if i in residual:
+            allow = bool(inside_mask(np.asarray([o["geo"]], dtype=np.float64), polygons.get(o["cam"], []))[0])
+            if allow:
+                pos = o["geo"] + residual[i]
         err.append(float(np.linalg.norm(pos - o["gt"])))
     return np.asarray(err)
 
@@ -199,7 +214,8 @@ def loc_line(name: str, err: np.ndarray) -> str:
         f"- {name}: n={len(err)} med={float(np.median(err)):.3f} "
         f"rmse={float(np.sqrt(np.mean(err * err))):.3f} "
         f"p90={float(np.percentile(err, 90)):.3f} "
-        f"frac>5m={float(np.mean(err > 5)):.3f} frac>10m={float(np.mean(err > 10)):.3f}"
+        f"n>5m={int(np.sum(err > 5))} ({100 * float(np.mean(err > 5)):.3f}%) "
+        f"frac>10m={float(np.mean(err > 10)):.3f}"
     )
 
 
@@ -237,7 +253,7 @@ def hota_block(site: str, hung: list[dict]) -> list[str]:
 def paper_hota() -> dict[tuple[str, str], str]:
     out = {}
     geo_path = ARTIFACT / "results" / "recorded" / "identity_hota25.csv"
-    support_path = ARTIFACT / "results" / "recorded" / "identity_hota25_support.csv"
+    support_path = ARTIFACT / "results" / "recorded" / "identity_hota25_overlap.csv"
     grouped = defaultdict(list)
     with geo_path.open(encoding="utf-8") as handle:
         for row in csv.DictReader(handle):
@@ -265,7 +281,8 @@ def main() -> None:
         "Localization errors are on attached test observations only. HSG and HSG-SRL seed 0 on that subset",
         "are the supervised BEVHeight comparison on this attached subset.",
         "HSG, HSG-SRL, test keys, bias, and GT are read from data/work/sites.",
-        "The residual camera set is the retained-validation-pair deploy file written by training.",
+        "HSG-SRL on this subset uses retained validation-pair support and the frozen overlap mask.",
+        "M6 includes C05. A support file that lists only C06 and C07 is not this comparison.",
         "BEVHeight tracking HOTA is written by score_hota_remerge.py after the paper fusion.",
         "",
     ]

@@ -1,0 +1,16 @@
+{
+  "site": "ko_per",
+  "cameras": [
+    "SK1",
+    "SK4"
+  ],
+  "S": [
+    "SK1",
+    "SK4"
+  ],
+  "edges": [
+    "SK1:SK4"
+  ],
+  "rule": "retained_val_support",
+  "uses_test_gt": false
+}

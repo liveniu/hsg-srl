@@ -1,0 +1,20 @@
+{
+  "site": "lumpi_M6",
+  "cameras": [
+    "C05",
+    "C06",
+    "C07"
+  ],
+  "S": [
+    "C05",
+    "C06",
+    "C07"
+  ],
+  "edges": [
+    "C05:C06",
+    "C05:C07",
+    "C06:C07"
+  ],
+  "rule": "retained_val_support",
+  "uses_test_gt": false
+}

@@ -15,14 +15,14 @@ Manuscript section and table numbers are only in `docs/PAPER_MAP.md`. This file 
 | Attach | `scripts/attach_ground_truth.py` | `geometry.db`, `origin.db` | `det_gt_match_report.json` | `src/evaluation/eval_fab2_det_gt_match.py` |
 | Audit | `scripts/audit_reference.py` | Matched detections | `reference_verdict.txt` | — |
 | Split | `scripts/make_time_split.py` | Unique timestamps | `train_keys.csv`, `val_keys.csv`, `test_keys.csv` | `src/evaluation/fab2_manifest.py` |
-| Overlap | `scripts/build_overlap.py` | Homographies in `geometry.db` | `data/work/sites/<recording>/overlap.json` | `src/geometry/fov_overlap.py` `candidate_edges` |
+| Overlap | `scripts/build_overlap.py` | Homographies in `geometry.db` | Working copy under `data/work/sites/<recording>/overlap.json` | `src/geometry/fov_overlap.py` `candidate_edges`. Published sites still mine and track on `configs/overlap` |
 | Pairs | `scripts/freeze_pairs.py` | `geometry.db`, `configs/overlap/` | Frozen pair arrays | HSG anchor in `multi_camera_trajectory_fusion.py` |
 | Train | `scripts/train_recording.py` | Frozen pairs, `configs/paper_defaults.yaml` | `F0` checkpoint and `deploy_support` JSON | `GeometryGuidedResidualMLP` class only. Do not call that module's `train` command |
 | Anchors | `scripts/eval_fixed_anchors.py` | Matched test rows | Fixed-anchor errors | Same anchor helpers |
 | Localize | `scripts/eval_localization.py` | Test rows, checkpoints, deploy JSON | Localization arrays | — |
 | Track | `scripts/eval_tracking.py` | `configs/overlap/`, checkpoints | 10 Hz bins and HOTA JSON | Fusion remerge, then `src/evaluation/hota_trackeval.py` and `third_party/TrackEval/` |
 
-The checked-in graphs in `configs/overlap/` are the published full overlap graphs. `build_overlap.py` can rewrite a working copy under `data/work/`. Final tracking reads `configs/overlap/`, not `configs/pseudo_identity_overlap/` and not `configs/sites/*/trajectory_merge`.
+The checked-in graphs in `configs/overlap/` are the published overlap graphs, including Ko-PER. `build_overlap.py` can rewrite a working copy under `data/work/`. Pair mining and final tracking read `configs/overlap/` when that file exists. They do not read `configs/pseudo_identity_overlap/` or `configs/sites/*/trajectory_merge`. The working copy is the from-video graph for a recording that has no frozen file.
 
 Published numbers without videos or a geometry database:
 
@@ -54,6 +54,7 @@ Sections 1--3 run detection on downloaded video and build a new geometry databas
 
 - LUMPI: dataset homography, batch `l0hn_gt_001`.
 - Synthehicle daytime towns: dataset homography, tight boxes, automatic ground height.
+- Ko-PER: one recording, dataset calibration, footprint center stored at import. Detection is `scripts/detect_koper.py` (confidence 0.25, IoU 0.70, three-in-frame admission), then `scripts/remerge_pseudo_identity.py`.
 - Official test clips are not part of this protocol.
 
 ## 2. Detect
@@ -76,11 +77,11 @@ Sections 1--3 run detection on downloaded video and build a new geometry databas
 
 ## 4. Pairs and residual
 
-`scripts/build_overlap.py` writes the projected field-of-view graph used for pair mining and tracking. An edge is kept when the intersection is at least 1000 m².
+`scripts/build_overlap.py` writes a working field-of-view graph. A fresh LUMPI or Synthehicle graph keeps an intersection of at least 1000 m². A fresh Ko-PER graph keeps an intersection of at least 500 m², which is how the 579.35 m² SK1–SK4 edge is retained. Published pair mining and tracking do not apply that cutoff again; they use `configs/overlap`.
 
 `scripts/freeze_pairs.py` mines unlabeled pairs on HSG positions. The gate is 2 m, the time window is 0.35 s, and the confidence thresholds are 0.20 and 0.05.
 
-`scripts/train_recording.py` is the published trainer. It reads the frozen pairs, fits the 7-64-64-2 residual for 80 epochs with Adam at 10^-3 and batch 256, and writes the F0 checkpoint and deploy file. Seeds are 0, 1, and 2. Each coordinate is bounded by 1 m. The loss weights are 0.10, 1.00, 0.50, and 0.02. A recording with fewer than 32 training pairs stays on HSG. Otherwise every camera with a retained validation pair uses the residual.
+`scripts/train_recording.py` is the published trainer. It reads the frozen pairs, fits the 7-64-64-2 residual for 80 epochs with Adam at 10^-3 and batch 256, and writes the F0 checkpoint and deploy file. Seeds are 0, 1, and 2. Each coordinate is bounded by 1 m. The loss weights are 0.10, 1.00, 0.50, and 0.02. A recording with fewer than 32 training pairs stays on HSG. Otherwise every camera with a retained validation pair is in the support set. At scoring, the residual is added only where the stored HSG point also lies in that camera's frozen overlap union. `--symmetric` fits the supplement's pair-symmetric control to a separate checkpoint and does not replace F0.
 
 ```text
 python scripts/train_recording.py --site lumpi_M6 --seed 0
@@ -90,11 +91,11 @@ python scripts/train_recording.py --site lumpi_M6 --seed 0
 
 ## 5. Score
 
-`scripts/eval_fixed_anchors.py` projects the fixed controls on the matched test rows: box center (beta 0), the interior midpoint (beta 0.50, at y1+0.75h), the STMC-derived anchor (beta 0.70, at y1+0.85h), and bottom center (beta 1).
+`scripts/eval_fixed_anchors.py` projects the geometric controls on the matched test rows: box center, bottom center, sensitivity only, shape only, the interior midpoint (beta 0.50), and the STMC-derived anchor (beta 0.70, at y1+0.85h). It also checks that a fresh HSG projection matches the stored positions. `--publish` rewrites `results/recorded/ipm_baseline.json`.
 
 `scripts/eval_localization.py` reports median, 90th percentile, RMSE, and the 1000-draw paired bootstrap clustered by camera and local track, seed 20260921.
 
-`scripts/eval_tracking.py` writes the evaluated coordinates, uses `configs/overlap`, and reruns fusion without reading the site YAML. The command passes score 0.70, distance 2.5 m, time gap 1.2 s, 5 samples, 12 resamples, scales 0.6 s / 0.75 m / 0.35, weights 0.25 / 0.45 / 0.30, and same-camera stitching off. Similarity is max(0, 1 - d / 2.5 m). Those values are also the fusion library defaults. The command still passes them because a site YAML replaces a flag only when the flag is left at its default, and `configs/sites/*/trajectory_merge` is the pseudo-identity rebuild rather than the final-tracking gates.
+`scripts/eval_tracking.py` writes the overlap-gated coordinates, uses `configs/overlap`, and reruns fusion without reading the site YAML. `--save-bins` stores the 10 Hz TrackEval inputs. `--no-spatial-gate` is the supplement ablation that keeps camera support and drops the overlap mask. `scripts/export_overlap_bins.py` fills the overlap-row hashes after the replay matches the published scores. `scripts/build_supplement_tables.py` writes Tables S9–S11 and S16. The command passes score 0.70, distance 2.5 m, time gap 1.2 s, 5 samples, 12 resamples, scales 0.6 s / 0.75 m / 0.35, weights 0.25 / 0.45 / 0.30, and same-camera stitching off. Similarity is max(0, 1 - d / 2.5 m). Those values are also the fusion library defaults. The command still passes them because a site YAML replaces a flag only when the flag is left at its default, and `configs/sites/*/trajectory_merge` is the pseudo-identity rebuild rather than the final-tracking gates.
 
 `results/recorded/residual_support.csv` and `results/recorded/deploy_support/` record the retained validation-pair support set. `results/recorded/identity_hota25_support.csv` stores the published HSG-SRL tracking rows under that support rule. Checkpoint filenames use the tag `F0`. That tag is this residual, not a second method.
 
@@ -128,6 +129,17 @@ The six scenes are 14 uncompressed BMP stills, 180,634,368 bytes, about 172 MiB.
 
 ## Edge timing and the supervised reference
 
-`reference/orin/` times M6 and Town05. The reported timings are `results/orin/runtime.md`.
+`reference/orin/` times M6, Town05, and Ko-PER. The reported timings are `results/orin/runtime.md`.
+
+Two commands reproduce the published numbers from released databases, and they do not retrain:
+
+```text
+python scripts/export_support_localization.py
+python scripts/assemble_hota_tables.py
+python scripts/build_tables.py
+python scripts/check_release.py
+```
+
+`export_support_localization.py` reads `geometry.db`, the test split, and `results/recorded/checkpoints`. `assemble_hota_tables.py` reads the vendored score files in `results/recorded/hota_sources`. `replay_trackeval.py` checks geometry rows and the camera-support ablation against `results/recorded/bins`. The overlap-gated HOTA rows do not have those bins.
 
 `reference/bevheight/` is the supervised reference on M6, M3, and Town05. See `docs/BEVHEIGHT.md`.

@@ -73,6 +73,24 @@ GEOMETRY_MERGE = {
         "distance_sigma_m": 1.0,
         "shape_sigma": 0.35,
     },
+    # Ko-PER is a real intersection. Pseudo-identities use the real-data gates.
+    # Final tracking still uses paper_merge_args.
+    "koper": {
+        "score": 0.70,
+        "max_distance_m": 2.5,
+        "distance_sigma_m": 1.5,
+        "shape_sigma": 0.50,
+    },
+}
+
+# Fresh from-video graphs only. Published scoring reads configs/overlap and
+# does not apply this threshold again. LUMPI and Synthehicle graphs were
+# frozen at 1000 m^2. Ko-PER's only edge covers 579.35 m^2, so its builder
+# threshold is 500 m^2. Do not copy that 500 m^2 value onto the other datasets.
+AREA_MIN_M2 = {
+    "lumpi": 1000.0,
+    "synth": 1000.0,
+    "koper": 500.0,
 }
 
 
@@ -150,6 +168,11 @@ def synthehicle_root() -> Path:
     return Path(env) if env else EXTERNAL / "synthehicle_core"
 
 
+def koper_root() -> Path:
+    env = os.environ.get("HSGSRL_KOPER_ROOT", "").strip()
+    return Path(env) if env else EXTERNAL / "ko_per"
+
+
 def _lumpi(measurement: int, cameras: tuple[str, ...]) -> dict:
     return {
         "kind": "lumpi",
@@ -157,6 +180,15 @@ def _lumpi(measurement: int, cameras: tuple[str, ...]) -> dict:
         "cameras": cameras,
         "yaml": f"lumpi_M{measurement}.yaml",
         "scene": f"Town-unused",
+    }
+
+
+def _koper() -> dict:
+    """Ko-PER Sequence1a-1d as one recording and one chronological split."""
+    return {
+        "kind": "koper",
+        "cameras": ("SK1", "SK4"),
+        "yaml": "",
     }
 
 
@@ -171,6 +203,7 @@ def _synth(town: str, n_cams: int) -> dict:
 
 
 SITES: dict[str, dict] = {
+    "ko_per": _koper(),
     "lumpi_M0": _lumpi(0, ("C08", "C09", "C10")),
     "lumpi_M1": _lumpi(1, ("C08", "C09", "C10")),
     "lumpi_M2": _lumpi(2, ("C08", "C09", "C10")),
@@ -189,6 +222,8 @@ GROUPS = {
     "LUMPI-pole": ("lumpi_M0", "lumpi_M1"),
     "LUMPI-A": ("lumpi_M2", "lumpi_M3"),
     "LUMPI-B": ("lumpi_M4", "lumpi_M5", "lumpi_M6"),
+    "LUMPI": tuple(name for name in SITES if name.startswith("lumpi_")),
+    "Ko-PER": ("ko_per",),
     "Synth": tuple(name for name in SITES if name.startswith("synth_")),
 }
 
@@ -223,4 +258,4 @@ OBS_TABLES = (
 )
 
 BEVHEIGHT_SITES = ("lumpi_M6", "lumpi_M3", "synth_Town05_O_day")
-ORIN_SITES = ("lumpi_M6", "synth_Town05_O_day")
+ORIN_SITES = ("lumpi_M6", "synth_Town05_O_day", "ko_per")

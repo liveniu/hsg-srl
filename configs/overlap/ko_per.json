@@ -1,0 +1,17 @@
+{
+  "role": "published full overlap graph for pair mining and final tracking",
+  "site": "ko_per",
+  "cameras": [
+    "SK1",
+    "SK4"
+  ],
+  "edges": [
+    {
+      "a": "SK1",
+      "b": "SK4",
+      "edge": "SK1:SK4",
+      "inter_area_m2": 579.3501039485541
+    }
+  ],
+  "rule": "frozen SK1-SK4 edge from the released geometry; scoring does not apply a second area filter"
+}

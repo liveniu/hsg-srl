@@ -1,21 +1,10 @@
 #!/usr/bin/env bash
-# Create .venv that sees the host's already installed packages.
-# Does not pip-install torch, ultralytics, or opencv.
+# Board setup for the localization-path timer.
+# Creates .venv with the host packages. Does not pip-install torch or opencv.
+# When run as root, stops the graphical session for this boot and can set
+# nvpmodel id 2 if HSG_ORIN_SET_POWER=1.
 set -euo pipefail
 BUNDLE="$(cd "$(dirname "$0")" && pwd)"
-
-echo "=== board ==="
-tr -d '\0' < /proc/device-tree/model || true
-echo
-echo "=== jetpack / tensorrt packages ==="
-cat /etc/nv_tegra_release 2>/dev/null || true
-dpkg -l | awk '/nvidia-l4t-core|tensorrt|libnvinfer/{print}' || true
-echo
-if command -v trtexec >/dev/null; then
-  echo "trtexec $(command -v trtexec)"
-else
-  echo "trtexec MISSING"
-fi
 
 VENV="${BUNDLE}/.venv"
 if [[ ! -x "${VENV}/bin/python" ]]; then
@@ -60,4 +49,36 @@ if command -v gst-inspect-1.0 >/dev/null; then
 else
   echo "gst-inspect MISSING"
 fi
-echo "next: bash build_engine.sh"
+
+if [[ "$(id -u)" -eq 0 ]]; then
+  if [[ "${HSG_ORIN_SET_POWER:-0}" == "1" ]] && command -v nvpmodel >/dev/null; then
+    echo "setting nvpmodel -m 2 (MAXN_SUPER on the published board)"
+    nvpmodel -m 2
+    nvpmodel -q || true
+  fi
+  if command -v systemctl >/dev/null; then
+    graphic=0
+    if [[ "$(systemctl is-active graphical.target 2>/dev/null || true)" == "active" ]]; then
+      graphic=1
+    fi
+    for svc in gdm gdm3 lightdm; do
+      if [[ "$(systemctl is-active "${svc}.service" 2>/dev/null || true)" == "active" ]]; then
+        graphic=1
+      fi
+    done
+    if [[ "${graphic}" -eq 1 ]]; then
+      echo "stopping the graphical session for this boot"
+      systemctl isolate multi-user.target
+      echo "restore the desktop with: sudo systemctl isolate graphical.target"
+    else
+      echo "graphical session already inactive"
+    fi
+  fi
+else
+  echo "not root: power mode was not changed and the desktop was left running"
+  echo "rerun: sudo bash setup_orin.sh"
+fi
+
+echo "next: bash build_engine.sh    # only if data/models/yolo26l.engine is missing"
+echo "then: bash run_orin.sh"
+echo "board model, power mode, desktop, and package versions are recorded by run_orin.sh"

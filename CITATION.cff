@@ -11,9 +11,10 @@ authors:
     given-names: Jin
     affiliation: Zhejiang University
 abstract: >-
-  Reproducibility package for HSG-SRL. Licensed roadside videos are
-  downloaded separately. The geometry databases for the published tables
-  are at https://doi.org/10.5281/zenodo.23008421.
+  Reproducibility package for overlap-gated HSG-SRL on LUMPI, Ko-PER,
+  and Synthehicle. Licensed roadside videos are downloaded separately.
+  The geometry databases for the published tables are archived separately
+  from this git repository.
 references:
   - type: dataset
     title: HSG-SRL frozen geometry databases

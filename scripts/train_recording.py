@@ -38,7 +38,7 @@ import sys
 sys.path.insert(0, str(SRC_ROOT))
 
 
-def mvc_loss(r_a, r_b, pred_a, pred_b, ka, kb):
+def mvc_loss(r_a, r_b, pred_a, pred_b, ka, kb, symmetric: bool = False):
     import torch
 
     eps = 1e-6
@@ -47,17 +47,25 @@ def mvc_loss(r_a, r_b, pred_a, pred_b, ka, kb):
     confidence_a = torch.clamp(ka, 0.0, 1.0)
     confidence_b = torch.clamp(kb, 0.0, 1.0)
     teacher_conf = torch.maximum(confidence_a, confidence_b)
-    teacher = (confidence_a.unsqueeze(1) * pred_a + confidence_b.unsqueeze(1) * pred_b) / (
-        confidence_a + confidence_b + eps
-    ).unsqueeze(1)
-    teacher = teacher.detach()
     weight_a = teacher_conf * ((1.0 - confidence_a) + floor_s)
     weight_b = teacher_conf * ((1.0 - confidence_b) + floor_s)
-    loss_a = torch.sum((pred_a - teacher) ** 2, dim=1)
-    loss_b = torch.sum((pred_b - teacher) ** 2, dim=1)
-    loss_mvc = torch.sum(weight_a * loss_a + weight_b * loss_b) / torch.clamp(
-        torch.sum(weight_a + weight_b), min=eps,
-    )
+    if symmetric:
+        teacher = (0.5 * (pred_a + pred_b)).detach()
+        pair_weight = weight_a + weight_b
+        half = 0.5 * pair_weight
+        loss_a = torch.sum((pred_a - teacher) ** 2, dim=1)
+        loss_b = torch.sum((pred_b - teacher) ** 2, dim=1)
+        loss_mvc = torch.sum(half * loss_a + half * loss_b) / torch.clamp(torch.sum(pair_weight), min=eps)
+    else:
+        teacher = (confidence_a.unsqueeze(1) * pred_a + confidence_b.unsqueeze(1) * pred_b) / (
+            confidence_a + confidence_b + eps
+        ).unsqueeze(1)
+        teacher = teacher.detach()
+        loss_a = torch.sum((pred_a - teacher) ** 2, dim=1)
+        loss_b = torch.sum((pred_b - teacher) ** 2, dim=1)
+        loss_mvc = torch.sum(weight_a * loss_a + weight_b * loss_b) / torch.clamp(
+            torch.sum(weight_a + weight_b), min=eps,
+        )
     reg_a = torch.sum(r_a ** 2, dim=1)
     reg_b = torch.sum(r_b ** 2, dim=1)
     loss_reg = 0.5 * (
@@ -89,7 +97,7 @@ def deploy_path(site: str, seed: int):
     return site_dir(site) / "deploy" / name
 
 
-def train_site(site: str, seed: int, anchor_mode: str) -> None:
+def train_site(site: str, seed: int, anchor_mode: str, *, symmetric: bool = False) -> None:
     import torch
     from pipeline.geometry_guided_residual_mlp import GeometryGuidedResidualMLP
 
@@ -99,8 +107,12 @@ def train_site(site: str, seed: int, anchor_mode: str) -> None:
     arrays = np.load(site_dir(site) / "pairs" / f"{site}.npz")
     cameras = meta["cameras"]
     count = int(arrays["train_fa"].shape[0])
-    ckpt = site_dir(site) / "checkpoints" / f"{site}_F0_seed{seed}.pt"
-    dest = deploy_path(site, seed)
+    tag = "symmetric" if symmetric else "F0"
+    ckpt = site_dir(site) / "checkpoints" / f"{site}_{tag}_seed{seed}.pt"
+    if symmetric:
+        dest = site_dir(site) / "deploy" / f"{site}_symmetric_seed{seed}.json"
+    else:
+        dest = deploy_path(site, seed)
     dest.parent.mkdir(parents=True, exist_ok=True)
     ckpt.parent.mkdir(parents=True, exist_ok=True)
     if count < MIN_TRAIN_PAIRS:
@@ -130,7 +142,9 @@ def train_site(site: str, seed: int, anchor_mode: str) -> None:
             idx = torch.from_numpy(perm[start:start + BATCH].astype(np.int64))
             r_a = model(fa[idx])
             r_b = model(fb[idx])
-            loss = mvc_loss(r_a, r_b, xa[idx] + r_a, xb[idx] + r_b, ka[idx], kb[idx])
+            loss = mvc_loss(
+                r_a, r_b, xa[idx] + r_a, xb[idx] + r_b, ka[idx], kb[idx], symmetric=symmetric,
+            )
             if t0.shape[0] and LAMBDA_TEMP > 0:
                 take = min(TEMPORAL_REUSE, int(t0.shape[0]))
                 loss = loss + LAMBDA_TEMP * torch.mean((model(t1[:take]) - model(t0[:take])) ** 2)
@@ -143,7 +157,8 @@ def train_site(site: str, seed: int, anchor_mode: str) -> None:
         "state_dict": model.state_dict(),
         "cameras": cameras,
         "in_dim": 7,
-        "cell": "F0",
+        "cell": tag,
+        "mvc": "symmetric" if symmetric else "sensitivity",
         "use_b": False,
         "use_g": False,
         "max_residual_m": R_MAX_M,
@@ -167,6 +182,11 @@ def train_site(site: str, seed: int, anchor_mode: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--site", required=True, choices=sorted(SITES))
+    parser.add_argument(
+        "--symmetric",
+        action="store_true",
+        help="pair-symmetric MVC control; writes a separate checkpoint and does not replace F0",
+    )
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
         "--anchor-mode",
@@ -174,7 +194,7 @@ def main() -> None:
         choices=("multiplicative_gating_offsetted", "fixed_beta_050", "fixed_beta_070", "center", "bottom_center"),
     )
     args = parser.parse_args()
-    train_site(args.site, args.seed, args.anchor_mode)
+    train_site(args.site, args.seed, args.anchor_mode, symmetric=args.symmetric)
 
 
 if __name__ == "__main__":

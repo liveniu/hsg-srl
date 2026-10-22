@@ -15,7 +15,7 @@ This directory is a standalone package. Licensed LUMPI and Synthehicle videos ar
 | `configs/` | Recordings, overlap, BoT-SORT, and paper constants |
 | `third_party/TrackEval/` | HOTA implementation from TrackEval commit 12c8791; see `NOTICE.txt` |
 | `results/recorded/` | Arrays and scores for localization, fixed anchors, and BEV-HOTA |
-| `reference/orin/` | Jetson timing for M6 and Town05 |
+| `reference/orin/` | Jetson timing for M6, Town05, and Ko-PER |
 | `reference/bevheight/` | Supervised reference on M6, M3, and Town05 |
 
 ## Install
@@ -37,7 +37,7 @@ YOLO26l detections are not identical across machines. The released geometry data
 
 https://doi.org/10.5281/zenodo.23008421
 
-To reproduce those tables, extract each recording to `data/work/sites/<recording>/` and continue from pair mining:
+The thirteen domains are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. To reproduce the tables, extract each recording to `data/work/sites/<recording>/` and continue from pair mining. Pair mining and tracking read the frozen edges in `configs/overlap`. Scoring adds the residual only on a supported camera inside that camera's overlap union:
 
 ```text
 python scripts/run_paper.py --site lumpi_M6 --from-stage overlap
@@ -64,6 +64,6 @@ See `docs/DATASETS.md`.
 python scripts/run_paper.py --site lumpi_M6 --model data/models/yolo26l.pt
 ```
 
-This imports the media, runs YOLO26l, and builds a new geometry database. Use it for a new installation. It does not reproduce the published tables, because the detections will differ from the released databases.
+This imports the media, runs YOLO26l, and builds a new geometry database. Ko-PER uses `scripts/detect_koper.py` because Sequence1a–1d are one continuous track per camera. Use this path for a new installation. It does not reproduce the published tables, because the detections will differ from the released databases.
 
 Train with `scripts/train_recording.py`. It uses the constants in `configs/paper_defaults.yaml`. `src/pipeline/geometry_guided_residual_mlp.py train` cannot replace it. That command mines pairs from the geometry database and still requires `--split-manifest`. See `docs/REPRODUCTION.md`.

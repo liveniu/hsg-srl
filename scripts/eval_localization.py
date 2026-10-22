@@ -3,7 +3,9 @@
 
 Writes one JSON per recording with HSG, each residual seed, and the
 1000-draw interval for the residual-minus-HSG median. The residual is added
-only on cameras listed in that seed's deployment JSON.
+only on cameras in that seed's support set whose stored HSG point lies in
+the frozen overlap union. ``--no-spatial-gate`` keeps the camera support
+and drops the overlap mask.
 """
 
 from __future__ import annotations
@@ -14,9 +16,9 @@ import json
 import numpy as np
 
 from bootstrap import ARTIFACT_ROOT
-from db_access import matched_rows, positions
+from db_access import deploy_file, matched_rows, positions
 from intervals import paired_bootstrap
-from protocol import SEEDS, SITES, site_dir
+from protocol import SEEDS, SITES
 
 
 def stats(values: np.ndarray) -> dict:
@@ -29,14 +31,14 @@ def stats(values: np.ndarray) -> dict:
 
 
 def deploy_for(site: str, seed: int) -> dict:
-    name = f"{site}_F0.json" if seed == 0 else f"{site}_F0_seed{seed}.json"
-    return json.loads((site_dir(site) / "deploy" / name).read_text(encoding="utf-8"))
+    return json.loads(deploy_file(site, seed).read_text(encoding="utf-8"))
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--site", required=True, choices=sorted(SITES))
     parser.add_argument("--seed", type=int, default=None, help="default: seeds 0, 1, and 2")
+    parser.add_argument("--no-spatial-gate", action="store_true")
     args = parser.parse_args()
     seeds = (args.seed,) if args.seed is not None else SEEDS
     rows, by_track = matched_rows(args.site)
@@ -45,7 +47,10 @@ def main() -> None:
     result = {"site": args.site, "geo": stats(geo), "seeds": {}}
     for seed in seeds:
         deploy = deploy_for(args.site, seed)
-        refined = np.linalg.norm(positions(args.site, seed, rows, deploy) - gt, axis=1)
+        refined = np.linalg.norm(
+            positions(args.site, seed, rows, deploy, spatial=not args.no_spatial_gate) - gt,
+            axis=1,
+        )
         result["seeds"][str(seed)] = {
             "S": deploy.get("S") or [],
             "hsg_srl": stats(refined),

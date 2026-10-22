@@ -26,7 +26,8 @@ pairs:
   geometric_gate_m: 2.0
   teacher_confidence: 0.20
   teacher_gap: 0.05
-deployment: retained validation-pair support
+deployment: retained validation-pair support and HSG-point membership in the frozen overlap union
+polygon_tolerance_m: -1.0e-6
 split: [0.60, 0.10, 0.30]
 final_tracking:
   score: 0.70

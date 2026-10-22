@@ -41,11 +41,16 @@ from pipeline.geometry_guided_residual_mlp import (  # noqa: E402
 from pipeline.multi_camera_trajectory_fusion import adapt_homography_to_resolution  # noqa: E402
 
 
+def graph_path(site: str):
+    """Frozen graph when this recording is one of the published domains."""
+    published = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
+    if published.exists():
+        return published
+    return overlap_path(site)
+
+
 def edges_of(site: str) -> list[tuple[str, str]]:
-    path = overlap_path(site)
-    if not path.exists():
-        path = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
-    blob = json.loads(path.read_text(encoding="utf-8"))
+    blob = json.loads(graph_path(site).read_text(encoding="utf-8"))
     pairs = []
     for edge in blob.get("edges") or []:
         pairs.append(tuple(sorted((str(edge["a"]), str(edge["b"])))))
@@ -177,10 +182,7 @@ def freeze_site(site: str, anchor_mode: str = "multiplicative_gating_offsetted")
         print(f"[freeze] reuse {site}")
         return
     dest.parent.mkdir(parents=True, exist_ok=True)
-    graph_path = overlap_path(site)
-    if not graph_path.exists():
-        graph_path = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
-    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    graph = json.loads(graph_path(site).read_text(encoding="utf-8"))
     cameras = [str(cam) for cam in graph["cameras"]]
     overlap = set(edges_of(site))
     conn = sqlite3.connect(str(geometry_db(site)))

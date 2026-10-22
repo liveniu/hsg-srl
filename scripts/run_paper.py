@@ -53,10 +53,17 @@ def main() -> None:
     if start <= 0:
         run("import_recordings.py", [site])
     if start <= 1:
-        extra = ["--site", site]
-        if args.model:
-            extra += ["--model", args.model]
-        run("detect_and_merge.py", extra)
+        if SITES[site]["kind"] == "koper":
+            extra = []
+            if args.model:
+                extra += ["--model", args.model]
+            run("detect_koper.py", extra)
+            run("remerge_pseudo_identity.py", [site])
+        else:
+            extra = ["--site", site]
+            if args.model:
+                extra += ["--model", args.model]
+            run("detect_and_merge.py", extra)
     if start <= 2:
         run("attach_ground_truth.py", [site])
     if start <= 3:

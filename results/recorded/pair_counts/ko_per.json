@@ -1,0 +1,27 @@
+{
+  "site": "ko_per",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+    "SK1",
+    "SK4"
+  ],
+  "edges": [
+    "SK1:SK4"
+  ],
+  "n_train_obs": 77526,
+  "n_val_obs": 13774,
+  "n_train_pairs": 7340,
+  "n_val_pairs": 1504,
+  "n_temporal": 76817,
+  "components": [
+    [
+      "SK1",
+      "SK4"
+    ]
+  ],
+  "weights": {
+    "SK1": 3880.3299263715744,
+    "SK4": 3819.5769699811935
+  },
+  "uses_test_gt": false
+}

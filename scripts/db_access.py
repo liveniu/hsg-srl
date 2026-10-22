@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import json
 import sqlite3
 from pathlib import Path
 
@@ -15,6 +16,7 @@ from protocol import (
     SITES,
     geometry_db,
     match_report,
+    site_dir,
     split_keys,
     verdict_path,
 )
@@ -120,12 +122,33 @@ def matched_rows(
     return rows, by
 
 
+def checkpoint_dir_for(site: str, seed: int) -> Path:
+    """Site training output, or the recorded release weights when that run is absent."""
+    from bootstrap import ARTIFACT_ROOT
+
+    local = site_dir(site) / "checkpoints"
+    if (local / f"{site}_F0_seed{seed}.pt").exists():
+        return local
+    return ARTIFACT_ROOT / "results" / "recorded" / "checkpoints"
+
+
+def deploy_file(site: str, seed: int) -> Path:
+    """Site deploy JSON, or the recorded release file when training has not been repeated."""
+    from bootstrap import ARTIFACT_ROOT
+
+    name = f"{site}_F0.json" if seed == 0 else f"{site}_F0_seed{seed}.json"
+    local = site_dir(site) / "deploy" / name
+    if local.exists():
+        return local
+    return ARTIFACT_ROOT / "results" / "recorded" / "deploy_support" / name
+
+
 def load_mlp(site: str, seed: int, checkpoint_dir: Path | None = None):
     import torch
     from pipeline.geometry_guided_residual_mlp import GeometryGuidedResidualMLP
     from protocol import site_dir
 
-    directory = checkpoint_dir or (site_dir(site) / "checkpoints")
+    directory = checkpoint_dir or checkpoint_dir_for(site, seed)
     path = directory / f"{site}_F0_seed{seed}.pt"
     if not path.exists():
         return None
@@ -140,13 +163,48 @@ def load_mlp(site: str, seed: int, checkpoint_dir: Path | None = None):
     return model
 
 
+def published_edges(site: str) -> list[tuple[str, str]]:
+    """Frozen camera pairs. Scoring does not rebuild or area-filter them."""
+    from bootstrap import ARTIFACT_ROOT
+
+    path = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
+    blob = json.loads(path.read_text(encoding="utf-8"))
+    edges = []
+    for edge in blob["edges"]:
+        left, right = str(edge["a"]), str(edge["b"])
+        edges.append((left, right))
+    return edges
+
+
+def camera_polygons(site: str, db: Path | None = None) -> dict[str, list[np.ndarray]]:
+    """Ground-overlap polygons for the frozen edges of one recording."""
+    from geometry.fov_overlap import valid_fov_hull
+    from geometry.overlap_gate import polygons_from_hulls
+
+    adapted, sizes = load_adapted(site, db)
+    hulls = {}
+    for camera, (homography, scale) in adapted.items():
+        hulls[camera] = valid_fov_hull(homography, scale, sizes[camera])[0]
+    return polygons_from_hulls(hulls, published_edges(site))
+
+
 def positions(
     site: str,
     seed: int,
     rows: list[dict],
     deploy: dict,
     checkpoint_dir: Path | None = None,
+    *,
+    spatial: bool = True,
+    polygons: dict | None = None,
 ) -> np.ndarray:
+    """HSG plus the residual on supported cameras.
+
+    ``spatial`` is the published overlap gate: the residual is added only
+    when the camera is in ``S`` and the stored HSG point lies in that
+    camera's frozen overlap union. ``spatial=False`` is the supplement
+    control that keeps the same model and camera support without the mask.
+    """
     xy = np.stack([row["xy"] for row in rows]) if rows else np.zeros((0, 2))
     if deploy.get("deploy") != "model" or not rows:
         return xy.copy()
@@ -154,15 +212,25 @@ def positions(
     if model is None:
         return xy.copy()
     import torch
+    from geometry.overlap_gate import inside_mask
 
     features = torch.from_numpy(np.stack([row["feat"] for row in rows]).astype(np.float32))
     with torch.no_grad():
         residual = model(features).cpu().numpy().astype(np.float64)
     opened = set(deploy.get("S") or [])
+    if spatial:
+        polygons = camera_polygons(site) if polygons is None else polygons
     out = xy.copy()
+    by_camera: dict[str, list[int]] = {}
     for index, row in enumerate(rows):
         if row["cam"] in opened:
-            out[index] = out[index] + residual[index]
+            by_camera.setdefault(row["cam"], []).append(index)
+    for camera, indexes in by_camera.items():
+        chosen = np.asarray(indexes, dtype=int)
+        if spatial:
+            mask = inside_mask(xy[chosen], polygons.get(camera, []))
+            chosen = chosen[mask]
+        out[chosen] = out[chosen] + residual[chosen]
     return out
 
 

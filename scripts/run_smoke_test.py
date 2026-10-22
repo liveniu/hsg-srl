@@ -23,7 +23,9 @@ from pipeline.geometry_guided_residual_mlp import (  # noqa: E402
     xywh_to_xyxy,
 )
 from pipeline.multi_camera_trajectory_fusion import box_anchor  # noqa: E402
+from geometry.overlap_gate import POLYGON_TOL_M, hsg_terms, inside_mask  # noqa: E402
 from protocol import (  # noqa: E402
+    AREA_MIN_M2,
     LAMBDA_MAG,
     LAMBDA_MEAN,
     LAMBDA_PAIR,
@@ -31,6 +33,7 @@ from protocol import (  # noqa: E402
     MIN_TRAIN_PAIRS,
     PAIR_DIST_M,
     R_MAX_M,
+    SITES,
 )
 from train_recording import mvc_loss, support_cameras  # noqa: E402
 
@@ -102,6 +105,23 @@ def main() -> None:
     opened = support_cameras(["C05", "C06", "C07"], np.array([0, 1]), np.array([1, 1]))
     if opened != ["C05", "C06"]:
         raise SystemExit(f"support rule returned {opened}")
+    square = np.array([[0.0, 0.0], [2.0, 0.0], [2.0, 2.0], [0.0, 2.0]])
+    points = np.array([[1.0, 1.0], [3.0, 1.0], [0.0, 0.0]])
+    mask = inside_mask(points, [square])
+    if mask.tolist() != [True, False, True]:
+        raise SystemExit(f"overlap mask {mask.tolist()}")
+    if POLYGON_TOL_M != -1e-6:
+        raise SystemExit("polygon tolerance drifted")
+    metric = np.diag([1.0 / 4.0, 1.0 / 4.0, 1.0]) @ homography
+    terms = hsg_terms(np.array([[400.0, 200.0, 80.0, 120.0]]), metric, (1920, 1080))
+    if not (0.0 <= float(terms["beta"][0]) <= 1.0):
+        raise SystemExit("HSG beta left [0, 1]")
+    if abs(float(terms["alpha"][0]) - float(terms["beta"][0])) > 1.0:
+        raise SystemExit("anchor terms are not on one detection")
+    if AREA_MIN_M2 != {"lumpi": 1000.0, "synth": 1000.0, "koper": 500.0}:
+        raise SystemExit(f"area thresholds drifted: {AREA_MIN_M2}")
+    if SITES["ko_per"]["cameras"] != ("SK1", "SK4"):
+        raise SystemExit("Ko-PER cameras drifted")
     _self_check()
     print("SMOKE PASS")
 
