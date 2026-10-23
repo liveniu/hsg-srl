@@ -297,7 +297,7 @@ def render(rows: list[dict]) -> str:
         "",
         "Milliseconds. The localization path is one measured camera frame: vectorized HSG for every box, then the overlap test, then the seed-0 residual. HSG, overlap, and MLP columns are slices of that same call. Their percentiles are not added to produce the path. Detector and fusion are separate passes. Fusion is one synchronized batch. No stream fps is computed from these percentiles.",
         "",
-        "Detector, when present, is YOLO26l TensorRT FP16, 384×640, BoT-SORT with gmc_method none, one clip at a time. HSG and the residual run on CPU. Fusion is a dry-run remerge, score 0.70, max distance 2.5 m. Support S is the retained validation-pair set. This file does not claim power, memory, or station throughput.",
+        "Detector, when present, is YOLO26l TensorRT FP16, 384×640, BoT-SORT with gmc_method none, one clip at a time. HSG and the residual run on CPU. Fusion is a dry-run remerge, score 0.70, max distance 2.5 m. Support S is the retained validation-pair set. This file records that measurement and the board configuration. A later run with the same configuration is a new measurement and is not required to match these percentiles. This file does not claim power, memory, or station throughput. The detector column is empty: this package has no clip replay for that separate pass.",
         "",
     ]
     if board.exists():

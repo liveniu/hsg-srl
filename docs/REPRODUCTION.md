@@ -28,7 +28,7 @@ Published numbers without videos or a geometry database:
 
 | Operation | Script | Reads |
 | --- | --- | --- |
-| Check saved HOTA | `scripts/replay_trackeval.py` | `results/recorded/bins/`, `identity_hota25.csv`, `identity_hota25_support.csv` |
+| Check saved HOTA | `scripts/replay_trackeval.py` | `results/recorded/bins/`, `identity_hota25.csv`, `identity_hota25_support.csv`, `identity_hota25_overlap.csv` |
 | Write the score summaries | `scripts/build_tables.py` | `results/recorded/loc_support/`, `ipm_baseline.json`, the two HOTA CSV files |
 | Reference-frame rescore | `scripts/eval_offset_sensitivity.py` | Released `geometry.db` plus the recorded localization arrays |
 | Geometry-only anchor tracking | `scripts/eval_anchor_tracking.py --summarize` | `results/anchor_tracking/*.json` |
@@ -129,9 +129,9 @@ The six scenes are 14 uncompressed BMP stills, 180,634,368 bytes, about 172 MiB.
 
 ## Edge timing and the supervised reference
 
-`reference/orin/` times M6, Town05, and Ko-PER. The reported timings are `results/orin/runtime.md`.
+`reference/orin/` times M6, Town05, and Ko-PER. `results/orin/runtime.md` is that recorded measurement, together with the board configuration. A later run with the same configuration is a new measurement. It is not required to match the stored percentiles. See `docs/ORIN.md`.
 
-Two commands reproduce the published numbers from released databases, and they do not retrain:
+These commands rebuild the published localization and tracking tables from released databases. They do not retrain, and they do not time the board:
 
 ```text
 python scripts/export_support_localization.py
@@ -140,6 +140,6 @@ python scripts/build_tables.py
 python scripts/check_release.py
 ```
 
-`export_support_localization.py` reads `geometry.db`, the test split, and `results/recorded/checkpoints`. `assemble_hota_tables.py` reads the vendored score files in `results/recorded/hota_sources`. `replay_trackeval.py` checks geometry rows and the camera-support ablation against `results/recorded/bins`. The overlap-gated HOTA rows do not have those bins.
+`export_support_localization.py` reads `geometry.db`, the test split, and `results/recorded/checkpoints`. `assemble_hota_tables.py` reads the vendored score files in `results/recorded/hota_sources`. `replay_trackeval.py` checks the geometry rows, the camera-support ablation, and the overlap-gated HOTA rows against `results/recorded/bins`. The overlap-gated rows use `bins/*_overlap_s*.npz`.
 
 `reference/bevheight/` is the supervised reference on M6, M3, and Town05. See `docs/BEVHEIGHT.md`.

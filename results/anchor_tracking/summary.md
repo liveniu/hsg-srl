@@ -1,26 +1,26 @@
 # Geometry-only TrackEval BEV-HOTA
 
-Built from results/anchor_tracking/*.json. Same detections, test keys, ground-truth clock, reference bias, full overlap graph, and final-tracking flags as the HSG rows. No residual.
+Built from results/anchor_tracking/*.json. Same detections, test keys, ground-truth clock, reference bias, full overlap graph, and final-tracking flags as the HSG rows. No residual. The replay is seven LUMPI recordings and five Synthehicle towns. Ko-PER is not included.
 
 Recording-macro means on a 0-100 scale. The mean column is the unweighted average of 0.5, 1, 1.5, and 2 m.
 
 | Data | Coordinate rule | 0.5 m | 1 m | 1.5 m | 2 m | Mean |
 | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| Real | HSG (per-detection) | 23.84 | 38.56 | 46.01 | 48.33 | 39.18 |
-| Real | Box-center projection | 6.65 | 20.48 | 29.66 | 36.16 | 23.24 |
-| Real | Fixed interior midpoint | 20.79 | 38.22 | 45.74 | 48.23 | 38.25 |
-| Real | STMC-derived fixed anchor | 11.68 | 30.47 | 42.36 | 46.49 | 32.75 |
-| Real | Bottom-center projection (IPM) | 2.09 | 7.19 | 19.48 | 34.34 | 15.77 |
+| LUMPI | HSG (per-detection) | 23.84 | 38.56 | 46.01 | 48.33 | 39.18 |
+| LUMPI | Box-center projection | 6.65 | 20.48 | 29.66 | 36.16 | 23.24 |
+| LUMPI | Fixed interior midpoint | 20.79 | 38.22 | 45.74 | 48.23 | 38.25 |
+| LUMPI | STMC-derived fixed anchor | 11.68 | 30.47 | 42.36 | 46.49 | 32.75 |
+| LUMPI | Bottom-center projection (IPM) | 2.09 | 7.19 | 19.48 | 34.34 | 15.77 |
 | Synthetic | HSG (per-detection) | 24.76 | 43.29 | 51.15 | 55.48 | 43.67 |
 | Synthetic | Box-center projection | 3.52 | 10.00 | 15.76 | 20.97 | 12.56 |
 | Synthetic | Fixed interior midpoint | 15.03 | 33.77 | 43.43 | 50.14 | 35.59 |
 | Synthetic | STMC-derived fixed anchor | 32.39 | 46.24 | 51.54 | 54.38 | 46.14 |
 | Synthetic | Bottom-center projection (IPM) | 5.32 | 16.48 | 27.96 | 41.79 | 22.89 |
-| All | HSG (per-detection) | 24.22 | 40.53 | 48.15 | 51.31 | 41.05 |
-| All | Box-center projection | 5.35 | 16.12 | 23.87 | 29.83 | 18.79 |
-| All | Fixed interior midpoint | 18.39 | 36.37 | 44.78 | 49.02 | 37.14 |
-| All | STMC-derived fixed anchor | 20.31 | 37.04 | 46.19 | 49.78 | 38.33 |
-| All | Bottom-center projection (IPM) | 3.43 | 11.06 | 23.01 | 37.45 | 18.74 |
+| Twelve recordings | HSG (per-detection) | 24.22 | 40.53 | 48.15 | 51.31 | 41.05 |
+| Twelve recordings | Box-center projection | 5.35 | 16.12 | 23.87 | 29.83 | 18.79 |
+| Twelve recordings | Fixed interior midpoint | 18.39 | 36.37 | 44.78 | 49.02 | 37.14 |
+| Twelve recordings | STMC-derived fixed anchor | 20.31 | 37.04 | 46.19 | 49.78 | 38.33 |
+| Twelve recordings | Bottom-center projection (IPM) | 3.43 | 11.06 | 23.01 | 37.45 | 18.74 |
 
 ## Per recording, mean of four gates
 

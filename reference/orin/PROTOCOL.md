@@ -1,6 +1,6 @@
 # Orin-plus component latency
 
-Detector, localization, and fusion are separate passes. HSG uses the published projection, evaluated once per camera frame for all boxes together. The resulting milliseconds are for this implementation; they are not a rerun of the earlier per-box timing table.
+Detector, localization, and fusion are separate passes. HSG uses the published projection, evaluated once per camera frame for all boxes together. The resulting milliseconds are for this implementation; they are not a rerun of the earlier per-box timing table. Repeating the run with the same board configuration produces a new measurement. It is not required to match the archived percentiles.
 
 | stage | unit | what is timed |
 | --- | --- | --- |
