@@ -14,7 +14,9 @@ python scripts/run_smoke_test.py
 Published tables use the released geometry databases, because a new
 YOLO26l detection does not match the paper's detections:
 https://doi.org/10.5281/zenodo.23008421
-Extract each recording to data/work/sites/<recording>/ and start at pair mining.
+The archive root is the contents of data/work/. Extract it into
+data/work/, so each recording is at data/work/sites/<recording>/,
+and start at pair mining.
 
 A new installation from downloaded video:
 python scripts/run_paper.py --site lumpi_M6 --model data/models/yolo26l.pt

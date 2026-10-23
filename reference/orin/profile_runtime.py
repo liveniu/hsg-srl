@@ -297,7 +297,7 @@ def render(rows: list[dict]) -> str:
         "",
         "Milliseconds. The localization path is one measured camera frame: vectorized HSG for every box, then the overlap test, then the seed-0 residual. HSG, overlap, and MLP columns are slices of that same call. Their percentiles are not added to produce the path. Detector and fusion are separate passes. Fusion is one synchronized batch. No stream fps is computed from these percentiles.",
         "",
-        "Detector, when present, is YOLO26l TensorRT FP16, 384×640, BoT-SORT with gmc_method none, one clip at a time. HSG and the residual run on CPU. Fusion is a dry-run remerge, score 0.70, max distance 2.5 m. Support S is the retained validation-pair set. This file records that measurement and the board configuration. A later run with the same configuration is a new measurement and is not required to match these percentiles. This file does not claim power, memory, or station throughput. The detector column is empty: this package has no clip replay for that separate pass.",
+        "Detector, when present, is YOLO26l TensorRT FP16, 384×640, BoT-SORT with gmc_method none, one clip at a time. HSG and the residual run on CPU. Fusion is a dry-run remerge, score 0.70, max distance 2.5 m. Support S is the retained validation-pair set. This file records that measurement and the board configuration. A later run with the same configuration is a new measurement and is not required to match these percentiles. This file does not claim power, memory, or station throughput. The detector column in the table is empty when this run has no clips. The published detector percentiles and sample counts remain in the section under the table.",
         "",
     ]
     if board.exists():
@@ -315,6 +315,18 @@ def render(rows: list[dict]) -> str:
             f"{fmt_pair(row, 'fusion_ms_p50', 'fusion_ms_p95')} |"
         )
     lines.append("")
+    lines.extend([
+        "## Published sample counts and detector pass",
+        "",
+        "Localization frames are the calls remaining after the first ten frames are dropped. Fusion batches are the separate remerge pass. The detector pass is the same-board TensorRT FP16 YOLO26l measurement with persistent BoT-SORT. Ko-PER has no detector clip in that pass. A later run replaces the percentile table above and keeps this record.",
+        "",
+        "| Recording | Localization frames | Fusion batches | Detector p50/p95 (ms) | Detector frames |",
+        "| --- | ---: | ---: | ---: | ---: |",
+        "| M6 | 32,384 | 5,399 | 30.41/37.55 | 13,490 |",
+        "| Town05 | 10,778 | 1,798 | 26.66/31.93 | 10,790 |",
+        "| Ko-PER | 19,329 | 4,836 |  |  |",
+        "",
+    ])
     return "\n".join(lines)
 
 

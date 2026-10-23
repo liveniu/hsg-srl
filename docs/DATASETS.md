@@ -6,7 +6,7 @@ YOLO26l detections are not identical across machines. The geometry databases bel
 
 https://doi.org/10.5281/zenodo.23008421
 
-After extraction, place each recording at `data/work/sites/<recording>/`. Each directory contains `geometry.db`, `origin.db`, the 60/10/30 split, `det_gt_match_report.json`, and `reference_verdict.txt`.
+The archive root is the contents of `data/work/`: `README.txt`, `SHA256SUMS`, and `sites/<recording>/`. Extract it into `data/work/`. The thirteen recordings are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. Each directory at `data/work/sites/<recording>/` contains `geometry.db`, `origin.db`, the 60/10/30 split, `det_gt_match_report.json`, and `reference_verdict.txt`.
 
 | Variable | Default directory | Contents |
 | --- | --- | --- |
@@ -22,6 +22,4 @@ Ko-PER is one recording. Sequence1a–1d share a camera-clock epoch and one 60/1
 
 Ko-PER: https://www.uni-ulm.de/in/mrm/forschung/datensaetze/ (Ko-PER intersection dataset).
 
-Place a YOLO26l weight at `data/models/yolo26l.pt`. A TensorRT engine must be built on the machine that runs it.
-
-The manuscript cites https://doi.org/10.5281/zenodo.23008421. That record was updated on 2026-10-09 and contains the original twelve-recording archive. It does not contain Ko-PER. The Ko-PER geometry database used to check this release is local under `data/work/sites/ko_per/` and is not part of git. A new deposit has to be published before a clone plus that DOI can regenerate the Ko-PER rows. This package does not replace the DOI, because no newer record has been minted.
+Place a YOLO26l weight at `data/models/yolo26l.pt`. A TensorRT engine must be built on the machine that runs it. The geometry databases are the Zenodo archive above. They are not part of this git repository.

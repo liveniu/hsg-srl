@@ -38,7 +38,7 @@ Published numbers without videos or a geometry database:
 
 ## Published tables from released databases
 
-YOLO26l detections are not identical across machines. The published tables use the detections, tracks, and identities in the geometry databases at https://doi.org/10.5281/zenodo.23008421. Extract each recording directory to `data/work/sites/<recording>/`, then continue from pair mining:
+YOLO26l detections are not identical across machines. The published tables use the detections, tracks, and identities in the geometry databases at https://doi.org/10.5281/zenodo.23008421. The archive root is the contents of `data/work/`. Extract it into `data/work/`, so each recording is at `data/work/sites/<recording>/`, then continue from pair mining:
 
 ```text
 python scripts/run_paper.py --site lumpi_M6 --from-stage overlap

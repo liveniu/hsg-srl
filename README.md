@@ -37,7 +37,7 @@ YOLO26l detections are not identical across machines. The released geometry data
 
 https://doi.org/10.5281/zenodo.23008421
 
-The thirteen domains are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. To reproduce the tables, extract each recording to `data/work/sites/<recording>/` and continue from pair mining. Pair mining and tracking read the frozen edges in `configs/overlap`. Scoring adds the residual only on a supported camera inside that camera's overlap union:
+The thirteen domains are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. The archive root is the contents of `data/work/`. Extract it into `data/work/`, so each recording is at `data/work/sites/<recording>/`, and continue from pair mining. Pair mining and tracking read the frozen edges in `configs/overlap`. Scoring adds the residual only on a supported camera inside that camera's overlap union:
 
 ```text
 python scripts/run_paper.py --site lumpi_M6 --from-stage overlap
