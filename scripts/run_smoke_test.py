@@ -7,6 +7,7 @@ retained-support deployment rule, and the TrackEval self-check.
 
 from __future__ import annotations
 
+import sqlite3
 import sys
 
 import numpy as np
@@ -24,6 +25,7 @@ from pipeline.geometry_guided_residual_mlp import (  # noqa: E402
 )
 from pipeline.multi_camera_trajectory_fusion import box_anchor  # noqa: E402
 from geometry.overlap_gate import POLYGON_TOL_M, hsg_terms, inside_mask  # noqa: E402
+from geometry.fov_overlap import candidate_edges  # noqa: E402
 from protocol import (  # noqa: E402
     AREA_MIN_M2,
     LAMBDA_MAG,
@@ -36,6 +38,36 @@ from protocol import (  # noqa: E402
     SITES,
 )
 from train_recording import mvc_loss, support_cameras  # noqa: E402
+
+
+def check_overlap_graph() -> None:
+    """Keep an edge at or above the area cutoff and drop disjoint or small overlaps."""
+    with sqlite3.connect(":memory:") as conn:
+        conn.executescript("""
+            CREATE TABLE camera_calibrations (
+                camera_name TEXT, scene_id TEXT, homography BLOB,
+                scale_px_per_meter REAL, calibrated_at TEXT
+            );
+            CREATE TABLE trajectory_camera_config (
+                scene_id TEXT, batch_id TEXT, camera_name TEXT,
+                calib_w INTEGER, calib_h INTEGER, infer_w INTEGER, infer_h INTEGER
+            );
+        """)
+        for camera, offset in (("A", 0.0), ("B", 8.0), ("C", 25.0)):
+            matrix = np.eye(3, dtype=np.float64)
+            matrix[0, 2] = offset
+            conn.execute("INSERT INTO camera_calibrations VALUES (?, ?, ?, ?, ?)",
+                         (camera, "smoke", matrix.tobytes(), 1.0, "0"))
+            conn.execute("INSERT INTO trajectory_camera_config VALUES (?, ?, ?, ?, ?, ?, ?)",
+                         ("smoke", "test", camera, 10, 10, 10, 10))
+        kept = candidate_edges(conn, "smoke", ["A", "B", "C"], batch="test", a_min=5.0)
+        dropped = candidate_edges(conn, "smoke", ["A", "B", "C"], batch="test", a_min=10.0)
+    if len(kept) != 1 or kept[0][:2] != ("A", "B") or not np.isclose(kept[0][2], 9.0):
+        raise SystemExit(f"overlap graph at 5 m^2 returned {kept}")
+    if dropped:
+        raise SystemExit(f"overlap graph at 10 m^2 kept {dropped}")
+    if AREA_MIN_M2 != {"lumpi": 1000.0, "synth": 1000.0, "koper": 500.0}:
+        raise SystemExit(f"area thresholds drifted: {AREA_MIN_M2}")
 
 
 def main() -> None:
@@ -118,8 +150,7 @@ def main() -> None:
         raise SystemExit("HSG beta left [0, 1]")
     if abs(float(terms["alpha"][0]) - float(terms["beta"][0])) > 1.0:
         raise SystemExit("anchor terms are not on one detection")
-    if AREA_MIN_M2 != {"lumpi": 1000.0, "synth": 1000.0, "koper": 500.0}:
-        raise SystemExit(f"area thresholds drifted: {AREA_MIN_M2}")
+    check_overlap_graph()
     if SITES["ko_per"]["cameras"] != ("SK1", "SK4"):
         raise SystemExit("Ko-PER cameras drifted")
     _self_check()

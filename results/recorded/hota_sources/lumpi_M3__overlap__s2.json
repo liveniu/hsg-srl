@@ -52,7 +52,6 @@
       "bev_hota": 0.31532201272688554
     }
   ],
-  "source_cache": "experiments_fab4_final_plus/diagnostics/residual_thresholds_20261020/all_cache/lumpi_M3.npz",
   "support": "retained_val_pairs",
   "all_observations_updated": true,
   "seconds": 45.687999999994645

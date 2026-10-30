@@ -26,6 +26,92 @@ on a supported camera only where the fixed HSG point lies in the frozen overlap 
 | Fixed interior midpoint | 0.645 / 0.986 | 0.381 / 0.688 | 0.792 / 1.590 |
 | STMC-derived fixed anchor | 0.966 / 1.172 | 0.742 / 0.904 | 0.513 / 0.960 |
 
+## Per-recording geometric anchors, median / RMSE / p90 (m)
+
+All rules use each recording's identical matched detections and GT references.
+No residual is applied. Values are read from results/recorded/ipm_baseline.json.
+
+| Recording | Matched detections | Rule | Median | RMSE | p90 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| M0 | 46,169 | Bottom-center projection (IPM) | 1.721 | 1.948 | 2.618 |
+| M0 | 46,169 | Sensitivity only | 0.879 | 1.169 | 1.686 |
+| M0 | 46,169 | Shape only | 1.020 | 1.607 | 2.386 |
+| M0 | 46,169 | Fixed interior midpoint | 0.702 | 1.283 | 1.742 |
+| M0 | 46,169 | STMC-derived fixed anchor | 0.941 | 1.230 | 1.696 |
+| M0 | 46,169 | HSG | 0.748 | 1.138 | 1.654 |
+| M1 | 184,442 | Bottom-center projection (IPM) | 1.655 | 1.780 | 2.363 |
+| M1 | 184,442 | Sensitivity only | 0.710 | 0.937 | 1.420 |
+| M1 | 184,442 | Shape only | 0.731 | 0.986 | 1.439 |
+| M1 | 184,442 | Fixed interior midpoint | 0.498 | 0.676 | 1.047 |
+| M1 | 184,442 | STMC-derived fixed anchor | 0.836 | 0.985 | 1.453 |
+| M1 | 184,442 | HSG | 0.514 | 0.667 | 0.999 |
+| M2 | 136,095 | Bottom-center projection (IPM) | 1.869 | 2.012 | 2.592 |
+| M2 | 136,095 | Sensitivity only | 0.881 | 1.114 | 1.672 |
+| M2 | 136,095 | Shape only | 0.529 | 0.938 | 1.381 |
+| M2 | 136,095 | Fixed interior midpoint | 0.580 | 0.771 | 1.060 |
+| M2 | 136,095 | STMC-derived fixed anchor | 1.028 | 1.146 | 1.587 |
+| M2 | 136,095 | HSG | 0.447 | 0.669 | 1.053 |
+| M3 | 85,103 | Bottom-center projection (IPM) | 1.959 | 2.251 | 3.337 |
+| M3 | 85,103 | Sensitivity only | 0.969 | 1.315 | 2.150 |
+| M3 | 85,103 | Shape only | 1.169 | 1.653 | 2.180 |
+| M3 | 85,103 | Fixed interior midpoint | 0.911 | 1.311 | 2.102 |
+| M3 | 85,103 | STMC-derived fixed anchor | 1.143 | 1.502 | 2.550 |
+| M3 | 85,103 | HSG | 0.971 | 1.200 | 1.833 |
+| M4 | 96,411 | Bottom-center projection (IPM) | 2.183 | 2.224 | 2.874 |
+| M4 | 96,411 | Sensitivity only | 1.264 | 1.371 | 1.873 |
+| M4 | 96,411 | Shape only | 0.994 | 1.673 | 2.832 |
+| M4 | 96,411 | Fixed interior midpoint | 0.833 | 1.210 | 1.735 |
+| M4 | 96,411 | STMC-derived fixed anchor | 1.056 | 1.272 | 1.923 |
+| M4 | 96,411 | HSG | 0.725 | 0.934 | 1.418 |
+| M5 | 144,480 | Bottom-center projection (IPM) | 1.971 | 2.075 | 2.724 |
+| M5 | 144,480 | Sensitivity only | 1.184 | 1.316 | 1.871 |
+| M5 | 144,480 | Shape only | 1.033 | 1.567 | 2.411 |
+| M5 | 144,480 | Fixed interior midpoint | 0.654 | 1.025 | 1.412 |
+| M5 | 144,480 | STMC-derived fixed anchor | 0.889 | 1.093 | 1.645 |
+| M5 | 144,480 | HSG | 0.618 | 0.808 | 1.199 |
+| M6 | 134,383 | Bottom-center projection (IPM) | 2.081 | 2.149 | 2.776 |
+| M6 | 134,383 | Sensitivity only | 1.224 | 1.419 | 2.041 |
+| M6 | 134,383 | Shape only | 0.931 | 1.447 | 2.276 |
+| M6 | 134,383 | Fixed interior midpoint | 0.705 | 0.960 | 1.367 |
+| M6 | 134,383 | STMC-derived fixed anchor | 1.014 | 1.180 | 1.776 |
+| M6 | 134,383 | HSG | 0.701 | 0.903 | 1.350 |
+| Ko-PER | 25,122 | Bottom-center projection (IPM) | 1.640 | 1.740 | 1.979 |
+| Ko-PER | 25,122 | Sensitivity only | 0.560 | 0.764 | 0.943 |
+| Ko-PER | 25,122 | Shape only | 0.564 | 0.754 | 1.021 |
+| Ko-PER | 25,122 | Fixed interior midpoint | 0.381 | 0.688 | 0.952 |
+| Ko-PER | 25,122 | STMC-derived fixed anchor | 0.742 | 0.904 | 1.231 |
+| Ko-PER | 25,122 | HSG | 0.313 | 0.579 | 0.758 |
+| Town01 | 8,301 | Bottom-center projection (IPM) | 1.501 | 1.833 | 2.399 |
+| Town01 | 8,301 | Sensitivity only | 0.510 | 1.040 | 1.193 |
+| Town01 | 8,301 | Shape only | 1.745 | 3.204 | 5.012 |
+| Town01 | 8,301 | Fixed interior midpoint | 1.167 | 2.580 | 4.268 |
+| Town01 | 8,301 | STMC-derived fixed anchor | 0.542 | 1.280 | 2.111 |
+| Town01 | 8,301 | HSG | 0.814 | 1.442 | 2.388 |
+| Town02 | 11,536 | Bottom-center projection (IPM) | 1.633 | 1.838 | 2.324 |
+| Town02 | 11,536 | Sensitivity only | 0.578 | 0.986 | 1.199 |
+| Town02 | 11,536 | Shape only | 1.720 | 2.563 | 3.638 |
+| Town02 | 11,536 | Fixed interior midpoint | 0.915 | 1.689 | 2.585 |
+| Town02 | 11,536 | STMC-derived fixed anchor | 0.536 | 1.079 | 1.441 |
+| Town02 | 11,536 | HSG | 0.740 | 1.208 | 1.757 |
+| Town03 | 37,121 | Bottom-center projection (IPM) | 1.538 | 1.609 | 2.039 |
+| Town03 | 37,121 | Sensitivity only | 0.624 | 0.827 | 1.030 |
+| Town03 | 37,121 | Shape only | 1.484 | 2.165 | 2.901 |
+| Town03 | 37,121 | Fixed interior midpoint | 0.743 | 1.351 | 1.876 |
+| Town03 | 37,121 | STMC-derived fixed anchor | 0.494 | 0.866 | 1.191 |
+| Town03 | 37,121 | HSG | 0.625 | 0.939 | 1.356 |
+| Town04 | 8,441 | Bottom-center projection (IPM) | 1.585 | 1.526 | 1.914 |
+| Town04 | 8,441 | Sensitivity only | 0.625 | 0.762 | 1.170 |
+| Town04 | 8,441 | Shape only | 1.503 | 2.544 | 3.998 |
+| Town04 | 8,441 | Fixed interior midpoint | 0.926 | 1.705 | 2.837 |
+| Town04 | 8,441 | STMC-derived fixed anchor | 0.713 | 1.004 | 1.503 |
+| Town04 | 8,441 | HSG | 0.806 | 1.230 | 2.080 |
+| Town05 | 17,962 | Bottom-center projection (IPM) | 1.616 | 1.671 | 2.239 |
+| Town05 | 17,962 | Sensitivity only | 0.597 | 0.828 | 1.230 |
+| Town05 | 17,962 | Shape only | 1.342 | 2.143 | 3.218 |
+| Town05 | 17,962 | Fixed interior midpoint | 0.711 | 1.297 | 1.829 |
+| Town05 | 17,962 | STMC-derived fixed anchor | 0.449 | 0.868 | 1.178 |
+| Town05 | 17,962 | HSG | 0.562 | 0.901 | 1.323 |
+
 ## Recording-macro TrackEval BEV-HOTA
 
 | Data / method | 0.5 m | 1 m | 1.5 m | 2 m | mean of four |

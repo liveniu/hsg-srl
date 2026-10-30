@@ -4,8 +4,12 @@
 results/recorded/hota_sources/<site>__overlap__s<seed>.json and
 ko_per__geo__s0.json are the association replays used by the manuscript.
 M0 and M1 have no residual model, so their overlap rows copy geometry-only
-HSG. This does not rerun fusion. Saved 10 Hz bins still check the geometry
-table and the camera-support ablation; they are not the overlap-gated rows.
+HSG. This does not rerun fusion.
+
+Bin hashes are not in the score files. scripts/export_overlap_bins.py fills
+them after a replay from the geometry databases. This command keeps an
+existing hash when the rebuilt row has the same scores, so rerunning it does
+not disconnect the rows from results/recorded/bins.
 """
 
 from __future__ import annotations
@@ -37,6 +41,40 @@ def write_csv(path, rows):
         writer.writerows(rows)
 
 
+def row_key(row: dict) -> tuple[str, str, str, str]:
+    seed = row.get("seed")
+    seed_text = "" if seed in ("", None) else str(int(float(seed)))
+    return (row["site"], row["method"], seed_text, f"{float(row['gate']):g}")
+
+
+def score_text(row: dict) -> tuple[str, ...]:
+    return tuple(f"{float(row[name]):.12g}" for name in ("hota", "deta", "assa", "loca")) + tuple(
+        str(int(float(row[name]))) for name in ("tp", "fp", "fn")
+    )
+
+
+def existing_hashes(path) -> dict[tuple, tuple[str, tuple[str, ...]]]:
+    """Map each stored row to its bin hash and the scores that hash was checked against."""
+    if not path.exists():
+        return {}
+    out = {}
+    for row in read_csv(path):
+        digest = (row.get("input_sha256") or "").strip()
+        if digest:
+            out[row_key(row)] = (digest, score_text(row))
+    return out
+
+
+def carry_hashes(rows: list[dict], stored: dict) -> int:
+    kept = 0
+    for row in rows:
+        found = stored.get(row_key(row))
+        if found and found[1] == score_text(row):
+            row["input_sha256"] = found[0]
+            kept += 1
+    return kept
+
+
 def from_json(path, method: str) -> list[dict]:
     blob = json.loads(path.read_text(encoding="utf-8"))
     rows = []
@@ -62,8 +100,14 @@ def from_json(path, method: str) -> list[dict]:
 
 def main() -> None:
     geo_path = RECORDED / "identity_hota25.csv"
+    overlap_path = RECORDED / "identity_hota25_overlap.csv"
+    stored_geo = existing_hashes(geo_path)
+    stored_overlap = existing_hashes(overlap_path)
+
     geo_rows = [row for row in read_csv(geo_path) if row["site"] != "ko_per"]
-    geo_rows.extend(from_json(SOURCES / "ko_per__geo__s0.json", "Geo"))
+    koper_geo = from_json(SOURCES / "ko_per__geo__s0.json", "Geo")
+    kept_geo = carry_hashes(koper_geo, stored_geo)
+    geo_rows.extend(koper_geo)
     write_csv(geo_path, geo_rows)
 
     overlap = []
@@ -87,8 +131,14 @@ def main() -> None:
             if len(got) != 4:
                 raise SystemExit(f"{path} has {len(got)} gates")
             overlap.extend(got)
-    write_csv(RECORDED / "identity_hota25_overlap.csv", overlap)
-    print(f"[hota] geo={len(geo_rows)} overlap={len(overlap)}")
+    kept_overlap = carry_hashes(overlap, stored_overlap)
+    write_csv(overlap_path, overlap)
+    print(f"[hota] geo={len(geo_rows)} overlap={len(overlap)} "
+          f"hashes kept: geo {kept_geo}/{len(koper_geo)}, overlap {kept_overlap}/{len(overlap)}")
+    missing = [row for row in overlap if not row["input_sha256"]]
+    if missing:
+        print(f"[hota] {len(missing)} overlap rows have no bin hash; run scripts/export_overlap_bins.py "
+              "from the geometry databases to fill them")
 
 
 if __name__ == "__main__":

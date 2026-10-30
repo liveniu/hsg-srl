@@ -52,7 +52,6 @@
       "bev_hota": 0.4579100232859029
     }
   ],
-  "source_cache": "experiments_fab4_final_plus/diagnostics/residual_thresholds_20261020/all_cache/ko_per.npz",
   "support": "retained_val_pairs",
   "all_observations_updated": true,
   "seconds": 6.60899999999674

@@ -96,7 +96,7 @@ def main() -> None:
         "| Stratum | IPM median | HSG median | HSG-SRL median | HSG p90 | HSG-SRL p90 | HSG RMSE | HSG-SRL RMSE |",
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
-    # HSG is not in ipm_baseline; it is the geo column of the support arrays.
+    # The published HSG/residual chain uses the frozen support arrays.
     strata = ("LUMPI", "LUMPI-pole", "LUMPI-A", "LUMPI-B", "Ko-PER", "Synth")
     labels = {
         "LUMPI": "LUMPI",
@@ -150,6 +150,35 @@ def main() -> None:
             data = ipm["pooled"][stratum][key]
             cells.append(f"{data['median']:.3f} / {data['rmse']:.3f}")
         lines.append(f"| {label} | " + " | ".join(cells) + " |")
+
+    lines += [
+        "",
+        "## Per-recording geometric anchors, median / RMSE / p90 (m)",
+        "",
+        "All rules use each recording's identical matched detections and GT references.",
+        "No residual is applied. Values are read from results/recorded/ipm_baseline.json.",
+        "",
+        "| Recording | Matched detections | Rule | Median | RMSE | p90 |",
+        "| --- | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    recording_anchors = (
+        ("bottom", "Bottom-center projection (IPM)"),
+        ("alpha", "Sensitivity only"),
+        ("shape", "Shape only"),
+        ("b050", "Fixed interior midpoint"),
+        ("b070", "STMC-derived fixed anchor"),
+        ("hsg", "HSG"),
+    )
+    for site in groups["LUMPI"] + groups["Ko-PER"] + groups["Synth"]:
+        label = "Ko-PER" if site == "ko_per" else site.replace("lumpi_", "").replace("synth_", "").replace("_O_day", "")
+        for key, rule in recording_anchors:
+            data = ipm["per_recording"][site][key]
+            if data["n"] != len(arrays[site]["geo"]):
+                raise SystemExit(f"{site} {rule}: anchor and localization cohorts differ")
+            lines.append(
+                f"| {label} | {data['n']:,} | {rule} | {data['median']:.3f} | "
+                f"{data['rmse']:.3f} | {data['p90']:.3f} |"
+            )
 
     lines += [
         "",

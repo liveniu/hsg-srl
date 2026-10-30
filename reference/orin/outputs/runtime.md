@@ -52,10 +52,10 @@ default-target graphical.target
 gdm active
 gdm3 active
 === yolo engine ===
--rw-rw-r-- 1 jetson jetson 54188692 Oct 21 12:55 /home/jetson/Desktop/experiments_fab4_orin_plus/data/models/yolo26l.engine
+-rw-rw-r-- 1 jetson jetson 54188692 Oct 21 12:55 data/models/yolo26l.engine
 === timing interpreter ===
 python python3
-exe /home/jetson/Desktop/hsg_srl/.venv/bin/python3
+exe .venv/bin/python3
 numpy OK
 cv2 OK
 yaml OK

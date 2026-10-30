@@ -84,9 +84,12 @@ GEOMETRY_MERGE = {
 }
 
 # Fresh from-video graphs only. Published scoring reads configs/overlap and
-# does not apply this threshold again. LUMPI and Synthehicle graphs were
-# frozen at 1000 m^2. Ko-PER's only edge covers 579.35 m^2, so its builder
-# threshold is 500 m^2. Do not copy that 500 m^2 value onto the other datasets.
+# does not apply this threshold again. The frozen LUMPI and Synthehicle graphs
+# were built at 1000 m^2: that cutoff is why Town03 keeps 27 of 28 edges
+# (C02-C04 covers 995.58 m^2) and Town04 keeps 5 of 6 (C02-C04 covers
+# 538.42 m^2). Ko-PER's only edge covers 579.35 m^2, so its builder threshold
+# is 500 m^2. A positive-area rule would add those two Synthehicle edges and
+# would not regenerate the frozen graphs.
 AREA_MIN_M2 = {
     "lumpi": 1000.0,
     "synth": 1000.0,

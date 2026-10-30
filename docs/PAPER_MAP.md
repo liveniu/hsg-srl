@@ -47,7 +47,7 @@ The manuscript tree `paper/` is not part of the git release. Scoring does not re
 | S1 | Provenance, Ko-PER footprint center, detector admission | `docs/DATASETS.md`; `src/importers/import_koper.py`; `scripts/detect_koper.py` |
 | S2 | Projection, frozen edges, loss, association, deployment pseudocode | `configs/paper_defaults.yaml`; `src/geometry/overlap_gate.py` |
 | S3 | Support counts, reference translation, per-recording localization | `results/recorded/pair_counts/`; `scripts/eval_offset_sensitivity.py`; `scripts/build_tables.py` |
-| S4 | Single-cue anchors, spatial-gate ablation, MVC control | `scripts/eval_fixed_anchors.py`; `scripts/eval_tracking.py --no-spatial-gate`; `scripts/train_recording.py --symmetric` |
+| S4 | Bottom-center, single-cue and interior anchors, spatial-gate ablation, MVC control | `scripts/eval_fixed_anchors.py`; `scripts/eval_tracking.py --no-spatial-gate`; `scripts/train_recording.py --symmetric` |
 | S5 | TrackEval replay and runtime accounting | `scripts/replay_trackeval.py`; `docs/ORIN.md` |
 | S4 Tables S9–S11 | Spatial gate, regions, and the symmetric MVC control | `scripts/build_supplement_tables.py`; `results/tables/supplement_controls.md` |
 | S6 Table S16 | BEVHeight matched subset with C05 on M6 | `results/bevheight/score_three.md`; `results/bevheight/*_bevheight_subset.npz` |
@@ -55,5 +55,6 @@ The manuscript tree `paper/` is not part of the git release. Scoring does not re
 | S7 | Optional ChArUco local frame | `src/pipeline/multi_camera_bev_stitch.py`; `tools/` |
 | Table S1 | Fixed configuration | `configs/paper_defaults.yaml` |
 | Table S2 | Pair counts and support cameras | `results/recorded/pair_counts/`; `results/recorded/residual_support.csv` |
+| Table S8 | Per-recording geometric anchors, including bottom-center matched counts, median, RMSE, and p90 | `results/recorded/ipm_baseline.json`; `scripts/build_tables.py`; per-recording geometric-anchor table in `results/tables/computed_tables.md` |
 
-`results/recorded/identity_hota25_support.csv` is the earlier camera-support ablation. It still matches the saved bins. It is not the published overlap-gated method.
+`results/recorded/identity_hota25_support.csv` holds the "Without spatial gating" HOTA rows of Tables S9–S10 for LUMPI and Synthehicle; `results/recorded/hota_sources/ko_per__full__s*.json` holds them for Ko-PER. These rows still match the saved bins. They are not the published overlap-gated method.

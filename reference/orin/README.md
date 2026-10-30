@@ -1,6 +1,6 @@
-# experiments_fab4_orin_plus
+# Orin timing bundle
 
-Component timing for the overlap-restricted localizer. Copy this directory to the Orin.
+Component timing for the overlap-gated localizer. Copy this directory to the Orin.
 
 ```bash
 sudo bash setup_orin.sh

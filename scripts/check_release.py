@@ -8,6 +8,7 @@ the overlap-gated table. This does not train, detect, or rerun association.
 from __future__ import annotations
 
 import csv
+import json
 
 import numpy as np
 
@@ -103,6 +104,22 @@ def main() -> None:
     for snippet in ("0.553", "41.25", "Ko-PER", "overlap"):
         if snippet not in text:
             failures.append(f"computed_tables.md missing {snippet}")
+    anchors = json.loads((RECORDED / "ipm_baseline.json").read_text(encoding="utf-8"))
+    for site, rules in anchors["per_recording"].items():
+        label = "Ko-PER" if site == "ko_per" else site.replace("lumpi_", "").replace("synth_", "").replace("_O_day", "")
+        for key, rule in (
+            ("bottom", "Bottom-center projection (IPM)"),
+            ("alpha", "Sensitivity only"),
+            ("shape", "Shape only"),
+            ("b050", "Fixed interior midpoint"),
+            ("b070", "STMC-derived fixed anchor"),
+            ("hsg", "HSG"),
+        ):
+            data = rules[key]
+            expected = (f"| {label} | {data['n']:,} | {rule} | {data['median']:.3f} | "
+                        f"{data['rmse']:.3f} | {data['p90']:.3f} |")
+            if expected not in text:
+                failures.append(f"computed_tables.md missing geometric row: {site} {rule}")
     supplement = ARTIFACT_ROOT / "results" / "tables" / "supplement_controls.md"
     bev = (ARTIFACT_ROOT / "results" / "bevheight" / "score_three.md").read_text(encoding="utf-8")
     if not supplement.exists():

@@ -2,7 +2,7 @@
 
 Geometry-Guided Metric Localization With Self-Supervised Residual Learning for Roadside Multi-Camera Vehicle Tracking.
 
-This directory is a standalone package. Licensed LUMPI and Synthehicle videos are not included. The geometry databases are a separate Zenodo deposit, not part of this git repository.
+This directory is a standalone package. Licensed LUMPI, Ko-PER, and Synthehicle videos are not included. The geometry databases are a separate Zenodo deposit, not part of this git repository.
 
 ## Contents
 
@@ -50,7 +50,7 @@ python scripts/replay_trackeval.py
 python scripts/build_tables.py
 ```
 
-These two commands check the recorded tracking scores and write the localization chain, the fixed-anchor comparison, recording-macro BEV-HOTA, and the per-recording bootstrap and HOTA breakdowns. They do not retrain.
+These two commands check the recorded tracking scores and write the localization chain, the pooled and per-recording geometric-anchor comparisons, recording-macro BEV-HOTA, and the per-recording bootstrap and HOTA breakdowns. The per-recording anchor table includes bottom-center median, RMSE, and p90 for all thirteen domains. They do not retrain.
 
 `python scripts/eval_anchor_tracking.py --summarize` writes the geometry-only anchor-tracking summary from stored JSON. `python scripts/report_board_capture.py` prints the board-fit residuals. `docs/REPRODUCTION.md` names the commands for the reference-frame rescore and the supervised BEVHeight comparison.
 

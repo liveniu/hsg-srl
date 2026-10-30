@@ -18,7 +18,7 @@ LUMPI: https://data.uni-hannover.de/en/dataset/lumpi
 
 The official test clips do not contain the 3-D boxes used here, so they are not imported.
 
-Ko-PER is one recording. Sequence1a–1d share a camera-clock epoch and one 60/10/30 split. Import shifts the annotated front-bumper bottom center backward by half the vehicle length and stores that footprint center. The published SK1–SK4 overlap edge is frozen in `configs/overlap/ko_per.json` (579.35 m²). A from-video graph builder keeps Ko-PER edges of at least 500 m² and LUMPI/Synthehicle edges of at least 1000 m². Published scoring does not apply that threshold again.
+Ko-PER is one recording. Sequence1a–1d share a camera-clock epoch and one 60/10/30 split. Import shifts the annotated front-bumper bottom center backward by half the vehicle length and stores that footprint center. The published SK1–SK4 overlap edge is frozen in `configs/overlap/ko_per.json` (579.35 m²). A from-video Ko-PER graph keeps intersections of at least 500 m² so that edge survives; LUMPI and Synthehicle graphs were frozen at 1000 m². Published pair mining and tracking read the frozen overlap configurations and apply no further area filter.
 
 Ko-PER: https://www.uni-ulm.de/in/mrm/forschung/datensaetze/ (Ko-PER intersection dataset).
 
