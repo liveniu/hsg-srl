@@ -108,6 +108,7 @@ python scripts/train_recording.py --site lumpi_M6 --seed 0
 These commands read stored results. They do not retrain.
 
 - Reference-frame translation: `python scripts/eval_offset_sensitivity.py` writes `results/offset_sensitivity/summary.md`. The committed summary is the published rescore. Re-running it needs the released geometry databases.
+- Final overlap-gated LUMPI reference sensitivity: `python scripts/eval_final_reference_sensitivity.py` rebuilds `results/offset_sensitivity/final_overlap_lumpi.md` from the recorded `final_overlap_lumpi.json`. Adding `--from-data` recomputes the localization rescore using the released geometry databases and existing checkpoints, without fitting models or rerunning association. The same support, polygons, matched observations, and clock alignment are retained; only the scoring-reference translation changes. The original `offset_sensitivity.json` supplies the reference translations and geometric controls; its older per-recording residual block is not the source for this final pooled result.
 - Geometry-only anchor tracking: `python scripts/eval_anchor_tracking.py --summarize` rebuilds `results/anchor_tracking/summary.md` from the stored JSON. A new fusion replay is `python scripts/eval_anchor_tracking.py --site lumpi_M6` and needs `geometry.db`. It passes the same final-tracking flags as `scripts/eval_tracking.py`.
 - Supervised BEVHeight reference: the archived scores are `results/bevheight/score_three.md` and `results/bevheight/hota_remerge.md`. A new supervised run is `docs/BEVHEIGHT.md`.
 - Pair counts are `results/recorded/pair_counts/`. The board-fit residuals are the next section.
@@ -122,9 +123,9 @@ python tools/diagnose_charuco.py --config path/to/scene.yaml
 python tools/mark_charuco_corners.py --config path/to/scene.yaml
 ```
 
-`python scripts/report_board_capture.py` prints the board-fit residuals from `results/board_capture/fit_residuals.json`. That JSON is 19 KB and is the published fit. Scene 02's second camera moves from 0.459 to 0.456 BEV pixels after refinement; the other cameras stay at the before-refinement RMS.
+`python scripts/report_board_capture.py` prints the board-fit residuals from `results/board_capture/fit_residuals.json`. That JSON is a 19 KB archived engineering readout for the optional procedure, separate from the paper's localization and tracking evaluation. It does not establish field calibration accuracy. Scene 02's second camera moves from 0.459 to 0.456 BEV pixels after refinement; the other cameras stay at the before-refinement RMS.
 
-The six scenes are 14 uncompressed BMP stills, 180,634,368 bytes, about 172 MiB. The rest of the capture directory is unused duplicates and is about 691 MB. Those stills are not in this git repository and do not belong in the geometry-database deposit at https://doi.org/10.5281/zenodo.23008421. The published result is the stored reprojection RMS, so a separate Zenodo record is not required to check the board-fit residuals. Re-fitting from pixels would need those 14 stills plus the scene YAML and manual corners. That image archive is optional and should be its own deposit if it is released later.
+The six scenes are 14 uncompressed BMP stills, 180,634,368 bytes, about 172 MiB. The rest of the capture directory is unused duplicates and is about 691 MB. Those stills are not in this git repository and do not belong in the geometry-database deposit at https://doi.org/10.5281/zenodo.23008421. The stored fit readout can be inspected without the stills; re-fitting from pixels would need those 14 stills plus the scene YAML and manual corners. That image archive is optional and should be its own deposit if it is released later.
 
 ## Edge timing and the supervised reference
 

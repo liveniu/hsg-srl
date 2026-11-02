@@ -1,0 +1,198 @@
+{
+  "scope": "Conditional localization only: seven LUMPI recordings; fixed predictions, support, polygons, matching and clocks. No tracking rescore.",
+  "prediction_source": "cached_final_predictions",
+  "cohort_n": 827083,
+  "results": {
+    "published_hsg": {
+      "hsg_srl_mean": {
+        "median": 0.5528207156175525,
+        "rmse": 0.8348039151201926,
+        "p90": 1.2854952936027615
+      },
+      "hsg_srl_seeds": [
+        {
+          "median": 0.5577405265266727,
+          "rmse": 0.8384402942160848,
+          "p90": 1.29078600266243
+        },
+        {
+          "median": 0.5472722609350865,
+          "rmse": 0.8363669386309822,
+          "p90": 1.2859598596148731
+        },
+        {
+          "median": 0.5534493593908986,
+          "rmse": 0.8296045125135112,
+          "p90": 1.2797400185309813
+        }
+      ],
+      "fixed_midpoint": {
+        "n": 827083,
+        "median": 0.6451619994121434,
+        "rmse": 0.9861331983089698
+      },
+      "reduction_vs_midpoint_percent": {
+        "median": 14.312883257031583,
+        "rmse": 15.345724436443076
+      },
+      "all_seeds_better_than_fixed_midpoint": {
+        "median": true,
+        "rmse": true
+      }
+    },
+    "none": {
+      "hsg_srl_mean": {
+        "median": 0.5589797979710686,
+        "rmse": 0.8462957080372244,
+        "p90": 1.308044270839429
+      },
+      "hsg_srl_seeds": [
+        {
+          "median": 0.5634577844825358,
+          "rmse": 0.849575426097066,
+          "p90": 1.3106547837558529
+        },
+        {
+          "median": 0.5544055781273487,
+          "rmse": 0.8494054347391086,
+          "p90": 1.3104759635872936
+        },
+        {
+          "median": 0.5590760313033212,
+          "rmse": 0.8399062632754988,
+          "p90": 1.3030020651751408
+        }
+      ],
+      "fixed_midpoint": {
+        "n": 827083,
+        "median": 0.621852698064597,
+        "rmse": 0.988964253508776
+      },
+      "reduction_vs_midpoint_percent": {
+        "median": 10.110577680085465,
+        "rmse": 14.426056853457903
+      },
+      "all_seeds_better_than_fixed_midpoint": {
+        "median": true,
+        "rmse": true
+      }
+    },
+    "from_b050": {
+      "hsg_srl_mean": {
+        "median": 0.5795099134346744,
+        "rmse": 0.8851203948456542,
+        "p90": 1.3944982388174942
+      },
+      "hsg_srl_seeds": [
+        {
+          "median": 0.5813770888547266,
+          "rmse": 0.8859387894009305,
+          "p90": 1.3896453858016649
+        },
+        {
+          "median": 0.5774854666529733,
+          "rmse": 0.8884615904254612,
+          "p90": 1.4007101122482626
+        },
+        {
+          "median": 0.5796671847963234,
+          "rmse": 0.880960804710571,
+          "p90": 1.3931392184025555
+        }
+      ],
+      "fixed_midpoint": {
+        "n": 827083,
+        "median": 0.6005881904779242,
+        "rmse": 1.0007218055660394
+      },
+      "reduction_vs_midpoint_percent": {
+        "median": 3.5096056461710545,
+        "rmse": 11.551802916395681
+      },
+      "all_seeds_better_than_fixed_midpoint": {
+        "median": true,
+        "rmse": true
+      }
+    },
+    "from_bottom": {
+      "hsg_srl_mean": {
+        "median": 0.7534745747724032,
+        "rmse": 1.214163911247529,
+        "p90": 2.021493760212656
+      },
+      "hsg_srl_seeds": [
+        {
+          "median": 0.7588271495899006,
+          "rmse": 1.2164478885054584,
+          "p90": 2.0257394310001144
+        },
+        {
+          "median": 0.745944636136569,
+          "rmse": 1.216329171476912,
+          "p90": 2.0259233643926042
+        },
+        {
+          "median": 0.75565193859074,
+          "rmse": 1.209714673760217,
+          "p90": 2.0128184852452486
+        }
+      ],
+      "fixed_midpoint": {
+        "n": 827083,
+        "median": 0.9049869256491628,
+        "rmse": 1.2688976467166881
+      },
+      "reduction_vs_midpoint_percent": {
+        "median": 16.741938096848983,
+        "rmse": 4.313487034260355
+      },
+      "all_seeds_better_than_fixed_midpoint": {
+        "median": true,
+        "rmse": true
+      }
+    }
+  },
+  "sources": {
+    "reference_treatments": {
+      "file": "offset_sensitivity.json",
+      "sha256": "340be07a2d29b6cf3bc2d27f713f7339da689cf3a08081497cf6219f7a8be75b"
+    },
+    "recordings": {
+      "lumpi_M0": {
+        "recorded_localization_sha256": "2aaab836fd20aa541e3759d2f8c8e88949e9377925a67e9576fe72d2d4663ad4",
+        "prediction_cache": "lumpi_M0.npz",
+        "prediction_cache_sha256": "1ae433de39f71ed82b1319a0ce0da5f79895fa8e4f2d37615a6efbec3d9ef69d"
+      },
+      "lumpi_M1": {
+        "recorded_localization_sha256": "cfc41233a2e513ebb14025fa27a1b63d583732b7e504bf00f1e6715e39383273",
+        "prediction_cache": "lumpi_M1.npz",
+        "prediction_cache_sha256": "f5233d4b3f4fb751a2422cb5f4f733be98381ef3120d777f930b0377622c9fbe"
+      },
+      "lumpi_M2": {
+        "recorded_localization_sha256": "31790295e3825360f71c07ec3a762edfbebc3a13972da1aeeb32a771471080d9",
+        "prediction_cache": "lumpi_M2.npz",
+        "prediction_cache_sha256": "fa9fb7a0e87369abca3307639ae640e511808bd47c69b1628a8220967f1f0bb4"
+      },
+      "lumpi_M3": {
+        "recorded_localization_sha256": "a3cf4e054c941f08b33293a921f0ff2460fd001d337c3e8dae5ec93025857eab",
+        "prediction_cache": "lumpi_M3.npz",
+        "prediction_cache_sha256": "b08abd34aec3b036c787cdc386cbd40c865dc25dc83dbb7b7ef8cebf0d94c514"
+      },
+      "lumpi_M4": {
+        "recorded_localization_sha256": "8835049695a1342f0a9df1ffa45dc28c3986c451f235d16b2ccdcf388ebe2883",
+        "prediction_cache": "lumpi_M4.npz",
+        "prediction_cache_sha256": "9156efcc607c47a51b2d169f4825dd65982e98a6e97af262029600b548c47a00"
+      },
+      "lumpi_M5": {
+        "recorded_localization_sha256": "401f39882f9939625e32389738af649f8fd152881213deea4ebf12ec17f6c4db",
+        "prediction_cache": "lumpi_M5.npz",
+        "prediction_cache_sha256": "c304e493c505f3d921ea9aec8bf64f93a2f8e27cefcb53d53282a174a8b74976"
+      },
+      "lumpi_M6": {
+        "recorded_localization_sha256": "a0bc23654b1a4738f94598d6fab34be8caddfb2a34be659e33526486833e02e8",
+        "prediction_cache": "lumpi_M6.npz",
+        "prediction_cache_sha256": "51bcb8fba0190340a7ef84392f870812897033e0b0c881de16542a5f75e026b1"
+      }
+    }
+  }
+}

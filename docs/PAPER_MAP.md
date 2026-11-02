@@ -46,15 +46,20 @@ The manuscript tree `paper/` is not part of the git release. Scoring does not re
 | --- | --- | --- |
 | S1 | Provenance, Ko-PER footprint center, detector admission | `docs/DATASETS.md`; `src/importers/import_koper.py`; `scripts/detect_koper.py` |
 | S2 | Projection, frozen edges, loss, association, deployment pseudocode | `configs/paper_defaults.yaml`; `src/geometry/overlap_gate.py` |
-| S3 | Support counts, reference translation, per-recording localization | `results/recorded/pair_counts/`; `scripts/eval_offset_sensitivity.py`; `scripts/build_tables.py` |
+| S3 | Support counts, reference translation, per-recording localization | `results/recorded/pair_counts/`; `scripts/eval_offset_sensitivity.py`; `scripts/eval_final_reference_sensitivity.py`; `scripts/build_tables.py` |
 | S4 | Bottom-center, single-cue and interior anchors, spatial-gate ablation, MVC control | `scripts/eval_fixed_anchors.py`; `scripts/eval_tracking.py --no-spatial-gate`; `scripts/train_recording.py --symmetric` |
 | S5 | TrackEval replay and runtime accounting | `scripts/replay_trackeval.py`; `docs/ORIN.md` |
 | S4 Tables S9–S11 | Spatial gate, regions, and the symmetric MVC control | `scripts/build_supplement_tables.py`; `results/tables/supplement_controls.md` |
 | S6 Table S16 | BEVHeight matched subset with C05 on M6 | `results/bevheight/score_three.md`; `results/bevheight/*_bevheight_subset.npz` |
 | S6 | HOTA breakdown and BEVHeight tracking | `scripts/build_tables.py`; `results/bevheight/hota_remerge.md` |
-| S7 | Optional ChArUco local frame | `src/pipeline/multi_camera_bev_stitch.py`; `tools/` |
+| S7 | Optional ChArUco local-frame procedure; field calibration accuracy is outside the paper evaluation | `src/pipeline/multi_camera_bev_stitch.py`; `tools/` |
 | Table S1 | Fixed configuration | `configs/paper_defaults.yaml` |
 | Table S2 | Pair counts and support cameras | `results/recorded/pair_counts/`; `results/recorded/residual_support.csv` |
+| Table S3 | Reference sensitivity of geometric controls and the final overlap-gated LUMPI localizer | `results/offset_sensitivity/offset_sensitivity.json` for geometric controls and translations; `final_overlap_lumpi.json` and `scripts/eval_final_reference_sensitivity.py` for final pooled localization |
+| Tables S4–S5 | Reference-treatment strata and per-recording geometric comparisons | `results/offset_sensitivity/offset_sensitivity.json`; the Synthehicle row in S4 shares identical values across all four treatments |
 | Table S8 | Per-recording geometric anchors, including bottom-center matched counts, median, RMSE, and p90 | `results/recorded/ipm_baseline.json`; `scripts/build_tables.py`; per-recording geometric-anchor table in `results/tables/computed_tables.md` |
+| Table S15 | Per-recording HOTA with shared M0/M1 fallback rows | `results/recorded/identity_hota25.csv`, `identity_hota25_overlap.csv`; the full seed rows remain in `results/tables/computed_tables.md` |
+
+The supplement combines identical deployment rows in Table S9 and identical HSG / HSG-SRL seed outputs for M0/M1 in Table S15. Table S10 keeps all regions and their counts while showing HSG and the camera-supported residual without spatial gating: final HSG-SRL equals the latter inside the overlap and HSG outside. The full, unfolded source tables remain in `results/tables/supplement_controls.md` and `computed_tables.md`. Board-fit readouts in `results/board_capture/` are optional engineering records, separate from the paper's localization and tracking evaluation.
 
 `results/recorded/identity_hota25_support.csv` holds the "Without spatial gating" HOTA rows of Tables S9–S10 for LUMPI and Synthehicle; `results/recorded/hota_sources/ko_per__full__s*.json` holds them for Ko-PER. These rows still match the saved bins. They are not the published overlap-gated method.
