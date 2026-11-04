@@ -174,6 +174,9 @@ def main() -> None:
             "0.533 / 0.823 / 1.262",
             "0.563 / 0.830 / 1.258",
             "0.012% / 5.539%",
+            "68,569",
+            "0.575 / 0.825",
+            "0.020% / 0.614%",
         ):
             if snippet not in body:
                 failures.append(f"supplement_controls.md missing {snippet}")

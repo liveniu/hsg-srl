@@ -3,7 +3,7 @@
 S9 and S10 recompute localization from the released geometry databases.
 The residual is the published F0 checkpoint. HSG-SRL applies it only inside
 the frozen overlap union. The row without spatial gating uses the same
-camera support on every box. HOTA4 is the published tracking replay.
+eligible cameras on every box. HOTA4 is the published tracking replay.
 
 ## S9. Spatial-gating control
 
@@ -64,7 +64,7 @@ camera support on every box. HOTA4 is the published tracking replay.
 ## S11. Pair-symmetric MVC control
 
 Symmetric checkpoints are results/recorded/checkpoints/*_symmetric_seed*.pt.
-Both learned columns use the overlap mask and the published camera support.
+Both learned columns use the overlap mask and the published eligible cameras.
 
 | Recording | Seed | HSG | Sensitivity-guided MVC | Pair-symmetric MVC |
 | --- | ---: | ---: | ---: | ---: |
@@ -92,3 +92,15 @@ seed-0 HSG-SRL / the mixed BEVHeight replay.
 | M6 | 130,177 | 0.689 / 0.895 / 1.340 | 0.563 / 0.830 / 1.258 | 0.503 / 2.107 / 2.987 | 0.012% / 5.539% | 34.4 / 38.0 / 35.3 |
 | M3 | 80,002 | 0.946 / 1.178 / 1.834 | 0.976 / 1.212 / 1.796 | 0.822 / 1.958 / 3.358 | 0.047% / 6.412% | 31.8 / 31.5 / 31.2 |
 | Town05 | 15,983 | 0.559 / 0.865 / 1.306 | 0.564 / 0.836 / 1.238 | 0.266 / 1.333 / 0.835 | 0.019% / 2.772% | 49.5 / 48.5 / 56.8 |
+
+## S17. Unique-containment localization
+
+Each projected BEVHeight point lies in exactly one retained GT-matched detector box,
+and that box contains no other BEVHeight prediction in the same camera and frame.
+Seed-0 HSG-SRL uses the eligible cameras and the overlap mask.
+
+| Recording | Retained observations | HSG-SRL median / RMSE | BEVHeight median / RMSE | >5 m: SRL / BEVHeight |
+| --- | ---: | ---: | ---: | ---: |
+| M6 | 68,569 | 0.575 / 0.825 | 0.352 / 0.903 | 0.020% / 0.614% |
+| M3 | 32,341 | 0.834 / 1.095 | 0.686 / 0.964 | 0.077% / 0.114% |
+| Town05 | 11,021 | 0.544 / 0.782 | 0.292 / 0.835 | 0.027% / 1.043% |

@@ -1,8 +1,8 @@
 # BEVHeight reference on M6, M3, and Town05
 
 Attachment is detection order: the first unused test box containing the projected ground point.
-Localization is the stored matched subset. HSG-SRL seed 0 uses retained validation-pair
-support and the frozen overlap mask. On M6 that support set is C05, C06, and C07.
+Localization is the stored matched subset. HSG-SRL seed 0 uses the eligible cameras
+and the frozen overlap mask. On M6 the eligible cameras are C05, C06, and C07.
 A deployment file containing only C06 and C07 is not this comparison.
 Full-set HOTA is the published overlap-gated recording score. BEVHeight tracking is in hota_remerge.md.
 

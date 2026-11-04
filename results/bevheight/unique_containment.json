@@ -1,0 +1,34 @@
+{
+  "scope": "Supplementary Table S17. Seed 0. Fixed matched observations, clocks, and spatial references.",
+  "rule": "Keep a prediction-box pair only when the projected BEVHeight point lies in exactly one retained GT-matched detector box and that box contains no other BEVHeight prediction point in the same camera and frame. The subset is not chosen by GT error.",
+  "scoring": "No training and no tracking replay. HSG, seed-0 HSG-SRL, and BEVHeight use the same retained observations. HSG-SRL is the overlap-gated localizer; on M6 the eligible cameras are C05, C06, and C07.",
+  "results": {
+    "lumpi_M6": {
+      "n": 68569,
+      "hsg_srl_median": 0.5753720376440175,
+      "hsg_srl_rmse": 0.8245956784972238,
+      "hsg_srl_above5": 14,
+      "bevheight_median": 0.35193399809440185,
+      "bevheight_rmse": 0.9028365771935256,
+      "bevheight_above5": 421
+    },
+    "lumpi_M3": {
+      "n": 32341,
+      "hsg_srl_median": 0.8344603281844255,
+      "hsg_srl_rmse": 1.0951718151666274,
+      "hsg_srl_above5": 25,
+      "bevheight_median": 0.6857750182865268,
+      "bevheight_rmse": 0.9641003139957235,
+      "bevheight_above5": 37
+    },
+    "synth_Town05_O_day": {
+      "n": 11021,
+      "hsg_srl_median": 0.5436337217850242,
+      "hsg_srl_rmse": 0.7818025643247668,
+      "hsg_srl_above5": 3,
+      "bevheight_median": 0.29226559601319463,
+      "bevheight_rmse": 0.8354623792246926,
+      "bevheight_above5": 115
+    }
+  }
+}

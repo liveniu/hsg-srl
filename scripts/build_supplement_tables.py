@@ -233,6 +233,29 @@ def slash(rows, key: str, digits: int = 3) -> str:
     return " / ".join(fmt(float(row[key]), digits) for row in rows)
 
 
+def unique_containment_lines() -> list[str]:
+    blob = json.loads((BH / "unique_containment.json").read_text(encoding="utf-8"))
+    lines = [
+        "",
+        "## S17. Unique-containment localization",
+        "",
+        "Each projected BEVHeight point lies in exactly one retained GT-matched detector box,",
+        "and that box contains no other BEVHeight prediction in the same camera and frame.",
+        "Seed-0 HSG-SRL uses the eligible cameras and the overlap mask.",
+        "",
+        "| Recording | Retained observations | HSG-SRL median / RMSE | BEVHeight median / RMSE | >5 m: SRL / BEVHeight |",
+        "| --- | ---: | ---: | ---: | ---: |",
+    ]
+    for site in BH_SITES:
+        row = blob["results"][site]
+        rate = f"{100 * row['hsg_srl_above5'] / row['n']:.3f}% / {100 * row['bevheight_above5'] / row['n']:.3f}%"
+        lines.append(
+            f"| {LABEL[site]} | {row['n']:,} | {row['hsg_srl_median']:.3f} / {row['hsg_srl_rmse']:.3f} | "
+            f"{row['bevheight_median']:.3f} / {row['bevheight_rmse']:.3f} | {rate} |"
+        )
+    return lines
+
+
 def write_markdown(recording, regional, mvc, bev) -> None:
     lines = [
         "# Supplement controls rebuilt in the artifact",
@@ -240,7 +263,7 @@ def write_markdown(recording, regional, mvc, bev) -> None:
         "S9 and S10 recompute localization from the released geometry databases.",
         "The residual is the published F0 checkpoint. HSG-SRL applies it only inside",
         "the frozen overlap union. The row without spatial gating uses the same",
-        "camera support on every box. HOTA4 is the published tracking replay.",
+        "eligible cameras on every box. HOTA4 is the published tracking replay.",
         "",
         "## S9. Spatial-gating control",
         "",
@@ -285,7 +308,7 @@ def write_markdown(recording, regional, mvc, bev) -> None:
         "## S11. Pair-symmetric MVC control",
         "",
         "Symmetric checkpoints are results/recorded/checkpoints/*_symmetric_seed*.pt.",
-        "Both learned columns use the overlap mask and the published camera support.",
+        "Both learned columns use the overlap mask and the published eligible cameras.",
         "",
         "| Recording | Seed | HSG | Sensitivity-guided MVC | Pair-symmetric MVC |",
         "| --- | ---: | ---: | ---: | ---: |",
@@ -315,6 +338,7 @@ def write_markdown(recording, regional, mvc, bev) -> None:
         lines.append(
             f"| {LABEL[row['site']]} | {row['n']:,} | {loc('hsg')} | {loc('overlap_seed0')} | {loc('bevheight')} | {rate} | {hota} |"
         )
+    lines.extend(unique_containment_lines())
     dest = ARTIFACT_ROOT / "results" / "tables" / "supplement_controls.md"
     dest.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"[supplement] -> {dest}")
@@ -325,8 +349,8 @@ def write_score_three(bev) -> None:
         "# BEVHeight reference on M6, M3, and Town05",
         "",
         "Attachment is detection order: the first unused test box containing the projected ground point.",
-        "Localization is the stored matched subset. HSG-SRL seed 0 uses retained validation-pair",
-        "support and the frozen overlap mask. On M6 that support set is C05, C06, and C07.",
+        "Localization is the stored matched subset. HSG-SRL seed 0 uses the eligible cameras",
+        "and the frozen overlap mask. On M6 the eligible cameras are C05, C06, and C07.",
         "A deployment file containing only C06 and C07 is not this comparison.",
         "Full-set HOTA is the published overlap-gated recording score. BEVHeight tracking is in hota_remerge.md.",
         "",

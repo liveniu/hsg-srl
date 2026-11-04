@@ -12,7 +12,7 @@ Checkpoint and support-file names use the tag `F0`. That tag is the HSG-SRL resi
 | `identity_hota25_overlap.csv` | Published HSG-SRL rows. Each row's `input_sha256` is a 10 Hz bin in `bins/*_overlap_s*.npz`. |
 | `supplement/` | Recomputed S9–S11 arrays and the S16 subset summary. `scripts/build_supplement_tables.py` writes them. |
 | `tracking_decomposition_recording.csv` | HOTA decomposition and the in-repository bin or score file for each replay. `scripts/build_tracking_sources.py` writes it. |
-| `identity_hota25_support.csv` | Control without spatial gating: the same residual models and camera support with the overlap mask removed. `scripts/build_supplement_tables.py` reads it for the spatial-gating control, and the rows still match `bins/`. Not the published method. |
+| `identity_hota25_support.csv` | Control without spatial gating: the same residual models and eligible cameras with the overlap mask removed. `scripts/build_supplement_tables.py` reads it for the spatial-gating control, and the rows still match `bins/`. Not the published method. |
 | `hota_sources/` | Vendored overlap-gated and Ko-PER geometry score files used by `scripts/assemble_hota_tables.py`. |
 | `bins/` | Saved 10 Hz tracking inputs for those rows |
 | `checkpoints/` | Residual weights. Filenames contain `_F0_`. |
@@ -20,6 +20,6 @@ Checkpoint and support-file names use the tag `F0`. That tag is the HSG-SRL resi
 | `pair_counts/` | Training and validation pair totals |
 | `ipm_baseline.json` | Pooled and per-recording geometric-anchor localization. Includes bottom-center matched counts, median, RMSE, and p90 for all thirteen domains; `scripts/build_tables.py` exports the per-recording comparison. |
 | `../orin/runtime.md` | Board timings |
-| `../bevheight/` | Supervised reference scores |
+| `../bevheight/` | Supervised reference scores, including `unique_containment.json` for the unique-containment subset |
 
 `scripts/build_tables.py` reads `loc_support/`, `identity_hota25.csv`, and `identity_hota25_overlap.csv`.
