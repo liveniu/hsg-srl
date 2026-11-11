@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Write the supplement controls that are not in the main computed tables.
 
-S9 and S10 are recomputed from the geometry databases: the same residual with
+S17 and S18 are recomputed from the geometry databases: the same residual with
 and without the overlap mask, plus inside and outside the frozen polygons.
-S11 scores the pair-symmetric checkpoints on the overlap mask. S16 reads the
+S19 scores the pair-symmetric checkpoints on the overlap mask. S24 reads the
 stored BEVHeight matched-subset arrays and the published tracking tables.
+M3 BEVHeight localization is read from m3_untranslated.json.
 """
 
 from __future__ import annotations
@@ -203,12 +204,37 @@ def symmetric_table(recording_rows: list[dict]) -> list[dict]:
     return out
 
 
+def m3_untranslated_entry(geo, overlap) -> dict:
+    """M3 subset errors after dropping the retired audit translation.
+
+    ``lumpi_M3_bevheight_subset.npz`` was scored with that translation and is
+    not the published comparison. ``m3_untranslated.json`` is.
+    """
+    raw = json.loads((BH / "m3_untranslated.json").read_text(encoding="utf-8"))
+    greedy = raw["greedy"]
+    entry = {"site": "lumpi_M3", "n": int(greedy["n"])}
+    for key, source in (("hsg", "hsg"), ("overlap_seed0", "srl"), ("bevheight", "bevheight")):
+        block = greedy[source]
+        entry[f"{key}_median"] = float(block["median"])
+        entry[f"{key}_rmse"] = float(block["rmse"])
+        entry[f"{key}_p90"] = float(block["p90"])
+        entry[f"{key}_above5"] = int(block["above5"])
+        entry[f"{key}_frac5"] = float(block["above5"]) / float(block["n"])
+    entry["hsg_hota4"] = hota4(geo, "lumpi_M3", "Geo", "")
+    entry["srl_hota4"] = hota4(overlap, "lumpi_M3", "HSG-SRL", "0")
+    entry["bevheight_hota4"] = 100.0 * float(np.mean([row["hota"] for row in raw["tracking"]]))
+    return entry
+
+
 def bevheight_rows() -> list[dict]:
     overlap = read_csv(RECORDED / "identity_hota25_overlap.csv")
     geo = read_csv(RECORDED / "identity_hota25.csv")
     remerge = (BH / "hota_remerge.md").read_text(encoding="utf-8")
     rows = []
     for site in BH_SITES:
+        if site == "lumpi_M3":
+            rows.append(m3_untranslated_entry(geo, overlap))
+            continue
         blob = np.load(BH / f"{site}_bevheight_subset.npz")
         entry = {"site": site, "n": int(blob["hsg"].shape[0])}
         for key in ("hsg", "overlap_seed0", "bevheight"):
@@ -237,7 +263,7 @@ def unique_containment_lines() -> list[str]:
     blob = json.loads((BH / "unique_containment.json").read_text(encoding="utf-8"))
     lines = [
         "",
-        "## S17. Unique-containment localization",
+        "## S25. Unique-containment localization",
         "",
         "Each projected BEVHeight point lies in exactly one retained GT-matched detector box,",
         "and that box contains no other BEVHeight prediction in the same camera and frame.",
@@ -260,12 +286,12 @@ def write_markdown(recording, regional, mvc, bev) -> None:
     lines = [
         "# Supplement controls rebuilt in the artifact",
         "",
-        "S9 and S10 recompute localization from the released geometry databases.",
+        "S17 and S18 recompute localization from the released geometry databases.",
         "The residual is the published F0 checkpoint. HSG-SRL applies it only inside",
         "the frozen overlap union. The row without spatial gating uses the same",
         "eligible cameras on every box. HOTA4 is the published tracking replay.",
         "",
-        "## S9. Spatial-gating control",
+        "## S17. Spatial-gating control",
         "",
         "| Recording | Deployment rule | Median / m | RMSE / m | p90 / m | HOTA4 |",
         "| --- | --- | ---: | ---: | ---: | ---: |",
@@ -283,7 +309,7 @@ def write_markdown(recording, regional, mvc, bev) -> None:
             )
     lines += [
         "",
-        "## S10. Inside and outside the overlap union",
+        "## S18. Inside and outside the overlap union",
         "",
         "| Recording | Region | Matched count / fraction | HSG median | No-spatial median | Final median | HSG RMSE | No-spatial RMSE | Final RMSE |",
         "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
@@ -305,7 +331,7 @@ def write_markdown(recording, regional, mvc, bev) -> None:
             )
     lines += [
         "",
-        "## S11. Pair-symmetric MVC control",
+        "## S19. Pair-symmetric MVC control",
         "",
         "Symmetric checkpoints are results/recorded/checkpoints/*_symmetric_seed*.pt.",
         "Both learned columns use the overlap mask and the published eligible cameras.",
@@ -321,7 +347,7 @@ def write_markdown(recording, regional, mvc, bev) -> None:
         )
     lines += [
         "",
-        "## S16. Supervised BEVHeight reference",
+        "## S24. Supervised BEVHeight reference",
         "",
         "Localization uses the stored matched-subset arrays. HSG-SRL is seed 0 with",
         "C05 included on M6 and the overlap mask applied. Tracking HOTA4 is HSG /",

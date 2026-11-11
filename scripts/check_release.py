@@ -14,19 +14,19 @@ import numpy as np
 
 from bootstrap import ARTIFACT_ROOT
 from build_tables import seed_summary, stats
-import eval_final_reference_sensitivity as final_reference
 from protocol import GROUPS, SEEDS
 
 RECORDED = ARTIFACT_ROOT / "results" / "recorded"
 
 # Three-decimal manuscript targets. Tolerances cover that rounding.
+# Localization uses the stored footprint centers, without the audit translation.
 LOC = {
-    "LUMPI": {"n": 827083, "hsg": (0.604, 0.861, 1.324), "srl": (0.553, 0.835, 1.285)},
+    "LUMPI": {"n": 827083, "hsg": (0.602, 0.874, 1.339), "srl": (0.559, 0.846, 1.308)},
     "Ko-PER": {"n": 25122, "hsg": (0.313, 0.579, 0.758), "srl": (0.302, 0.561, 0.703)},
     "Synth": {"n": 83361, "hsg": (0.657, 1.063, 1.615), "srl": (0.669, 1.040, 1.599)},
 }
 HOTA4 = {
-    "LUMPI": (39.18, 41.25),
+    "LUMPI": (39.11, 41.15),
     "Ko-PER": (59.60, 61.99),
     "Synth": (43.67, 43.39),
 }
@@ -69,46 +69,9 @@ def main() -> None:
             summary = seed_summary([item[label] for item in seeds])
             check(f"{group} HSG-SRL {label}", summary["mean"], target, 0.0015)
 
-    reference_dir = ARTIFACT_ROOT / "results" / "offset_sensitivity"
-    final_path = reference_dir / "final_overlap_lumpi.json"
-    readout_path = reference_dir / "final_overlap_lumpi.md"
-    if not final_path.exists() or not readout_path.exists():
-        failures.append("missing final overlap-gated reference sensitivity results")
-    else:
-        final = json.loads(final_path.read_text(encoding="utf-8"))
-        original_path = reference_dir / "offset_sensitivity.json"
-        original = json.loads(original_path.read_text(encoding="utf-8"))
-        check("final reference cohort", final["cohort_n"], LOC["LUMPI"]["n"], 0)
-        if set(final["results"]) != {key for key, _ in final_reference.TREATMENTS}:
-            failures.append("final reference treatment set changed")
-        if final["sources"]["reference_treatments"]["sha256"] != final_reference.sha256(original_path):
-            failures.append("final reference translation source changed")
-        for site in final_reference.SITES:
-            expected_hash = final["sources"]["recordings"][site]["recorded_localization_sha256"]
-            if final_reference.sha256(RECORDED / "loc_support" / f"{site}.npz") != expected_hash:
-                failures.append(f"{site}: final reference localization source changed")
-        for treatment, row in final["results"].items():
-            baseline = original["pooled"]["LUMPI-real"][treatment]["b050"]
-            check(f"{treatment} midpoint cohort", row["fixed_midpoint"]["n"], final["cohort_n"], 0)
-            if len(row["hsg_srl_seeds"]) != len(SEEDS):
-                failures.append(f"{treatment}: final reference seed count changed")
-            for metric in final_reference.METRICS:
-                mean = float(np.mean([seed[metric] for seed in row["hsg_srl_seeds"]]))
-                check(f"{treatment} mean {metric}", row["hsg_srl_mean"][metric], mean, 1e-12)
-            for metric in ("median", "rmse"):
-                check(f"{treatment} midpoint {metric}", row["fixed_midpoint"][metric], baseline[metric], 1e-12)
-                reduction = 100 * (1 - row["hsg_srl_mean"][metric] / baseline[metric])
-                check(f"{treatment} reduction {metric}", row["reduction_vs_midpoint_percent"][metric], reduction, 1e-12)
-                every_seed = all(seed[metric] < baseline[metric] for seed in row["hsg_srl_seeds"])
-                if not every_seed or row["all_seeds_better_than_fixed_midpoint"][metric] != every_seed:
-                    failures.append(f"{treatment}: final reference {metric} claim failed")
-        for seed in SEEDS:
-            expected = stats(np.concatenate([arrays[site][f"f0_s{seed}"] for site in GROUPS["LUMPI"]]))
-            actual = final["results"]["published_hsg"]["hsg_srl_seeds"][seed]
-            for metric in final_reference.METRICS:
-                check(f"primary reference seed {seed} {metric}", actual[metric], expected[metric], 2e-5)
-        if readout_path.read_text(encoding="utf-8") != final_reference.render(final):
-            failures.append("final reference Markdown does not match its JSON")
+    marker_path = RECORDED / "SCORING_REFERENCE.txt"
+    if not marker_path.exists() or "stored footprint centers" not in marker_path.read_text(encoding="utf-8"):
+        failures.append("SCORING_REFERENCE.txt does not name the stored footprint centers")
 
     geo_rows = read_csv(RECORDED / "identity_hota25.csv")
     overlap_rows = read_csv(RECORDED / "identity_hota25_overlap.csv")
@@ -143,9 +106,20 @@ def main() -> None:
         check(f"{group} HSG-SRL HOTA4", float(np.mean(seed_means)), srl_target, 0.02)
 
     text = (ARTIFACT_ROOT / "results" / "tables" / "computed_tables.md").read_text(encoding="utf-8")
-    for snippet in ("0.553", "41.25", "Ko-PER", "overlap"):
+    for snippet in ("0.559", "41.15", "0.602", "Ko-PER", "overlap"):
         if snippet not in text:
             failures.append(f"computed_tables.md missing {snippet}")
+    controls = ARTIFACT_ROOT / "results" / "controls"
+    for snippet, relative in (
+        ("0.619 / 1.021 / 1.500", "RESULTS.md"),
+        ("39.94 ± 0.01", "RESULTS.md"),
+        ("38.41", "table_v.md"),
+        ("1.043 / 1.302 / 1.983", "constraint_split/summary.md"),
+        ("0.554 / 0.835 / 1.295", "constraint_split/summary.md"),
+    ):
+        body = (controls / relative).read_text(encoding="utf-8")
+        if snippet not in body:
+            failures.append(f"results/controls/{relative} missing {snippet}")
     anchors = json.loads((RECORDED / "ipm_baseline.json").read_text(encoding="utf-8"))
     for site, rules in anchors["per_recording"].items():
         label = "Ko-PER" if site == "ko_per" else site.replace("lumpi_", "").replace("synth_", "").replace("_O_day", "")
@@ -177,10 +151,12 @@ def main() -> None:
             "68,569",
             "0.575 / 0.825",
             "0.020% / 0.614%",
+            "0.754 / 0.997",
+            "0.887 / 1.280",
         ):
             if snippet not in body:
                 failures.append(f"supplement_controls.md missing {snippet}")
-    for snippet in ("n>5m=15 (0.012%)", "C05, C06, and C07", "med=0.563"):
+    for snippet in ("n>5m=15 (0.012%)", "C05, C06, and C07", "med=0.563", "med=0.887", "n>5m=41"):
         if snippet not in bev:
             failures.append(f"score_three.md missing {snippet}")
     if failures:

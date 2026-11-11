@@ -6,11 +6,11 @@ Checkpoint and support-file names use the tag `F0`. That tag is the HSG-SRL resi
 
 | Path | Use |
 | --- | --- |
-| `loc/` | Frozen HSG errors for the published matched cohort of each of the thirteen domains. Each file contains only `geo`. `scripts/export_support_localization.py` checks a recomputation against this array. Residual errors are in `loc_support/`. |
+| `loc/` | Frozen HSG errors for the published matched cohort of each of the thirteen domains, against the stored footprint centers. Each file contains only `geo`. `scripts/export_support_localization.py` checks a recomputation against this array and replaces it when an older file still includes the audit translation. Residual errors are in `loc_support/`. |
 | `loc_support/` | Per-detection HSG and overlap-gated residual errors, with track clusters for the bootstrap. `scripts/build_tables.py` reads these. |
 | `identity_hota25.csv` | Geometry-only HSG tracking scores. Rows with a bin hash are checked by `scripts/replay_trackeval.py`. The `25` is the 2.5 m similarity scale, not a second protocol. |
 | `identity_hota25_overlap.csv` | Published HSG-SRL rows. Each row's `input_sha256` is a 10 Hz bin in `bins/*_overlap_s*.npz`. |
-| `supplement/` | Recomputed S9–S11 arrays and the S16 subset summary. `scripts/build_supplement_tables.py` writes them. |
+| `supplement/` | Recomputed spatial-gate arrays and the BEVHeight subset summary. `scripts/build_supplement_tables.py` writes them. |
 | `tracking_decomposition_recording.csv` | HOTA decomposition and the in-repository bin or score file for each replay. `scripts/build_tracking_sources.py` writes it. |
 | `identity_hota25_support.csv` | Control without spatial gating: the same residual models and eligible cameras with the overlap mask removed. `scripts/build_supplement_tables.py` reads it for the spatial-gating control, and the rows still match `bins/`. Not the published method. |
 | `hota_sources/` | Vendored overlap-gated and Ko-PER geometry score files used by `scripts/assemble_hota_tables.py`. |

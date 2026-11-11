@@ -1,0 +1,62 @@
+[
+ {
+  "gate": 0.5,
+  "alpha": 0.8,
+  "tp": 6235,
+  "fp": 14733,
+  "fn": 11816,
+  "deta": 0.1901842362127867,
+  "assa": 0.5265025515938743,
+  "hota": 0.31643717486882655,
+  "loca": 0.8680980489820035,
+  "site": "synth_Town03_O_day",
+  "bev_hota": 0.5051269368981691,
+  "reference": "untranslated",
+  "tag": "constant_s2"
+ },
+ {
+  "gate": 1.0,
+  "alpha": 0.6000000000000001,
+  "tp": 10859,
+  "fp": 10109,
+  "fn": 7192,
+  "deta": 0.38561789772727273,
+  "assa": 0.7157642759762042,
+  "hota": 0.5253679809145465,
+  "loca": 0.8074656161120292,
+  "site": "synth_Town03_O_day",
+  "bev_hota": 0.5051269368981691,
+  "reference": "untranslated",
+  "tag": "constant_s2"
+ },
+ {
+  "gate": 1.5,
+  "alpha": 0.4,
+  "tp": 12087,
+  "fp": 8881,
+  "fn": 5964,
+  "deta": 0.44879697014703696,
+  "assa": 0.7578784894256386,
+  "hota": 0.583209713391195,
+  "loca": 0.7789713024205247,
+  "site": "synth_Town03_O_day",
+  "bev_hota": 0.5051269368981691,
+  "reference": "untranslated",
+  "tag": "constant_s2"
+ },
+ {
+  "gate": 2.0,
+  "alpha": 0.2,
+  "tp": 12486,
+  "fp": 8482,
+  "fn": 5565,
+  "deta": 0.4705838013040365,
+  "assa": 0.753557107711779,
+  "hota": 0.5954928784181086,
+  "loca": 0.7637214963118161,
+  "site": "synth_Town03_O_day",
+  "bev_hota": 0.5051269368981691,
+  "reference": "untranslated",
+  "tag": "constant_s2"
+ }
+]

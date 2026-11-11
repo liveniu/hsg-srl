@@ -30,7 +30,7 @@ Published numbers without videos or a geometry database:
 | --- | --- | --- |
 | Check saved HOTA | `scripts/replay_trackeval.py` | `results/recorded/bins/`, `identity_hota25.csv`, `identity_hota25_support.csv`, `identity_hota25_overlap.csv` |
 | Write the score summaries | `scripts/build_tables.py` | `results/recorded/loc_support/`, `ipm_baseline.json`, the two HOTA CSV files |
-| Reference-frame rescore | `scripts/eval_offset_sensitivity.py` | Released `geometry.db` plus the recorded localization arrays |
+| Additional comparisons | `results/controls/README.md` | Recorded domain anchors, constants, constraint ablations, and assignment tables |
 | Geometry-only anchor tracking | `scripts/eval_anchor_tracking.py --summarize` | `results/anchor_tracking/*.json` |
 | Board-fit residuals | `scripts/report_board_capture.py` | `results/board_capture/fit_residuals.json` |
 
@@ -71,7 +71,7 @@ Sections 1--3 run detection on downloaded video and build a new geometry databas
 
 `scripts/attach_ground_truth.py` writes the detector-to-ground-truth attachment. It calls `src/evaluation/eval_fab2_det_gt_match.py`. The gates are at least eight overlapping samples, median residual 3 m, runner-up margin 0.75 m, a 0.12 s distance to the nearest annotation, and a 10 m sanity cutoff. The 0.12 s rule rejects a query more than 0.12 s from every annotation. Ground truth is linearly interpolated between annotations, and a query within 0.12 s outside a track's time span uses the nearest endpoint. It does not reject every point inside a longer annotation gap: points near either end of that gap can remain eligible.
 
-`scripts/audit_reference.py` writes `reference_verdict.txt`. It checks stationary attached samples and writes `REFERENCE OFFSET` only when the camera-averaged common displacement is larger than 0.25 m and larger than the between-camera spread. The common bias is applied only when the file starts with `REFERENCE OFFSET`; otherwise any stored `common_bias` line is ignored by scoring.
+`scripts/audit_reference.py` writes `reference_verdict.txt`. It checks stationary attached samples and writes `REFERENCE OFFSET` only when the camera-averaged common displacement is larger than 0.25 m and larger than the between-camera spread. Published scoring does not add that vector. `scripts/db_access.py` `load_bias` returns zeros, and `scripts/rescore_stored_reference.py` removes the translation from any saved tracking bin that still contains it.
 
 `scripts/make_time_split.py` splits unique timestamps 60/10/30.
 
@@ -95,7 +95,7 @@ python scripts/train_recording.py --site lumpi_M6 --seed 0
 
 `scripts/eval_localization.py` reports median, 90th percentile, RMSE, and the 1000-draw paired bootstrap clustered by camera and local track, seed 20260921.
 
-`scripts/eval_tracking.py` writes the overlap-gated coordinates, uses `configs/overlap`, and reruns fusion without reading the site YAML. `--save-bins` stores the 10 Hz TrackEval inputs. `--no-spatial-gate` is the supplement ablation that keeps the eligible cameras and drops the overlap mask. `scripts/export_overlap_bins.py` fills the overlap-row hashes after the replay matches the published scores. `scripts/build_supplement_tables.py` writes Tables S9–S11, S16, and S17. The command passes score 0.70, distance 2.5 m, time gap 1.2 s, 5 samples, 12 resamples, scales 0.6 s / 0.75 m / 0.35, weights 0.25 / 0.45 / 0.30, and same-camera stitching off. Similarity is max(0, 1 - d / 2.5 m). Those values are also the fusion library defaults. The command still passes them because a site YAML replaces a flag only when the flag is left at its default, and `configs/sites/*/trajectory_merge` is the pseudo-identity rebuild rather than the final-tracking gates.
+`scripts/eval_tracking.py` writes the overlap-gated coordinates, uses `configs/overlap`, and reruns fusion without reading the site YAML. `--save-bins` stores the 10 Hz TrackEval inputs. `--no-spatial-gate` is the supplement ablation that keeps the eligible cameras and drops the overlap mask. `scripts/export_overlap_bins.py` fills the overlap-row hashes after the replay matches the published scores. `scripts/build_supplement_tables.py` writes the spatial-gate, region, MVC, and BEVHeight sections of `results/tables/supplement_controls.md`. The command passes score 0.70, distance 2.5 m, time gap 1.2 s, 5 samples, 12 resamples, scales 0.6 s / 0.75 m / 0.35, weights 0.25 / 0.45 / 0.30, and same-camera stitching off. Similarity is max(0, 1 - d / 2.5 m). Those values are also the fusion library defaults. The command still passes them because a site YAML replaces a flag only when the flag is left at its default, and `configs/sites/*/trajectory_merge` is the pseudo-identity rebuild rather than the final-tracking gates.
 
 `results/recorded/residual_support.csv` and `results/recorded/deploy_support/` record the eligible cameras. `results/recorded/identity_hota25_overlap.csv` stores the published HSG-SRL tracking rows, with the residual applied only inside the frozen overlap union. `results/recorded/identity_hota25_support.csv` is the control without spatial gating: the same models and eligible cameras with the overlap mask removed. `scripts/build_supplement_tables.py` reads it for the spatial-gating control. Checkpoint filenames use the tag `F0`. That tag is this residual, not a second method.
 
@@ -107,9 +107,9 @@ python scripts/train_recording.py --site lumpi_M6 --seed 0
 
 These commands read stored results. They do not retrain.
 
-- Reference-frame translation: `python scripts/eval_offset_sensitivity.py` writes `results/offset_sensitivity/summary.md`. The committed summary is the published rescore. Re-running it needs the released geometry databases.
-- Final overlap-gated LUMPI reference sensitivity: `python scripts/eval_final_reference_sensitivity.py` rebuilds `results/offset_sensitivity/final_overlap_lumpi.md` from the recorded `final_overlap_lumpi.json`. Adding `--from-data` recomputes the localization rescore using the released geometry databases and existing checkpoints, without fitting models or rerunning association. The same support, polygons, matched observations, and clock alignment are retained; only the scoring-reference translation changes. The original `offset_sensitivity.json` supplies the reference translations and geometric controls; its older per-recording residual block is not the source for this final pooled result.
-- Geometry-only anchor tracking: `python scripts/eval_anchor_tracking.py --summarize` rebuilds `results/anchor_tracking/summary.md` from the stored JSON. A new fusion replay is `python scripts/eval_anchor_tracking.py --site lumpi_M6` and needs `geometry.db`. It passes the same final-tracking flags as `scripts/eval_tracking.py`.
+- Additional comparisons: `results/controls/README.md` lists the recorded domain-selected anchors, per-camera constants, constraint ablations, sensitivity bins, and assignment tables.
+- Geometry-only anchor tracking: `python scripts/eval_anchor_tracking.py --summarize` rebuilds `results/anchor_tracking/summary.md` from the stored JSON, including Ko-PER. A new fusion replay is `python scripts/eval_anchor_tracking.py --site lumpi_M6` and needs `geometry.db`. It passes the same final-tracking flags as `scripts/eval_tracking.py` and scores the stored footprint centers.
+- Optional translation audit, not a manuscript table: `python scripts/eval_offset_sensitivity.py`. It does not change the published scores.
 - Supervised BEVHeight reference: the archived scores are `results/bevheight/score_three.md` and `results/bevheight/hota_remerge.md`. A new supervised run is `docs/BEVHEIGHT.md`.
 - Pair counts are `results/recorded/pair_counts/`. The board-fit residuals are the next section.
 

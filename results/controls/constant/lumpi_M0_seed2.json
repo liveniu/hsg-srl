@@ -1,0 +1,17 @@
+{
+ "site": "lumpi_M0",
+ "seed": 2,
+ "cameras": [
+  "C08",
+  "C09",
+  "C10"
+ ],
+ "n_train_pairs": 0,
+ "n_val_pairs": 0,
+ "params": 6,
+ "recipe": "published SRL loss, Adam 1e-3, 80 epochs, batch 256, zero init, tanh bound 1 m",
+ "trained": false,
+ "deploy": "geo",
+ "S": [],
+ "reason": "too_few_train_pairs"
+}

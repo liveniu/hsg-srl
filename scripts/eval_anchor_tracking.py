@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Geometry-only tracking replay for fixed anchors and HSG.
 
-Detections, image tracks, test keys, ground-truth clock, reference bias,
-and the full overlap graph stay frozen. Each anchor is one deterministic
+Detections, image tracks, test keys, ground-truth clock, stored footprint
+centers, and the full overlap graph stay frozen. Each anchor is one deterministic
 fusion replay: final_world is overwritten, then fusion is rerun with the
 same flags as scripts/eval_tracking.py. No residual is applied.
 
@@ -234,19 +234,19 @@ def summarize() -> None:
     """Write the geometry-only anchor-tracking summary. Does not read a geometry database."""
     lumpi = tuple(site for site in SITES if site.startswith("lumpi_"))
     synthetic = GROUPS["Synth"]
-    twelve = lumpi + synthetic
+    recordings = lumpi + ("ko_per",) + synthetic
     groups = {
         "LUMPI": lumpi,
-        "Synthetic": synthetic,
-        "Twelve recordings": twelve,
+        "Ko-PER": ("ko_per",),
+        "Synthehicle": synthetic,
     }
     lines = [
         "# Geometry-only TrackEval BEV-HOTA",
         "",
         "Built from results/anchor_tracking/*.json. Same detections, test keys, "
-        "ground-truth clock, reference bias, full overlap graph, and final-tracking "
-        "flags as the HSG rows. No residual. The replay is seven LUMPI recordings "
-        "and five Synthehicle towns. Ko-PER is not included.",
+        "ground-truth clock, stored footprint centers, full overlap graph, and "
+        "final-tracking flags as the HSG rows. No residual. The replay is seven "
+        "LUMPI recordings, Ko-PER, and five Synthehicle towns.",
         "",
         "Recording-macro means on a 0-100 scale. The mean column is the unweighted "
         "average of 0.5, 1, 1.5, and 2 m.",
@@ -270,8 +270,8 @@ def summarize() -> None:
         "| --- | ---: | ---: | ---: | ---: | ---: |",
     ]
     order = ("beta0", "beta050", "beta070", "beta1", "hsg")
-    for site in twelve:
-        label = site.replace("lumpi_", "").replace("synth_", "").replace("_O_day", "")
+    for site in recordings:
+        label = "Ko-PER" if site == "ko_per" else site.replace("lumpi_", "").replace("synth_", "").replace("_O_day", "")
         cells = []
         for anchor in order:
             row = _macro((site,), anchor)

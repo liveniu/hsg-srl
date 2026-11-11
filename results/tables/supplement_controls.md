@@ -1,24 +1,24 @@
 # Supplement controls rebuilt in the artifact
 
-S9 and S10 recompute localization from the released geometry databases.
+S17 and S18 recompute localization from the released geometry databases.
 The residual is the published F0 checkpoint. HSG-SRL applies it only inside
 the frozen overlap union. The row without spatial gating uses the same
 eligible cameras on every box. HOTA4 is the published tracking replay.
 
-## S9. Spatial-gating control
+## S17. Spatial-gating control
 
 | Recording | Deployment rule | Median / m | RMSE / m | p90 / m | HOTA4 |
 | --- | --- | ---: | ---: | ---: | ---: |
 | Ko-PER | Without spatial gating | 0.845 / 0.660 / 0.720 | 0.992 / 0.788 / 0.794 | 1.437 / 0.992 / 1.003 | 45.79 / 51.96 / 53.10 |
 | Ko-PER | HSG-SRL | 0.300 / 0.305 / 0.301 | 0.561 / 0.564 / 0.559 | 0.702 / 0.702 / 0.705 | 62.09 / 61.90 / 61.99 |
-| M0 | Without spatial gating | 0.748 / 0.748 / 0.748 | 1.138 / 1.138 / 1.138 | 1.654 / 1.654 / 1.654 | 30.41 / 30.41 / 30.41 |
-| M0 | HSG-SRL | 0.748 / 0.748 / 0.748 | 1.138 / 1.138 / 1.138 | 1.654 / 1.654 / 1.654 | 30.41 / 30.41 / 30.41 |
-| M1 | Without spatial gating | 0.514 / 0.514 / 0.514 | 0.667 / 0.667 / 0.667 | 0.999 / 0.999 / 0.999 | 63.05 / 63.05 / 63.05 |
-| M1 | HSG-SRL | 0.514 / 0.514 / 0.514 | 0.667 / 0.667 / 0.667 | 0.999 / 0.999 / 0.999 | 63.05 / 63.05 / 63.05 |
+| M0 | Without spatial gating | 0.641 / 0.641 / 0.641 | 1.079 / 1.079 / 1.079 | 1.595 / 1.595 / 1.595 | 31.31 / 31.31 / 31.31 |
+| M0 | HSG-SRL | 0.641 / 0.641 / 0.641 | 1.079 / 1.079 / 1.079 | 1.595 / 1.595 / 1.595 | 31.31 / 31.31 / 31.31 |
+| M1 | Without spatial gating | 0.544 / 0.544 / 0.544 | 0.694 / 0.694 / 0.694 | 1.038 / 1.038 / 1.038 | 61.95 / 61.95 / 61.95 |
+| M1 | HSG-SRL | 0.544 / 0.544 / 0.544 | 0.694 / 0.694 / 0.694 | 1.038 / 1.038 / 1.038 | 61.95 / 61.95 / 61.95 |
 | M2 | Without spatial gating | 0.489 / 0.494 / 0.493 | 0.669 / 0.678 / 0.671 | 0.994 / 1.021 / 1.028 | 45.61 / 45.14 / 44.99 |
 | M2 | HSG-SRL | 0.492 / 0.496 / 0.497 | 0.671 / 0.678 / 0.673 | 0.996 / 1.021 / 1.032 | 45.42 / 45.03 / 44.76 |
-| M3 | Without spatial gating | 0.996 / 0.991 / 0.984 | 1.240 / 1.233 / 1.221 | 1.794 / 1.831 / 1.805 | 31.44 / 31.80 / 31.66 |
-| M3 | HSG-SRL | 0.996 / 0.991 / 0.984 | 1.240 / 1.232 / 1.221 | 1.794 / 1.831 / 1.804 | 31.48 / 31.83 / 31.53 |
+| M3 | Without spatial gating | 0.894 / 0.909 / 0.888 | 1.310 / 1.314 / 1.285 | 2.053 / 2.148 / 2.038 | 30.56 / 31.12 / 31.59 |
+| M3 | HSG-SRL | 0.893 / 0.909 / 0.887 | 1.309 / 1.314 / 1.285 | 2.052 / 2.148 / 2.038 | 30.59 / 31.16 / 31.48 |
 | M4 | Without spatial gating | 0.591 / 0.578 / 0.578 | 0.892 / 0.889 / 0.874 | 1.333 / 1.362 / 1.322 | 39.40 / 39.21 / 38.62 |
 | M4 | HSG-SRL | 0.584 / 0.571 / 0.569 | 0.880 / 0.876 / 0.852 | 1.322 / 1.343 / 1.288 | 39.11 / 38.95 / 38.84 |
 | M5 | Without spatial gating | 0.483 / 0.496 / 0.485 | 0.728 / 0.716 / 0.726 | 1.070 / 1.037 / 1.068 | 41.25 / 41.19 / 41.55 |
@@ -36,19 +36,19 @@ eligible cameras on every box. HOTA4 is the published tracking replay.
 | Town05 | Without spatial gating | 0.569 / 0.602 / 0.555 | 0.877 / 0.878 / 0.873 | 1.262 / 1.229 / 1.222 | 48.50 / 48.34 / 49.50 |
 | Town05 | HSG-SRL | 0.568 / 0.602 / 0.555 | 0.876 / 0.877 / 0.872 | 1.262 / 1.229 / 1.222 | 48.51 / 48.36 / 49.52 |
 
-## S10. Inside and outside the overlap union
+## S18. Inside and outside the overlap union
 
 | Recording | Region | Matched count / fraction | HSG median | No-spatial median | Final median | HSG RMSE | No-spatial RMSE | Final RMSE |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Ko-PER | inside | 8,287 (32.99%) | 0.425 | 0.352 / 0.367 / 0.349 | 0.352 / 0.367 / 0.349 | 0.615 | 0.562 / 0.573 / 0.558 | 0.562 / 0.573 / 0.558 |
 | Ko-PER | outside | 16,835 (67.01%) | 0.279 | 0.991 / 0.804 / 0.830 | 0.279 / 0.279 / 0.279 | 0.560 | 1.145 / 0.875 / 0.887 | 0.560 / 0.560 / 0.560 |
-| M0 | inside | 46,169 (100.00%) | 0.748 | 0.748 / 0.748 / 0.748 | 0.748 / 0.748 / 0.748 | 1.138 | 1.138 / 1.138 / 1.138 | 1.138 / 1.138 / 1.138 |
-| M1 | inside | 184,421 (99.99%) | 0.514 | 0.514 / 0.514 / 0.514 | 0.514 / 0.514 / 0.514 | 0.667 | 0.667 / 0.667 / 0.667 | 0.667 / 0.667 / 0.667 |
-| M1 | outside | 21 (0.01%) | 1.687 | 1.687 / 1.687 / 1.687 | 1.687 / 1.687 / 1.687 | 1.709 | 1.709 / 1.709 / 1.709 | 1.709 / 1.709 / 1.709 |
+| M0 | inside | 46,169 (100.00%) | 0.641 | 0.641 / 0.641 / 0.641 | 0.641 / 0.641 / 0.641 | 1.079 | 1.079 / 1.079 / 1.079 | 1.079 / 1.079 / 1.079 |
+| M1 | inside | 184,421 (99.99%) | 0.544 | 0.544 / 0.544 / 0.544 | 0.544 / 0.544 / 0.544 | 0.694 | 0.694 / 0.694 / 0.694 | 0.694 / 0.694 / 0.694 |
+| M1 | outside | 21 (0.01%) | 1.445 | 1.445 / 1.445 / 1.445 | 1.445 / 1.445 / 1.445 | 1.467 | 1.467 / 1.467 / 1.467 | 1.467 / 1.467 / 1.467 |
 | M2 | inside | 134,747 (99.01%) | 0.444 | 0.489 / 0.493 / 0.494 | 0.489 / 0.493 / 0.494 | 0.666 | 0.669 / 0.676 / 0.671 | 0.669 / 0.676 / 0.671 |
 | M2 | outside | 1,348 (0.99%) | 0.717 | 0.544 / 0.636 / 0.474 | 0.717 / 0.717 / 0.717 | 0.890 | 0.745 / 0.854 / 0.678 | 0.890 / 0.890 / 0.890 |
-| M3 | inside | 84,665 (99.49%) | 0.969 | 0.994 / 0.990 / 0.983 | 0.994 / 0.990 / 0.983 | 1.193 | 1.233 / 1.226 / 1.214 | 1.233 / 1.226 / 1.214 |
-| M3 | outside | 438 (0.51%) | 1.508 | 1.559 / 1.587 / 1.583 | 1.508 / 1.508 / 1.508 | 2.189 | 2.197 / 2.217 / 2.239 | 2.189 / 2.189 / 2.189 |
+| M3 | inside | 84,665 (99.49%) | 0.871 | 0.891 / 0.905 / 0.883 | 0.891 / 0.905 / 0.883 | 1.275 | 1.302 / 1.306 / 1.277 | 1.302 / 1.306 / 1.277 |
+| M3 | outside | 438 (0.51%) | 1.655 | 1.730 / 1.736 / 1.768 | 1.655 / 1.655 / 1.655 | 2.327 | 2.389 / 2.394 / 2.415 | 2.327 / 2.327 / 2.327 |
 | M4 | inside | 86,123 (89.33%) | 0.682 | 0.558 / 0.541 / 0.543 | 0.558 / 0.541 / 0.543 | 0.882 | 0.816 / 0.811 / 0.783 | 0.816 / 0.811 / 0.783 |
 | M4 | outside | 10,288 (10.67%) | 1.168 | 1.108 / 1.131 / 1.166 | 1.168 / 1.168 / 1.168 | 1.294 | 1.369 / 1.377 / 1.426 | 1.294 / 1.294 / 1.294 |
 | M5 | inside | 144,480 (100.00%) | 0.618 | 0.483 / 0.496 / 0.485 | 0.483 / 0.496 / 0.485 | 0.808 | 0.728 / 0.716 / 0.726 | 0.728 / 0.716 / 0.726 |
@@ -61,7 +61,7 @@ eligible cameras on every box. HOTA4 is the published tracking replay.
 | Town05 | inside | 17,941 (99.88%) | 0.562 | 0.569 / 0.602 / 0.555 | 0.569 / 0.602 / 0.555 | 0.901 | 0.877 / 0.878 / 0.873 | 0.877 / 0.878 / 0.873 |
 | Town05 | outside | 21 (0.12%) | 0.309 | 0.851 / 0.726 / 0.642 | 0.309 / 0.309 / 0.309 | 0.541 | 0.901 / 0.893 / 0.875 | 0.541 / 0.541 / 0.541 |
 
-## S11. Pair-symmetric MVC control
+## S19. Pair-symmetric MVC control
 
 Symmetric checkpoints are results/recorded/checkpoints/*_symmetric_seed*.pt.
 Both learned columns use the overlap mask and the published eligible cameras.
@@ -81,7 +81,7 @@ Both learned columns use the overlap mask and the published eligible cameras.
 | Town05 | 1 | 0.562 / 0.901 / 1.323 | 0.602 / 0.877 / 1.229 | 0.626 / 0.913 / 1.348 |
 | Town05 | 2 | 0.562 / 0.901 / 1.323 | 0.555 / 0.872 / 1.222 | 0.580 / 0.907 / 1.333 |
 
-## S16. Supervised BEVHeight reference
+## S24. Supervised BEVHeight reference
 
 Localization uses the stored matched-subset arrays. HSG-SRL is seed 0 with
 C05 included on M6 and the overlap mask applied. Tracking HOTA4 is HSG /
@@ -90,10 +90,10 @@ seed-0 HSG-SRL / the mixed BEVHeight replay.
 | Recording | Matched | HSG loc. | HSG-SRL seed-0 loc. | BEVHeight loc. | >5 m: SRL / BEVHeight | HOTA4 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
 | M6 | 130,177 | 0.689 / 0.895 / 1.340 | 0.563 / 0.830 / 1.258 | 0.503 / 2.107 / 2.987 | 0.012% / 5.539% | 34.4 / 38.0 / 35.3 |
-| M3 | 80,002 | 0.946 / 1.178 / 1.834 | 0.976 / 1.212 / 1.796 | 0.822 / 1.958 / 3.358 | 0.047% / 6.412% | 31.8 / 31.5 / 31.2 |
+| M3 | 80,002 | 0.871 / 1.258 / 2.119 | 0.887 / 1.280 / 2.046 | 0.797 / 1.981 / 3.245 | 0.051% / 6.361% | 31.5 / 30.6 / 31.9 |
 | Town05 | 15,983 | 0.559 / 0.865 / 1.306 | 0.564 / 0.836 / 1.238 | 0.266 / 1.333 / 0.835 | 0.019% / 2.772% | 49.5 / 48.5 / 56.8 |
 
-## S17. Unique-containment localization
+## S25. Unique-containment localization
 
 Each projected BEVHeight point lies in exactly one retained GT-matched detector box,
 and that box contains no other BEVHeight prediction in the same camera and frame.
@@ -102,5 +102,5 @@ Seed-0 HSG-SRL uses the eligible cameras and the overlap mask.
 | Recording | Retained observations | HSG-SRL median / RMSE | BEVHeight median / RMSE | >5 m: SRL / BEVHeight |
 | --- | ---: | ---: | ---: | ---: |
 | M6 | 68,569 | 0.575 / 0.825 | 0.352 / 0.903 | 0.020% / 0.614% |
-| M3 | 32,341 | 0.834 / 1.095 | 0.686 / 0.964 | 0.077% / 0.114% |
+| M3 | 32,341 | 0.754 / 0.997 | 0.464 / 0.841 | 0.087% / 0.102% |
 | Town05 | 11,021 | 0.544 / 0.782 | 0.292 / 0.835 | 0.027% / 1.043% |

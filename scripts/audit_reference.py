@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Decide whether a recording has one shared ground-truth offset.
 
-A verdict that starts with REFERENCE OFFSET is the only case in which the
-common bias is added before localization scoring. A NO COMMON OFFSET file
-may still contain a common_bias line; that value is not applied.
+The verdict is an audit record. Published scoring uses the stored footprint
+centers and does not add the vector, including when the file starts with
+REFERENCE OFFSET.
 """
 
 from __future__ import annotations

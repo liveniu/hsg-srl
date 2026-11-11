@@ -1,5 +1,5 @@
 {
-  "scope": "Supplementary Table S17. Seed 0. Fixed matched observations, clocks, and spatial references.",
+  "scope": "Supplementary Table S25. Seed 0. Fixed matched observations, clocks, and stored footprint centers.",
   "rule": "Keep a prediction-box pair only when the projected BEVHeight point lies in exactly one retained GT-matched detector box and that box contains no other BEVHeight prediction point in the same camera and frame. The subset is not chosen by GT error.",
   "scoring": "No training and no tracking replay. HSG, seed-0 HSG-SRL, and BEVHeight use the same retained observations. HSG-SRL is the overlap-gated localizer; on M6 the eligible cameras are C05, C06, and C07.",
   "results": {
@@ -14,12 +14,12 @@
     },
     "lumpi_M3": {
       "n": 32341,
-      "hsg_srl_median": 0.8344603281844255,
-      "hsg_srl_rmse": 1.0951718151666274,
-      "hsg_srl_above5": 25,
-      "bevheight_median": 0.6857750182865268,
-      "bevheight_rmse": 0.9641003139957235,
-      "bevheight_above5": 37
+      "hsg_srl_median": 0.754414414160347,
+      "hsg_srl_rmse": 0.9974148115710779,
+      "hsg_srl_above5": 28,
+      "bevheight_median": 0.4637054328090637,
+      "bevheight_rmse": 0.8414963429351975,
+      "bevheight_above5": 33
     },
     "synth_Town05_O_day": {
       "n": 11021,

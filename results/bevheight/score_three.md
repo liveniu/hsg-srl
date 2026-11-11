@@ -17,12 +17,12 @@ Full-set HOTA is the published overlap-gated recording score. BEVHeight tracking
 
 ## lumpi_M3
 - matched subset: 80002
-- HSG on attached subset: n=80002 med=0.946 rmse=1.178 p90=1.834 n>5m=27 (0.034%)
-- HSG-SRL seed 0 on attached subset: n=80002 med=0.976 rmse=1.212 p90=1.796 n>5m=38 (0.047%)
-- BEVHeight on attached subset: n=80002 med=0.822 rmse=1.958 p90=3.358 n>5m=5130 (6.412%)
-- full-set HOTA HSG: 31.8
-- full-set HOTA HSG-SRL seed 0: 31.5
-- full-set HOTA BEVHeight mixed replay: 31.2
+- HSG on attached subset: n=80002 med=0.871 rmse=1.258 p90=2.119 n>5m=38 (0.047%)
+- HSG-SRL seed 0 on attached subset: n=80002 med=0.887 rmse=1.280 p90=2.046 n>5m=41 (0.051%)
+- BEVHeight on attached subset: n=80002 med=0.797 rmse=1.981 p90=3.245 n>5m=5089 (6.361%)
+- full-set HOTA HSG: 31.5
+- full-set HOTA HSG-SRL seed 0: 30.6
+- full-set HOTA BEVHeight mixed replay: 31.9
 
 ## synth_Town05_O_day
 - matched subset: 15983

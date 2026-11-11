@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-"""Rescore fixed anchors when the common GT offset is not the HSG estimate.
+"""Optional audit of a common GT translation. Not a published table.
 
-The published tables add common_bias only where reference_verdict.txt starts
-with REFERENCE OFFSET. That vector is the per-camera median of
-(HSG world - raw GT) on stationary samples. This script keeps the frozen
-detector-to-GT attachment and re-estimates the same verdict from the
-bottom-center and beta=0.50 projections. It does not rewrite
-reference_verdict.txt or geometry.db, and it does not refit the residual.
+Published scoring uses the stored footprint centers and does not add
+common_bias. This script keeps the frozen detector-to-GT attachment and
+re-estimates a stationary-sample translation from the bottom-center and
+beta=0.50 projections. It does not rewrite reference_verdict.txt or
+geometry.db, and it does not refit the residual.
 
 Clock attachment is not rerun. On moving samples the script reports the
 along-track time that would equate an anchor shift with a clock shift.
@@ -20,7 +19,7 @@ from collections import defaultdict
 import numpy as np
 
 from bootstrap import ARTIFACT_ROOT
-from db_access import connect_ro, load_adapted, load_bias, load_test_keys, matched_rows, positions
+from db_access import audit_bias, connect_ro, load_adapted, load_bias, load_test_keys, matched_rows, positions
 from export_support_localization import support_masks
 from protocol import DET_BATCH, GROUPS, MAX_T, SEEDS, SITES, geometry_db, site_dir
 
@@ -224,7 +223,7 @@ def main() -> None:
             raise SystemExit(f"{site}: recomputed HSG bias {got.tolist()} != published {published}")
         pred = test_predictions(site)
         treatments = {
-            "published_hsg": load_bias(site),
+            "published_hsg": audit_bias(site),
             "none": np.zeros(2),
             "from_bottom": np.asarray(verdicts["bottom"]["common_bias"]) if verdicts["bottom"]["applied"] else np.zeros(2),
             "from_b050": np.asarray(verdicts["b050"]["common_bias"]) if verdicts["b050"]["applied"] else np.zeros(2),
@@ -283,7 +282,7 @@ def render(per_site: dict, pooled: dict, residual: dict) -> str:
     lines = [
         "# Reference-offset sensitivity",
         "",
-        "Same frozen detector-to-GT attachment. The published column adds the released HSG common bias where the verdict is REFERENCE OFFSET. `none` adds nothing. `from_bottom` and `from_b050` re-estimate that verdict from the bottom-center and beta=0.50 projections, using the same stationary-sample rule (speed < 0.3 m/s, at least five samples, |common| > 0.25 m and greater than the per-camera spread). A treatment that does not fire applies no bias.",
+        "Optional audit, not a published table. Published scoring uses the stored footprint centers. The audit-translation column adds the vector in reference_verdict.txt when that file starts with REFERENCE OFFSET. `none` adds nothing. `from_bottom` and `from_b050` re-estimate that verdict from the bottom-center and beta=0.50 projections, using the same stationary-sample rule (speed < 0.3 m/s, at least five samples, |common| > 0.25 m and greater than the per-camera spread). A treatment that does not fire applies no bias.",
         "",
         "Recomputed HSG common-bias vectors match the released `common_bias=` lines. Clock attachment was not rerun. `clock_equiv_s` is the absolute along-track time that equates the HSG-minus-anchor shift on samples moving at least 1 m/s. The attachment interpolation gap is 0.12 s.",
         "",
@@ -314,7 +313,7 @@ def render(per_site: dict, pooled: dict, residual: dict) -> str:
     ]
     strata = ("LUMPI-pole", "LUMPI-A", "LUMPI-B", "Synth", "LUMPI-real", "All")
     treatments = (
-        ("published_hsg", "Published HSG offset"),
+        ("published_hsg", "Audit translation"),
         ("none", "No offset"),
         ("from_b050", "Offset from beta=0.50"),
         ("from_bottom", "Offset from beta=1"),
@@ -337,7 +336,7 @@ def render(per_site: dict, pooled: dict, residual: dict) -> str:
     lines += [
         "## Per-recording median, HSG / fixed interior midpoint (beta=0.50) (m)",
         "",
-        "| Recording | Published HSG / beta=0.50 | No offset | From beta=0.50 | From beta=1 |",
+        "| Recording | Audit translation / beta=0.50 | No offset | From beta=0.50 | From beta=1 |",
         "| --- | ---: | ---: | ---: | ---: |",
     ]
     for site, blob in per_site.items():

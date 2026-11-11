@@ -61,10 +61,11 @@ def load_time_maps_from_match_report(path: Path) -> TimeMap:
 
 
 def parse_reference_bias(text: str) -> np.ndarray:
-    """Apply the common ground-truth offset only when the verdict starts with REFERENCE OFFSET.
+    """Parse an audit translation from a reference-verdict file.
 
-    A file that does not start with that phrase may still contain a ``common_bias=``
-    line. Scoring ignores that stored value.
+    The vector is present only when the file starts with ``REFERENCE OFFSET``.
+    Published scoring does not add it. ``audit_bias`` in ``scripts/db_access.py``
+    is the reader; ``load_bias`` returns zeros.
     """
     if not text.startswith("REFERENCE OFFSET"):
         return np.zeros(2)

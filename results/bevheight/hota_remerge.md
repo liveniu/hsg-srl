@@ -12,11 +12,11 @@ Readout is TrackEval HOTA, similarity max(0, 1-d/2.5 m).
 - gate 2.0: HOTA=40.2 DetA=33.4 AssA=48.4 LocA=79.1 tp=25652 fp=24761 fn=26381
 
 ## lumpi_M3
-- BEV-HOTA 31.2
-- gate 0.5: HOTA=17.8 DetA=8.1 AssA=39.0 LocA=88.1 tp=3932 fp=32649 fn=11823
-- gate 1.0: HOTA=28.2 DetA=18.5 AssA=43.0 LocA=79.4 tp=8173 fp=28408 fn=7582
-- gate 1.5: HOTA=37.5 DetA=27.3 AssA=51.6 LocA=71.7 tp=11210 fp=25371 fn=4545
-- gate 2.0: HOTA=41.1 DetA=31.6 AssA=53.5 LocA=67.2 tp=12574 fp=24007 fn=3181
+- BEV-HOTA 31.9
+- gate 0.5: HOTA=20.7 DetA=10.3 AssA=41.5 LocA=88.0 tp=4896 fp=31685 fn=10859
+- gate 1.0: HOTA=29.5 DetA=19.2 AssA=45.4 LocA=80.8 tp=8427 fp=28154 fn=7328
+- gate 1.5: HOTA=36.4 DetA=26.2 AssA=50.5 LocA=73.8 tp=10879 fp=25702 fn=4876
+- gate 2.0: HOTA=41.0 DetA=31.4 AssA=53.6 LocA=68.1 tp=12498 fp=24083 fn=3257
 
 ## synth_Town05_O_day
 - BEV-HOTA 56.8

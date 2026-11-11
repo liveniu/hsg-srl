@@ -1,0 +1,398 @@
+{
+ "ko_per": {
+  "site": "ko_per",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "SK1",
+   "SK4"
+  ],
+  "edges": [
+   "SK1:SK4"
+  ],
+  "n_train_obs": 77526,
+  "n_val_obs": 13774,
+  "n_train_pairs": 7340,
+  "n_val_pairs": 1504,
+  "n_temporal": 76817,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 7340,
+   "n_val_pairs": 1504,
+   "n_temporal": 76817
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M0": {
+  "site": "lumpi_M0",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C08",
+   "C09",
+   "C10"
+  ],
+  "edges": [
+   "C08:C09",
+   "C08:C10",
+   "C09:C10"
+  ],
+  "n_train_obs": 472311,
+  "n_val_obs": 71905,
+  "n_train_pairs": 0,
+  "n_val_pairs": 0,
+  "n_temporal": 468816,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 0,
+   "n_val_pairs": 0,
+   "n_temporal": 468816
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M1": {
+  "site": "lumpi_M1",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C08",
+   "C09",
+   "C10"
+  ],
+  "edges": [
+   "C08:C09",
+   "C08:C10",
+   "C09:C10"
+  ],
+  "n_train_obs": 454417,
+  "n_val_obs": 81282,
+  "n_train_pairs": 0,
+  "n_val_pairs": 0,
+  "n_temporal": 450910,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 0,
+   "n_val_pairs": 0,
+   "n_temporal": 450910
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M2": {
+  "site": "lumpi_M2",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C08",
+   "C09",
+   "C10"
+  ],
+  "edges": [
+   "C08:C09",
+   "C08:C10",
+   "C09:C10"
+  ],
+  "n_train_obs": 454293,
+  "n_val_obs": 83509,
+  "n_train_pairs": 36705,
+  "n_val_pairs": 6490,
+  "n_temporal": 450697,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 36705,
+   "n_val_pairs": 6490,
+   "n_temporal": 450697
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M3": {
+  "site": "lumpi_M3",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C08",
+   "C09",
+   "C10"
+  ],
+  "edges": [
+   "C08:C09",
+   "C08:C10",
+   "C09:C10"
+  ],
+  "n_train_obs": 515926,
+  "n_val_obs": 94608,
+  "n_train_pairs": 54962,
+  "n_val_pairs": 10837,
+  "n_temporal": 512135,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 54962,
+   "n_val_pairs": 10837,
+   "n_temporal": 512135
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M4": {
+  "site": "lumpi_M4",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C06",
+   "C07"
+  ],
+  "edges": [
+   "C06:C07"
+  ],
+  "n_train_obs": 234054,
+  "n_val_obs": 41217,
+  "n_train_pairs": 27576,
+  "n_val_pairs": 4796,
+  "n_temporal": 230977,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 27576,
+   "n_val_pairs": 4796,
+   "n_temporal": 230977
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M5": {
+  "site": "lumpi_M5",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C05",
+   "C06",
+   "C07"
+  ],
+  "edges": [
+   "C05:C06",
+   "C05:C07",
+   "C06:C07"
+  ],
+  "n_train_obs": 411495,
+  "n_val_obs": 69257,
+  "n_train_pairs": 40868,
+  "n_val_pairs": 4997,
+  "n_temporal": 404644,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 40868,
+   "n_val_pairs": 4997,
+   "n_temporal": 404644
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M6": {
+  "site": "lumpi_M6",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C05",
+   "C06",
+   "C07"
+  ],
+  "edges": [
+   "C05:C06",
+   "C05:C07",
+   "C06:C07"
+  ],
+  "n_train_obs": 332845,
+  "n_val_obs": 62063,
+  "n_train_pairs": 37294,
+  "n_val_pairs": 4188,
+  "n_temporal": 327871,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 37294,
+   "n_val_pairs": 4188,
+   "n_temporal": 327871
+  },
+  "counts_match_published": true
+ },
+ "synth_Town01_O_day": {
+  "site": "synth_Town01_O_day",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C01",
+   "C02",
+   "C03",
+   "C04"
+  ],
+  "edges": [
+   "C01:C02",
+   "C01:C03",
+   "C01:C04",
+   "C02:C03",
+   "C02:C04",
+   "C03:C04"
+  ],
+  "n_train_obs": 22324,
+  "n_val_obs": 3875,
+  "n_train_pairs": 1991,
+  "n_val_pairs": 445,
+  "n_temporal": 21515,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 1991,
+   "n_val_pairs": 445,
+   "n_temporal": 21515
+  },
+  "counts_match_published": true
+ },
+ "synth_Town02_O_day": {
+  "site": "synth_Town02_O_day",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C01",
+   "C02",
+   "C03"
+  ],
+  "edges": [
+   "C01:C02",
+   "C01:C03",
+   "C02:C03"
+  ],
+  "n_train_obs": 20279,
+  "n_val_obs": 4560,
+  "n_train_pairs": 1317,
+  "n_val_pairs": 329,
+  "n_temporal": 19712,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 1317,
+   "n_val_pairs": 329,
+   "n_temporal": 19712
+  },
+  "counts_match_published": true
+ },
+ "synth_Town03_O_day": {
+  "site": "synth_Town03_O_day",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C01",
+   "C02",
+   "C03",
+   "C04",
+   "C05",
+   "C06",
+   "C07",
+   "C08"
+  ],
+  "edges": [
+   "C01:C02",
+   "C01:C03",
+   "C01:C04",
+   "C01:C05",
+   "C01:C06",
+   "C01:C07",
+   "C01:C08",
+   "C02:C03",
+   "C02:C05",
+   "C02:C06",
+   "C02:C07",
+   "C02:C08",
+   "C03:C04",
+   "C03:C05",
+   "C03:C06",
+   "C03:C07",
+   "C03:C08",
+   "C04:C05",
+   "C04:C06",
+   "C04:C07",
+   "C04:C08",
+   "C05:C06",
+   "C05:C07",
+   "C05:C08",
+   "C06:C07",
+   "C06:C08",
+   "C07:C08"
+  ],
+  "n_train_obs": 71748,
+  "n_val_obs": 13724,
+  "n_train_pairs": 34426,
+  "n_val_pairs": 4221,
+  "n_temporal": 69851,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 34426,
+   "n_val_pairs": 4221,
+   "n_temporal": 69851
+  },
+  "counts_match_published": true
+ },
+ "synth_Town04_O_day": {
+  "site": "synth_Town04_O_day",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C01",
+   "C02",
+   "C03",
+   "C04"
+  ],
+  "edges": [
+   "C01:C02",
+   "C01:C03",
+   "C01:C04",
+   "C02:C03",
+   "C03:C04"
+  ],
+  "n_train_obs": 10105,
+  "n_val_obs": 2638,
+  "n_train_pairs": 1578,
+  "n_val_pairs": 397,
+  "n_temporal": 9756,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 1578,
+   "n_val_pairs": 397,
+   "n_temporal": 9756
+  },
+  "counts_match_published": true
+ },
+ "synth_Town05_O_day": {
+  "site": "synth_Town05_O_day",
+  "anchor_mode": "multiplicative_gating_offsetted",
+  "cameras": [
+   "C01",
+   "C02",
+   "C03",
+   "C04",
+   "C05",
+   "C06"
+  ],
+  "edges": [
+   "C01:C02",
+   "C01:C03",
+   "C01:C04",
+   "C01:C05",
+   "C01:C06",
+   "C02:C03",
+   "C02:C04",
+   "C02:C05",
+   "C02:C06",
+   "C03:C04",
+   "C03:C05",
+   "C03:C06",
+   "C04:C05",
+   "C04:C06",
+   "C05:C06"
+  ],
+  "n_train_obs": 44284,
+  "n_val_obs": 5894,
+  "n_train_pairs": 24244,
+  "n_val_pairs": 2849,
+  "n_temporal": 43070,
+  "uses_test_gt": false,
+  "source": "re-mined from the released geometry database, split manifest, and frozen overlap graph",
+  "published_counts": {
+   "n_train_pairs": 24244,
+   "n_val_pairs": 2849,
+   "n_temporal": 43070
+  },
+  "counts_match_published": true
+ }
+}

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Rescore the final overlap-gated LUMPI localizer under fixed GT translations.
+"""Optional LUMPI translation audit. Not a published table.
+
+Published scoring uses the stored footprint centers. This script compares
+that reference with the audit translation and two re-estimated translations.
 
 Without flags, rebuild the Markdown readout from the recorded JSON. Use
 --cache-root for frozen prediction vectors, or --from-data for the released

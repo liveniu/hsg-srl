@@ -54,7 +54,7 @@ These two commands check the recorded tracking scores and write the localization
 
 `python scripts/eval_anchor_tracking.py --summarize` writes the geometry-only anchor-tracking summary from stored JSON. `python scripts/report_board_capture.py` prints the board-fit residuals. `docs/REPRODUCTION.md` names the commands for the reference-frame rescore and the supervised BEVHeight comparison.
 
-`docs/REPRODUCTION.md` gives the stage-by-stage script chain, including GT attachment, reference-offset auditing, pair mining, training, scoring, and table generation.
+`docs/REPRODUCTION.md` gives the stage-by-stage script chain, including GT attachment, pair mining, training, scoring on the stored footprint centers, and table generation.
 
 ## Run from downloaded video
 

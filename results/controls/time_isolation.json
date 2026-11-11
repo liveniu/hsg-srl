@@ -1,0 +1,684 @@
+{
+ "ko_per": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.080017,
+    "max": 232.160004,
+    "rows": 77526,
+    "unique_timestamps": 5802
+   },
+   "val": {
+    "min": 232.200012,
+    "max": 270.839996,
+    "rows": 13774,
+    "unique_timestamps": 967
+   },
+   "test": {
+    "min": 270.880005,
+    "max": 386.920013,
+    "rows": 38001,
+    "unique_timestamps": 2901
+   }
+  },
+  "test_start": 270.880005,
+  "val_start": 232.200012,
+  "pairs": {
+   "train": {
+    "n": 7340,
+    "min": 0.16000399999999998,
+    "max": 232.120025,
+    "split_min": 0.080017,
+    "split_max": 232.160004,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 1504,
+    "min": 232.24002099999998,
+    "max": 270.80001799999997,
+    "split_min": 232.200012,
+    "split_max": 270.839996,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 76817,
+    "min": 0.08001699999999999,
+    "max": 232.160004,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M0": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.04,
+    "max": 264.9128418,
+    "rows": 472311,
+    "unique_timestamps": 19868
+   },
+   "val": {
+    "min": 264.92,
+    "max": 309.0516552,
+    "rows": 71905,
+    "unique_timestamps": 3311
+   },
+   "test": {
+    "min": 309.06,
+    "max": 441.48,
+    "rows": 238867,
+    "unique_timestamps": 9934
+   }
+  },
+  "test_start": 309.06,
+  "val_start": 264.92,
+  "pairs": {
+   "train": {
+    "n": 0,
+    "status": "no_pairs"
+   },
+   "val": {
+    "n": 0,
+    "status": "no_pairs"
+   },
+   "temporal": {
+    "n": 468816,
+    "min": 0.04,
+    "max": 264.91284183591875,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M1": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.04,
+    "max": 264.9128418,
+    "rows": 454417,
+    "unique_timestamps": 19868
+   },
+   "val": {
+    "min": 264.92,
+    "max": 309.0516552,
+    "rows": 81282,
+    "unique_timestamps": 3311
+   },
+   "test": {
+    "min": 309.06,
+    "max": 441.48,
+    "rows": 248335,
+    "unique_timestamps": 9934
+   }
+  },
+  "test_start": 309.06,
+  "val_start": 264.92,
+  "pairs": {
+   "train": {
+    "n": 0,
+    "status": "no_pairs"
+   },
+   "val": {
+    "n": 0,
+    "status": "no_pairs"
+   },
+   "temporal": {
+    "n": 450910,
+    "min": 0.04,
+    "max": 264.91284183591875,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M2": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.04,
+    "max": 264.9128418,
+    "rows": 454293,
+    "unique_timestamps": 19868
+   },
+   "val": {
+    "min": 264.92,
+    "max": 309.0516552,
+    "rows": 83509,
+    "unique_timestamps": 3311
+   },
+   "test": {
+    "min": 309.06,
+    "max": 441.48,
+    "rows": 228931,
+    "unique_timestamps": 9934
+   }
+  },
+  "test_start": 309.06,
+  "val_start": 264.92,
+  "pairs": {
+   "train": {
+    "n": 36705,
+    "min": 0.07998080921157844,
+    "max": 264.8764305133536,
+    "split_min": 0.04,
+    "split_max": 264.9128418,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 6490,
+    "min": 264.95641132256515,
+    "max": 294.579301135455,
+    "split_min": 264.92,
+    "split_max": 309.0516552,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 450697,
+    "min": 0.04,
+    "max": 264.91284183591875,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M3": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.04,
+    "max": 264.9,
+    "rows": 515926,
+    "unique_timestamps": 19867
+   },
+   "val": {
+    "min": 264.9128418,
+    "max": 309.04,
+    "rows": 94608,
+    "unique_timestamps": 3311
+   },
+   "test": {
+    "min": 309.0516552,
+    "max": 441.48,
+    "rows": 246095,
+    "unique_timestamps": 9934
+   }
+  },
+  "test_start": 309.0516552,
+  "val_start": 264.9128418,
+  "pairs": {
+   "train": {
+    "n": 54962,
+    "min": 0.07998080921157844,
+    "max": 264.8364401087478,
+    "split_min": 0.04,
+    "split_max": 264.9,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 10837,
+    "min": 264.95641132256515,
+    "max": 308.9758467935391,
+    "split_min": 264.9128418,
+    "split_max": 309.04,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 512135,
+    "min": 0.04,
+    "max": 264.9,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M4": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.06666666667,
+    "max": 264.9,
+    "rows": 234054,
+    "unique_timestamps": 7946
+   },
+   "val": {
+    "min": 264.9333333,
+    "max": 309.0333333,
+    "rows": 41217,
+    "unique_timestamps": 1324
+   },
+   "test": {
+    "min": 309.0666667,
+    "max": 441.4666667,
+    "rows": 118321,
+    "unique_timestamps": 3973
+   }
+  },
+  "test_start": 309.0666667,
+  "val_start": 264.9333333,
+  "pairs": {
+   "train": {
+    "n": 27576,
+    "min": 0.1,
+    "max": 264.8666666666667,
+    "split_min": 0.06666666667,
+    "split_max": 264.9,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 4796,
+    "min": 264.96666666666664,
+    "max": 309.0,
+    "split_min": 264.9333333,
+    "split_max": 309.0333333,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 230977,
+    "min": 0.06666666666666667,
+    "max": 264.9,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M5": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.06666666667,
+    "max": 264.9,
+    "rows": 411495,
+    "unique_timestamps": 7946
+   },
+   "val": {
+    "min": 264.9333333,
+    "max": 309.0333333,
+    "rows": 69257,
+    "unique_timestamps": 1324
+   },
+   "test": {
+    "min": 309.0666667,
+    "max": 441.4666667,
+    "rows": 204887,
+    "unique_timestamps": 3973
+   }
+  },
+  "test_start": 309.0666667,
+  "val_start": 264.9333333,
+  "pairs": {
+   "train": {
+    "n": 40868,
+    "min": 0.1,
+    "max": 264.8666666666667,
+    "split_min": 0.06666666667,
+    "split_max": 264.9,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 4997,
+    "min": 264.96666666666664,
+    "max": 309.0,
+    "split_min": 264.9333333,
+    "split_max": 309.0333333,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 404644,
+    "min": 0.06666666666666667,
+    "max": 264.9,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "lumpi_M6": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.06666666667,
+    "max": 216.0,
+    "rows": 332845,
+    "unique_timestamps": 6479
+   },
+   "val": {
+    "min": 216.0333333,
+    "max": 252.0,
+    "rows": 62063,
+    "unique_timestamps": 1080
+   },
+   "test": {
+    "min": 252.0333333,
+    "max": 359.9666667,
+    "rows": 157845,
+    "unique_timestamps": 3239
+   }
+  },
+  "test_start": 252.0333333,
+  "val_start": 216.0333333,
+  "pairs": {
+   "train": {
+    "n": 37294,
+    "min": 0.1,
+    "max": 215.96666666666667,
+    "split_min": 0.06666666667,
+    "split_max": 216.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 4188,
+    "min": 216.06666666666666,
+    "max": 251.96666666666667,
+    "split_min": 216.0333333,
+    "split_max": 252.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 327871,
+    "min": 0.06666666666666667,
+    "max": 216.0,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "synth_Town01_O_day": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.2,
+    "max": 108.0,
+    "rows": 22324,
+    "unique_timestamps": 1079
+   },
+   "val": {
+    "min": 108.1,
+    "max": 126.0,
+    "rows": 3875,
+    "unique_timestamps": 180
+   },
+   "test": {
+    "min": 126.1,
+    "max": 179.9,
+    "rows": 10506,
+    "unique_timestamps": 539
+   }
+  },
+  "test_start": 126.1,
+  "val_start": 108.1,
+  "pairs": {
+   "train": {
+    "n": 1991,
+    "min": 0.30000000000000004,
+    "max": 107.9,
+    "split_min": 0.2,
+    "split_max": 108.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 445,
+    "min": 108.2,
+    "max": 125.30000000000001,
+    "split_min": 108.1,
+    "split_max": 126.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 21515,
+    "min": 0.2,
+    "max": 108.0,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "synth_Town02_O_day": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.2,
+    "max": 108.0,
+    "rows": 20279,
+    "unique_timestamps": 1079
+   },
+   "val": {
+    "min": 108.1,
+    "max": 126.0,
+    "rows": 4560,
+    "unique_timestamps": 180
+   },
+   "test": {
+    "min": 126.1,
+    "max": 179.9,
+    "rows": 11957,
+    "unique_timestamps": 539
+   }
+  },
+  "test_start": 126.1,
+  "val_start": 108.1,
+  "pairs": {
+   "train": {
+    "n": 1317,
+    "min": 3.1,
+    "max": 107.9,
+    "split_min": 0.2,
+    "split_max": 108.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 329,
+    "min": 108.2,
+    "max": 125.60000000000001,
+    "split_min": 108.1,
+    "split_max": 126.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 19712,
+    "min": 0.2,
+    "max": 108.0,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "synth_Town03_O_day": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.2,
+    "max": 108.0,
+    "rows": 71748,
+    "unique_timestamps": 1079
+   },
+   "val": {
+    "min": 108.1,
+    "max": 126.0,
+    "rows": 13724,
+    "unique_timestamps": 180
+   },
+   "test": {
+    "min": 126.1,
+    "max": 179.9,
+    "rows": 44592,
+    "unique_timestamps": 539
+   }
+  },
+  "test_start": 126.1,
+  "val_start": 108.1,
+  "pairs": {
+   "train": {
+    "n": 34426,
+    "min": 0.30000000000000004,
+    "max": 107.9,
+    "split_min": 0.2,
+    "split_max": 108.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 4221,
+    "min": 108.2,
+    "max": 125.9,
+    "split_min": 108.1,
+    "split_max": 126.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 69851,
+    "min": 0.2,
+    "max": 108.0,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "synth_Town04_O_day": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.2,
+    "max": 108.0,
+    "rows": 10105,
+    "unique_timestamps": 1079
+   },
+   "val": {
+    "min": 108.1,
+    "max": 126.0,
+    "rows": 2638,
+    "unique_timestamps": 180
+   },
+   "test": {
+    "min": 126.1,
+    "max": 179.9,
+    "rows": 9097,
+    "unique_timestamps": 539
+   }
+  },
+  "test_start": 126.1,
+  "val_start": 108.1,
+  "pairs": {
+   "train": {
+    "n": 1578,
+    "min": 0.30000000000000004,
+    "max": 107.9,
+    "split_min": 0.2,
+    "split_max": 108.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 397,
+    "min": 108.2,
+    "max": 125.9,
+    "split_min": 108.1,
+    "split_max": 126.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 9756,
+    "min": 0.2,
+    "max": 108.0,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ },
+ "synth_Town05_O_day": {
+  "status": "pass",
+  "chronological_splits": true,
+  "split_ranges": {
+   "train": {
+    "min": 0.2,
+    "max": 108.0,
+    "rows": 44284,
+    "unique_timestamps": 1079
+   },
+   "val": {
+    "min": 108.1,
+    "max": 126.0,
+    "rows": 5894,
+    "unique_timestamps": 180
+   },
+   "test": {
+    "min": 126.1,
+    "max": 179.9,
+    "rows": 20173,
+    "unique_timestamps": 539
+   }
+  },
+  "test_start": 126.1,
+  "val_start": 108.1,
+  "pairs": {
+   "train": {
+    "n": 24244,
+    "min": 0.30000000000000004,
+    "max": 107.9,
+    "split_min": 0.2,
+    "split_max": 108.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "val": {
+    "n": 2849,
+    "min": 108.2,
+    "max": 125.9,
+    "split_min": 108.1,
+    "split_max": 126.0,
+    "all_before_test": true,
+    "all_inside_own_split": true
+   },
+   "temporal": {
+    "n": 43070,
+    "min": 0.2,
+    "max": 108.0,
+    "all_before_test": true,
+    "all_inside_train": true
+   }
+  },
+  "counts_match_published": true
+ }
+}

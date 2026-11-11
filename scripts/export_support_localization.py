@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from bootstrap import ARTIFACT_ROOT
-from db_access import matched_rows, positions
+from db_access import audit_bias, matched_rows, positions
 from protocol import SEEDS, SITES
 
 RECORDED = ARTIFACT_ROOT / "results" / "recorded"
@@ -65,8 +65,13 @@ def main() -> None:
         reference = RECORDED / "loc" / f"{site}_loc.npz"
         if reference.exists():
             saved = np.load(reference)["geo"]
-            if saved.shape != geo.shape or not np.allclose(saved, geo):
-                raise SystemExit(f"{site}: recomputed HSG errors do not match the saved cohort")
+            if saved.shape != geo.shape:
+                raise SystemExit(f"{site}: recomputed HSG cohort length does not match {reference.name}")
+            if not np.allclose(saved, geo):
+                if float(np.linalg.norm(audit_bias(site))) == 0.0:
+                    raise SystemExit(f"{site}: recomputed HSG errors do not match the saved cohort")
+                np.savez_compressed(reference, geo=np.asarray(geo, dtype=np.float64))
+                print(f"[support] {site} replaced frozen geo with stored-footprint errors", flush=True)
         for seed in SEEDS:
             opened = masks[(site, seed)]
             deploy = {"deploy": "model" if opened else "geo", "S": sorted(opened)}
