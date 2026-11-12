@@ -1,6 +1,6 @@
 # Error conditioned on projection sensitivity
 
-Bins: alpha tertiles of the training-split detector observations per dataset. Test matched detections, untranslated references. MSE shares sum to one within a dataset; RMSE reductions do not add.
+Bins: alpha tertiles of the training-split detector observations per dataset. Test matched detections, stored footprint-center references. MSE shares sum to one within a dataset; RMSE reductions do not add.
 
 | Dataset | Bin | alpha range | n | tracks | Midpoint med/RMSE/p90 | HSG med/RMSE/p90 | SRL s0 med/RMSE/p90 | >1 m mid/HSG | >2 m mid/HSG | paired sq gain | share of MSE gain | HSG−mid median [interval] | cam-balanced median mid/HSG |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

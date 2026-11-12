@@ -123,7 +123,7 @@ def score(site: str, db: Path) -> list[dict]:
         pred_batch=DET_BATCH, cameras=set(SITES[site]["cameras"]),
     )
     gt_bins = load_gt_bins(
-        meta(site, "origin.db"), site, load_bias(site, meta(site, "reference_verdict.txt")),
+        meta(site, "origin.db"), site, load_bias(site),
         t0, gt_batch=GT_BATCH, cameras=set(SITES[site]["cameras"]), max_t=MAX_T.get(site),
     )
     rows = hota_trackeval(gt_bins, pred)

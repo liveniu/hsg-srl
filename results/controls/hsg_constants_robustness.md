@@ -1,6 +1,6 @@
 # Robustness of HSG versus midpoint to s0 and eta
 
-Pre-registered: the published values (s0 = 60 m, eta = 0.75) are not changed by this table. Same matched test detections, untranslated references; only the anchor rule is re-evaluated. Cells are HSG median / RMSE / p90 in metres; flags mark whether HSG is below the fixed midpoint in that statistic.
+Pre-registered: the published values (s0 = 60 m, eta = 0.75) are not changed by this table. Same matched test detections, stored footprint-center references; only the anchor rule is re-evaluated. Cells are HSG median / RMSE / p90 in metres; flags mark whether HSG is below the fixed midpoint in that statistic.
 
 ## LUMPI (midpoint 0.622 / 0.989 / 1.452)
 

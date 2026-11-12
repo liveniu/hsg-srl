@@ -19,7 +19,7 @@ from protocol import GROUPS, SEEDS
 RECORDED = ARTIFACT_ROOT / "results" / "recorded"
 
 # Three-decimal manuscript targets. Tolerances cover that rounding.
-# Localization uses the stored footprint centers, without the audit translation.
+# Localization uses the stored ground-truth footprint centers.
 LOC = {
     "LUMPI": {"n": 827083, "hsg": (0.602, 0.874, 1.339), "srl": (0.559, 0.846, 1.308)},
     "Ko-PER": {"n": 25122, "hsg": (0.313, 0.579, 0.758), "srl": (0.302, 0.561, 0.703)},
@@ -116,6 +116,13 @@ def main() -> None:
         ("38.41", "table_v.md"),
         ("1.043 / 1.302 / 1.983", "constraint_split/summary.md"),
         ("0.554 / 0.835 / 1.295", "constraint_split/summary.md"),
+        ("134546 / published 136095", "clock_check.md"),
+        ("128945 / published 134383", "clock_check.md"),
+        ("25053 / published 25122", "clock_check.md"),
+        ("-0.1327 [-0.1712, -0.0976]", "clock_check.md"),
+        ("-0.0633 [-0.1266, -0.0044]", "clock_check.md"),
+        ("| M0 | C08 | 143559 | 23961 | 19270 | 0 | 100328 | 143559 | True |", "table_s3_closure.md"),
+        ("| Ko-PER | SK1 | 82967 | 46082 | 13628 | 0 | 23257 | 82967 | True |", "table_s3_closure.md"),
     ):
         body = (controls / relative).read_text(encoding="utf-8")
         if snippet not in body:

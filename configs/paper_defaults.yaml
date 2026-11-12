@@ -1,4 +1,6 @@
-# Published HSG-SRL settings. scripts/train_recording.py uses these values.
+# Readable record of the published HSG-SRL settings.
+# scripts/train_recording.py imports scripts/protocol.py and does not load this file.
+# Editing this file does not change training, pair mining, or tracking.
 # Do not replace that trainer with src/pipeline/geometry_guided_residual_mlp.py train.
 
 hsg:
@@ -18,8 +20,11 @@ residual:
   lambda_mean: 1.00
   lambda_pair: 0.50
   lambda_temporal: 0.02
+  temporal_gap_s: 0.20
   temporal_reuse: 512
   min_train_pairs: 32
+  disagreement_floor: 0.05
+  magnitude_weight_floor: 0.25
 pairs:
   time_window_s: 0.35
   bracket_gap_s: 0.70
@@ -32,10 +37,17 @@ split: [0.60, 0.10, 0.30]
 final_tracking:
   score: 0.70
   max_distance_m: 2.5
+  time_gap_s: 1.2
+  min_samples: 5
+  resample_count: 12
+  active_tracklet_window_s: 2.0
   time_distance_shape_weights: [0.25, 0.45, 0.30]
   time_distance_shape_scales: [0.6, 0.75, 0.35]
   stitch: false
   similarity: max(0, 1 - d / 2.5)
+  bins_hz: 10
+  distance_thresholds_m: [0.5, 1.0, 1.5, 2.0]
+  similarity_thresholds: [0.80, 0.60, 0.40, 0.20]
 detector:
   model: YOLO26l
   imgsz: [384, 640]

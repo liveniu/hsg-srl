@@ -42,7 +42,7 @@ Unlabeled: mean squared cross-view disagreement on the frozen training pairs, 0.
 
 ## Assignment probe under the stored clocks
 
-Released clock maps retained. Tracks re-assigned with the released matcher functions and gates, once with HSG coordinates (reproduction check) and once with fixed-midpoint coordinates. Test split, untranslated references. Intervals are 1,000 camera/track cluster bootstrap draws for median(HSG) - median(midpoint) and the RMSE difference.
+Released clock maps retained. Tracks re-assigned with the released matcher functions and gates, once with HSG coordinates (reproduction check) and once with fixed-midpoint coordinates. Test split, stored footprint-center references. Intervals are 1,000 camera/track cluster bootstrap draws for median(HSG) - median(midpoint) and the RMSE difference.
 
 | Recording | Released test matched | Midpoint matched | Common | Identity changed | Only released | Only midpoint | Jaccard |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -210,7 +210,7 @@ Differences to state: HSG-SRL minus midpoint and HSG minus midpoint per dataset:
 
 ## Errors by projection-sensitivity tertile
 
-Bins: alpha tertiles of the training-split detector observations per dataset. Test matched detections, untranslated references. MSE shares sum to one within a dataset; RMSE reductions do not add.
+Bins: alpha tertiles of the training-split detector observations per dataset. Test matched detections, stored footprint-center references. MSE shares sum to one within a dataset; RMSE reductions do not add.
 
 | Dataset | Bin | alpha range | n | tracks | Midpoint med/RMSE/p90 | HSG med/RMSE/p90 | SRL s0 med/RMSE/p90 | >1 m mid/HSG | >2 m mid/HSG | paired sq gain | share of MSE gain | HSG−mid median [interval] | cam-balanced median mid/HSG |
 | --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

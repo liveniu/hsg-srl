@@ -37,7 +37,7 @@ from protocol import (  # noqa: E402
     geometry_db,
     match_report,
     origin_db,
-    overlap_path,
+    published_graph,
     site_dir,
 )
 from score_three import SITES as BH_SITES  # noqa: E402
@@ -95,10 +95,7 @@ def remerge(site: str, updates_rows: list[tuple]) -> list[dict]:
         "UPDATE trajectory_observations SET final_world_x=?, final_world_y=? WHERE id=?",
         updates_rows,
     )
-    graph_path = overlap_path(site)
-    if not graph_path.exists():
-        graph_path = ARTIFACT / "configs" / "overlap" / f"{site}.json"
-    graph = json.loads(graph_path.read_text(encoding="utf-8"))
+    graph = json.loads(published_graph(site).read_text(encoding="utf-8"))
     edges = [tuple(edge["edge"].split(":")) for edge in graph["edges"]]
     save_scene_overlap_pairs(conn, site, edges, replace=True)
     conn.commit()

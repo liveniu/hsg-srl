@@ -6,14 +6,13 @@ Stages, in order:
 1. import_recordings.py
 2. detect_and_merge.py
 3. attach_ground_truth.py
-4. audit_reference.py
-5. make_time_split.py
-6. build_overlap.py
-7. freeze_pairs.py
-8. train_recording.py for seeds 0, 1, and 2
-9. eval_fixed_anchors.py
-10. eval_localization.py
-11. eval_tracking.py
+4. make_time_split.py
+5. build_overlap.py
+6. freeze_pairs.py
+7. train_recording.py for seeds 0, 1, and 2
+8. eval_fixed_anchors.py
+9. eval_localization.py
+10. eval_tracking.py
 
 Licensed videos stay outside this package. This command runs YOLO26l and
 builds a new geometry database. Published tables use the released databases
@@ -45,7 +44,7 @@ def main() -> None:
     parser.add_argument("--model", default="")
     parser.add_argument("--from-stage", default="import")
     args = parser.parse_args()
-    stages = ["import", "detect", "attach", "audit", "split", "overlap", "freeze", "train", "anchors", "localize", "track"]
+    stages = ["import", "detect", "attach", "split", "overlap", "freeze", "train", "anchors", "localize", "track"]
     if args.from_stage not in stages:
         raise SystemExit(f"--from-stage must be one of {stages}")
     start = stages.index(args.from_stage)
@@ -67,21 +66,19 @@ def main() -> None:
     if start <= 2:
         run("attach_ground_truth.py", [site])
     if start <= 3:
-        run("audit_reference.py", [site])
-    if start <= 4:
         run("make_time_split.py", [site])
-    if start <= 5:
+    if start <= 4:
         run("build_overlap.py", [site])
-    if start <= 6:
+    if start <= 5:
         run("freeze_pairs.py", [site])
-    if start <= 7:
+    if start <= 6:
         for seed in (0, 1, 2):
             run("train_recording.py", ["--site", site, "--seed", str(seed)])
-    if start <= 8:
+    if start <= 7:
         run("eval_fixed_anchors.py", [site])
-    if start <= 9:
+    if start <= 8:
         run("eval_localization.py", ["--site", site])
-    if start <= 10:
+    if start <= 9:
         run("eval_tracking.py", ["--site", site])
         for seed in (0, 1, 2):
             run("eval_tracking.py", ["--site", site, "--seed", str(seed)])

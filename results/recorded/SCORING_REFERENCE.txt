@@ -1,2 +1,1 @@
 Published scoring uses the stored footprint centers.
-reference_verdict.txt is an audit record and is not added to ground truth.

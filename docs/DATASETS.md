@@ -6,7 +6,7 @@ YOLO26l detections are not identical across machines. The geometry databases bel
 
 https://doi.org/10.5281/zenodo.23008421
 
-The archive root is the contents of `data/work/`: `README.txt`, `SHA256SUMS`, and `sites/<recording>/`. Extract it into `data/work/`. The thirteen recordings are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. Each directory at `data/work/sites/<recording>/` contains `geometry.db`, `origin.db`, the 60/10/30 split, `det_gt_match_report.json`, and `reference_verdict.txt`.
+The archive root is the contents of `data/work/`: `README.txt`, `SHA256SUMS`, and `sites/<recording>/`. Extract it into `data/work/`. The thirteen recordings are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. Each directory at `data/work/sites/<recording>/` contains `geometry.db`, `origin.db`, the 60/10/30 split, and `det_gt_match_report.json`.
 
 | Variable | Default directory | Contents |
 | --- | --- | --- |
@@ -18,7 +18,7 @@ LUMPI: https://data.uni-hannover.de/en/dataset/lumpi
 
 The official test clips do not contain the 3-D boxes used here, so they are not imported.
 
-Ko-PER is one recording. Sequence1a–1d share a camera-clock epoch and one 60/10/30 split. Import shifts the annotated front-bumper bottom center backward by half the vehicle length and stores that footprint center. The published SK1–SK4 overlap edge is frozen in `configs/overlap/ko_per.json` (579.35 m²). A from-video Ko-PER graph keeps intersections of at least 500 m² so that edge survives; LUMPI and Synthehicle graphs were frozen at 1000 m². Published pair mining and tracking read the frozen overlap configurations and apply no further area filter.
+Ko-PER is one recording. Sequence1a–1d share a camera-clock epoch and one 60/10/30 split. Import shifts the annotated front-bumper bottom center backward by half the vehicle length and stores that footprint center. The published SK1–SK4 overlap edge is frozen in `configs/overlap/ko_per.json` (579.35 m²). A from-video Ko-PER graph keeps intersections of at least 500 m² so that edge survives; LUMPI and Synthehicle graphs were frozen at 1000 m². `published_graph` uses each checked-in file in `configs/overlap/` for pair mining and final tracking, and uses a working copy only when that file is absent. Neither path applies a second area filter.
 
 Ko-PER: https://www.uni-ulm.de/in/mrm/forschung/datensaetze/ (Ko-PER intersection dataset).
 

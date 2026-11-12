@@ -1,4 +1,4 @@
-# Table V with fixed anchors on all datasets (untranslated references)
+# Table V with fixed anchors on all datasets (stored footprint-center references)
 
 Ko-PER archive check: HSG rows match published Geo rows (max abs 0.0e+00); paper merge flags present in all logs.
 

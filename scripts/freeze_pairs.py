@@ -14,7 +14,7 @@ import sys
 
 import numpy as np
 
-from bootstrap import ARTIFACT_ROOT, SRC_ROOT
+from bootstrap import SRC_ROOT
 from protocol import (
     DET_BATCH,
     PAIR_DIST_M,
@@ -22,7 +22,7 @@ from protocol import (
     TEACHER_GAP,
     TEACHER_KAPPA,
     geometry_db,
-    overlap_path,
+    published_graph,
     site_dir,
 )
 
@@ -42,11 +42,8 @@ from pipeline.multi_camera_trajectory_fusion import adapt_homography_to_resoluti
 
 
 def graph_path(site: str):
-    """Frozen graph when this recording is one of the published domains."""
-    published = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
-    if published.exists():
-        return published
-    return overlap_path(site)
+    """Checked-in overlap graph, or the working copy when none is checked in."""
+    return published_graph(site)
 
 
 def edges_of(site: str) -> list[tuple[str, str]]:

@@ -13,16 +13,15 @@ Manuscript section and table numbers are only in `docs/PAPER_MAP.md`. This file 
 | Import | `scripts/import_recordings.py` | Downloaded video and labels | `origin.db` | `src/importers/import_lumpi.py`, `import_synthehicle.py`, `import_koper.py` |
 | Detect | `scripts/detect_and_merge.py` | `origin.db`, `configs/sites/`, `configs/botsort_static.yaml`, `configs/pseudo_identity_overlap/` | `geometry.db` | `src/pipeline/multi_camera_trajectory_fusion.py` |
 | Attach | `scripts/attach_ground_truth.py` | `geometry.db`, `origin.db` | `det_gt_match_report.json` | `src/evaluation/eval_fab2_det_gt_match.py` |
-| Audit | `scripts/audit_reference.py` | Matched detections | `reference_verdict.txt` | — |
 | Split | `scripts/make_time_split.py` | Unique timestamps | `train_keys.csv`, `val_keys.csv`, `test_keys.csv` | `src/evaluation/fab2_manifest.py` |
 | Overlap | `scripts/build_overlap.py` | Homographies in `geometry.db` | Working copy under `data/work/sites/<recording>/overlap.json` | `src/geometry/fov_overlap.py` `candidate_edges`. Published sites still mine and track on `configs/overlap` |
-| Pairs | `scripts/freeze_pairs.py` | `geometry.db`, `configs/overlap/` | Frozen pair arrays | HSG anchor in `multi_camera_trajectory_fusion.py` |
-| Train | `scripts/train_recording.py` | Frozen pairs, `configs/paper_defaults.yaml` | `F0` checkpoint and `deploy_support` JSON | `GeometryGuidedResidualMLP` class only. Do not call that module's `train` command |
+| Pairs | `scripts/freeze_pairs.py` | `geometry.db`, split manifest, `published_graph` | Frozen pair arrays | HSG anchor in `multi_camera_trajectory_fusion.py` |
+| Train | `scripts/train_recording.py` | Frozen pairs; constants in `scripts/protocol.py` | `F0` checkpoint and `deploy_support` JSON | `GeometryGuidedResidualMLP` class only. The script does not read `configs/paper_defaults.yaml`; that file records the same constants |
 | Anchors | `scripts/eval_fixed_anchors.py` | Matched test rows | Fixed-anchor errors | Same anchor helpers |
 | Localize | `scripts/eval_localization.py` | Test rows, checkpoints, deploy JSON | Localization arrays | — |
-| Track | `scripts/eval_tracking.py` | `configs/overlap/`, checkpoints | 10 Hz bins and HOTA JSON | Fusion remerge, then `src/evaluation/hota_trackeval.py` and `third_party/TrackEval/` |
+| Track | `scripts/eval_tracking.py` | `published_graph`, checkpoints | 10 Hz bins and HOTA JSON | Fusion remerge, then `src/evaluation/hota_trackeval.py` and `third_party/TrackEval/` |
 
-The checked-in graphs in `configs/overlap/` are the published overlap graphs, including Ko-PER. `build_overlap.py` can rewrite a working copy under `data/work/`. Pair mining and final tracking read `configs/overlap/` when that file exists. They do not read `configs/pseudo_identity_overlap/` or `configs/sites/*/trajectory_merge`. The working copy is the from-video graph for a recording that has no frozen file.
+`scripts/protocol.py` `published_graph` selects the overlap edges. It returns `configs/overlap/<recording>.json` when that file exists, and `data/work/sites/<recording>/overlap.json` only when the checked-in file is absent. The thirteen published domains have checked-in graphs, so pair mining, final tracking, and the BEVHeight remerge use those files and apply no further area filter. They do not read `configs/pseudo_identity_overlap/` or `configs/sites/*/trajectory_merge`.
 
 Published numbers without videos or a geometry database:
 
@@ -32,7 +31,6 @@ Published numbers without videos or a geometry database:
 | Write the score summaries | `scripts/build_tables.py` | `results/recorded/loc_support/`, `ipm_baseline.json`, the two HOTA CSV files |
 | Additional comparisons | `results/controls/README.md` | Recorded domain anchors, constants, constraint ablations, and assignment tables |
 | Geometry-only anchor tracking | `scripts/eval_anchor_tracking.py --summarize` | `results/anchor_tracking/*.json` |
-| Board-fit residuals | `scripts/report_board_capture.py` | `results/board_capture/fit_residuals.json` |
 
 `src/pipeline/multi_camera_bev_stitch.py` and `tools/` are the optional local-frame path. `reference/orin/` and `reference/bevheight/` are separate from `run_paper.py`. `scripts/run_smoke_test.py` checks the anchor, the 4,802-parameter bound, and the loss; it does not score a recording.
 
@@ -69,19 +67,17 @@ Sections 1--3 run detection on downloaded video and build a new geometry databas
 
 ## 3. Ground truth and split
 
-`scripts/attach_ground_truth.py` writes the detector-to-ground-truth attachment. It calls `src/evaluation/eval_fab2_det_gt_match.py`. The gates are at least eight overlapping samples, median residual 3 m, runner-up margin 0.75 m, a 0.12 s distance to the nearest annotation, and a 10 m sanity cutoff. The 0.12 s rule rejects a query more than 0.12 s from every annotation. Ground truth is linearly interpolated between annotations, and a query within 0.12 s outside a track's time span uses the nearest endpoint. It does not reject every point inside a longer annotation gap: points near either end of that gap can remain eligible.
-
-`scripts/audit_reference.py` writes `reference_verdict.txt`. It checks stationary attached samples and writes `REFERENCE OFFSET` only when the camera-averaged common displacement is larger than 0.25 m and larger than the between-camera spread. Published scoring does not add that vector. `scripts/db_access.py` `load_bias` returns zeros, and `scripts/rescore_stored_reference.py` removes the translation from any saved tracking bin that still contains it.
+`scripts/attach_ground_truth.py` writes the detector-to-ground-truth attachment. It calls `src/evaluation/eval_fab2_det_gt_match.py`. The gates are at least eight overlapping samples, median residual 3 m, runner-up margin 0.75 m, a 0.12 s distance to the nearest annotation, and a 10 m sanity cutoff. The 0.12 s rule rejects a query more than 0.12 s from every annotation. Ground truth is linearly interpolated between annotations, and a query within 0.12 s outside a track's time span uses the nearest endpoint. It does not reject every point inside a longer annotation gap: points near either end of that gap can remain eligible. Published scoring uses the stored ground-truth footprint centers in `origin.db`.
 
 `scripts/make_time_split.py` splits unique timestamps 60/10/30.
 
 ## 4. Pairs and residual
 
-`scripts/build_overlap.py` writes a working field-of-view graph. A fresh LUMPI or Synthehicle graph keeps a projected-hull intersection of at least 1000 m². The frozen graphs in `configs/overlap` were built under that cutoff: Town03 keeps 27 of 28 edges because C02–C04 covers 995.58 m², and Town04 keeps 5 of 6 because C02–C04 covers 538.42 m². A fresh Ko-PER graph keeps an intersection of at least 500 m², which retains its 579.35 m² SK1–SK4 edge. With these per-dataset cutoffs the builder regenerates all thirteen frozen edge sets. Published pair mining and tracking read `configs/overlap` and apply no further area filter.
+`scripts/build_overlap.py` writes a working field-of-view graph. A fresh LUMPI or Synthehicle graph keeps a projected-hull intersection of at least 1000 m². The frozen graphs in `configs/overlap` were built under that cutoff: Town03 keeps 27 of 28 edges because C02–C04 covers 995.58 m², and Town04 keeps 5 of 6 because C02–C04 covers 538.42 m². A fresh Ko-PER graph keeps an intersection of at least 500 m², which retains its 579.35 m² SK1–SK4 edge. With these per-dataset cutoffs the builder regenerates all thirteen frozen edge sets. Pair mining and final tracking still call `published_graph`, so a working copy does not replace a checked-in graph.
 
 `scripts/freeze_pairs.py` mines unlabeled pairs on HSG positions. The gate is 2 m, the time window is 0.35 s, and the confidence thresholds are 0.20 and 0.05.
 
-`scripts/train_recording.py` is the published trainer. It reads the frozen pairs, fits the 7-64-64-2 residual for 80 epochs with Adam at 10^-3 and batch 256, and writes the F0 checkpoint and deploy file. Seeds are 0, 1, and 2. Each coordinate is bounded by 1 m. The loss weights are 0.10, 1.00, 0.50, and 0.02. A recording with fewer than 32 training pairs stays on HSG. Otherwise every camera with a retained validation pair is eligible. At scoring, the residual is added only where the stored HSG point also lies in that camera's frozen overlap union. `--symmetric` fits the supplement's pair-symmetric control to a separate checkpoint and does not replace F0.
+`scripts/train_recording.py` is the published trainer. It imports `scripts/protocol.py` and does not load `configs/paper_defaults.yaml`. It reads the frozen pairs, fits the 7-64-64-2 residual for 80 epochs with Adam at 10^-3 and batch 256, and writes the F0 checkpoint and deploy file. Seeds are 0, 1, and 2. Each coordinate is bounded by 1 m. The loss weights are 0.10, 1.00, 0.50, and 0.02. A recording with fewer than 32 training pairs stays on HSG. Otherwise every camera with a retained validation pair is eligible. At scoring, the residual is added only where the stored HSG point also lies in that camera's frozen overlap union. `--symmetric` fits the supplement's pair-symmetric control to a separate checkpoint and does not replace F0.
 
 ```text
 python scripts/train_recording.py --site lumpi_M6 --seed 0
@@ -107,9 +103,8 @@ python scripts/train_recording.py --site lumpi_M6 --seed 0
 
 These commands read stored results. They do not retrain.
 
-- Additional comparisons: `results/controls/README.md` lists the recorded domain-selected anchors, per-camera constants, constraint ablations, sensitivity bins, and assignment tables.
+- Additional comparisons: `results/controls/README.md` lists the recorded domain-selected anchors, per-camera constants, constraint ablations, sensitivity bins, and assignment tables. `python scripts/assignment/run_all.py` rebuilds the clock-source check and the detector-row closure from the released geometry databases. It does not rewrite those databases.
 - Geometry-only anchor tracking: `python scripts/eval_anchor_tracking.py --summarize` rebuilds `results/anchor_tracking/summary.md` from the stored JSON, including Ko-PER. A new fusion replay is `python scripts/eval_anchor_tracking.py --site lumpi_M6` and needs `geometry.db`. It passes the same final-tracking flags as `scripts/eval_tracking.py` and scores the stored footprint centers.
-- Optional translation audit, not a manuscript table: `python scripts/eval_offset_sensitivity.py`. It does not change the published scores.
 - Supervised BEVHeight reference: the archived scores are `results/bevheight/score_three.md` and `results/bevheight/hota_remerge.md`. A new supervised run is `docs/BEVHEIGHT.md`.
 - Pair counts are `results/recorded/pair_counts/`. The board-fit residuals are the next section.
 

@@ -38,18 +38,15 @@ from protocol import (
     geometry_db,
     match_report,
     origin_db,
-    overlap_path,
     paper_merge_args,
+    published_graph,
     site_dir,
 )
 
 
 def paper_edges(site: str) -> list[str]:
-    """Published association edges. A working overlap file does not replace them."""
-    path = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
-    if not path.exists():
-        path = overlap_path(site)
-    blob = json.loads(path.read_text(encoding="utf-8"))
+    """Association edges. The checked-in graph wins over a working copy."""
+    blob = json.loads(published_graph(site).read_text(encoding="utf-8"))
     return [str(edge["edge"]) for edge in blob["edges"]]
 
 

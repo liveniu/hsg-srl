@@ -2,15 +2,13 @@
 """Load ground-truth and prediction bins for the TrackEval BEV-HOTA path.
 
 The published tracking score is `evaluation.hota_trackeval`. This module
-loads the 10 Hz bins, applies the reference-offset verdict, and does not
-score HOTA itself.
+loads the 10 Hz bins for scoring and does not score HOTA itself.
 """
 
 from __future__ import annotations
 
 import csv
 import json
-import re
 import sqlite3
 from collections import defaultdict
 from pathlib import Path
@@ -58,21 +56,6 @@ def load_time_maps_from_match_report(path: Path) -> TimeMap:
             float(rec.get("drift_slope_ms_per_min", 0.0)) / 60000.0,
         )
     return tm
-
-
-def parse_reference_bias(text: str) -> np.ndarray:
-    """Parse an audit translation from a reference-verdict file.
-
-    The vector is present only when the file starts with ``REFERENCE OFFSET``.
-    Published scoring does not add it. ``audit_bias`` in ``scripts/db_access.py``
-    is the reader; ``load_bias`` returns zeros.
-    """
-    if not text.startswith("REFERENCE OFFSET"):
-        return np.zeros(2)
-    m = re.search(r"common_bias=\(([-+0-9.]+),([-+0-9.]+)\)", text)
-    if not m:
-        return np.zeros(2)
-    return np.array([float(m.group(1)), float(m.group(2))])
 
 
 def load_gt_bins(
@@ -162,9 +145,7 @@ def load_predictions(
 
 def self_check() -> None:
     """Tiny deterministic check that does not need licensed data."""
-    assert np.all(parse_reference_bias("NO COMMON OFFSET\ncommon_bias=(-0.1,+0.2)\n") == 0)
-    applied = parse_reference_bias("REFERENCE OFFSET\ncommon_bias=(-0.0385,+0.0393)\n")
-    assert abs(applied[0] + 0.0385) < 1e-12 and abs(applied[1] - 0.0393) < 1e-12
+    assert MAX_T["lumpi_M6"] == 360.0 and MAX_T["lumpi_M0"] == 441.5
 
 
 if __name__ == "__main__":

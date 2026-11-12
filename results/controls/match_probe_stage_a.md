@@ -1,6 +1,6 @@
 # Matching-neutrality probe, stage A
 
-Released clock maps retained. Tracks re-assigned with the released matcher functions and gates, once with HSG coordinates (reproduction check) and once with fixed-midpoint coordinates. Test split, untranslated references. Intervals are 1,000 camera/track cluster bootstrap draws for median(HSG) - median(midpoint) and the RMSE difference.
+Released clock maps retained. Tracks re-assigned with the released matcher functions and gates, once with HSG coordinates (reproduction check) and once with fixed-midpoint coordinates. Test split, stored footprint-center references. Intervals are 1,000 camera/track cluster bootstrap draws for median(HSG) - median(midpoint) and the RMSE difference.
 
 | Recording | Released test matched | Midpoint matched | Common | Identity changed | Only released | Only midpoint | Jaccard |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |

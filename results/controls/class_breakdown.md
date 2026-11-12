@@ -1,4 +1,4 @@
-# HSG versus fixed midpoint by detector class (real recordings, untranslated references)
+# HSG versus fixed midpoint by detector class (real recordings, stored footprint-center references)
 
 | Recording | Class | Detections | Tracks | Midpoint med / RMSE / p90 | HSG med / RMSE / p90 |
 | --- | --- | ---: | ---: | ---: | ---: |

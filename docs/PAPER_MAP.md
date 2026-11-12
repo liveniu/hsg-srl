@@ -1,72 +1,62 @@
 # Paper pointer
 
-This is the only artifact file that uses manuscript section, table, and figure numbers. When those numbers change, edit this file. Commands, comments, and result headings elsewhere use the function names in the right-hand column.
+This is the only artifact file that uses manuscript section, table, and figure numbers from `paper/paper_draft_v_fab5B.md` and `paper/paper_draft_v_fab5B_supplement.md`. When those numbers change, edit this file. Commands and result headings elsewhere use function names.
 
-`docs/REPRODUCTION.md` is the operational chain. It does not repeat these numbers.
-
-The manuscript is not part of this git release. Scoring does not read it. Published scores use the stored footprint centers in the geometry databases. `reference_verdict.txt` is an audit record and is not added to ground truth.
+`docs/REPRODUCTION.md` is the operational chain. Scoring does not read `paper/`.
 
 ## Main text
 
 | Manuscript | What it specifies | Artifact |
 | --- | --- | --- |
-| I | Deployment setting and the two contributions | `README.md`, `docs/ISOLATION.md` |
-| III-A | One domain, single-box inference, overlap-gated residual | `scripts/train_recording.py`; `scripts/db_access.py` `positions` |
-| III-B | Homography-sensitivity anchor | `src/pipeline/multi_camera_trajectory_fusion.py` anchor rule; `src/geometry/overlap_gate.py` `hsg_terms` |
-| III-C | Frozen cross-view pairs, bounded residual, and the multi-view loss | `configs/overlap/`; `scripts/freeze_pairs.py`; `scripts/train_recording.py`; `configs/paper_defaults.yaml` |
-| III-D | Eligible cameras, overlap union, and the fixed association backend | `positions(..., spatial=True)`; polygon tolerance `-1e-6` m; `scripts/protocol.py` `paper_merge_args`; `scripts/eval_tracking.py` |
-| IV-A | LUMPI, Ko-PER, Synthehicle | `scripts/protocol.py` `SITES`, `GROUPS` |
-| IV-B | Fixed detector, anchors, domain-selected beta, constant and affine controls, constraint ablations, three seeds | `scripts/detect_and_merge.py`, `scripts/detect_koper.py`, `scripts/eval_fixed_anchors.py`, `results/controls/` |
-| IV-C | 60/10/30 split, frozen matches, stored footprint centers | `scripts/make_time_split.py`, `scripts/attach_ground_truth.py`, `scripts/db_access.py` `load_bias` |
-| V-A | Localization and BEV-HOTA | `results/tables/computed_tables.md`; `scripts/build_tables.py` |
-| V-B | Geometric-anchor contribution and sensitivity tertiles | `results/recorded/ipm_baseline.json`; `results/controls/conditional_error.md` |
-| V-C | Constant, MLP, and constraint variants; spatial support | `results/controls/RESULTS.md`; `results/controls/constraint_split/summary.md`; `scripts/build_supplement_tables.py` |
-| V-D | Supervised BEVHeight reference | `docs/BEVHEIGHT.md`, `results/bevheight/` |
-| V-E | Edge latency on M6, Town05, and Ko-PER | `docs/ORIN.md`, `results/orin/runtime.md`, `reference/orin/` |
-| VI–VII | Applicability and conclusion | The optional board procedure is not a scored localization or tracking table |
+| III-A | Domain, single-box inference, overlap gate | `scripts/train_recording.py`; `src/geometry/overlap_gate.py` |
+| III-B | Homography-sensitivity anchor | Anchor rule in `src/pipeline/multi_camera_trajectory_fusion.py` |
+| III-C | Frozen pairs, loss, and bound | `scripts/freeze_pairs.py`; `scripts/train_recording.py`; executed constants in `scripts/protocol.py` |
+| III-D | Eligible cameras, overlap union, association | `results/recorded/deploy_support/`; `scripts/protocol.py` `paper_merge_args`; `scripts/eval_tracking.py` |
+| IV-A | Thirteen domains and matched-detection counts | `scripts/protocol.py` `SITES`, `GROUPS`; `results/recorded/loc_support/` |
+| IV-B | Frozen detections, anchor controls, camera-wise corrections | `scripts/eval_fixed_anchors.py`; `results/controls/` |
+| IV-C | Chronological split, fixed matches, no test-set selection | `scripts/make_time_split.py`; `scripts/attach_ground_truth.py` |
+| IV-D is not a separate heading | Localization and TrackEval metrics are in IV-C | `scripts/eval_localization.py`; `src/evaluation/hota_trackeval.py`; `third_party/TrackEval/` |
+| V-A | Localization and four-threshold HOTA | `results/tables/computed_tables.md` |
+| V-B | Anchor components and sensitivity groups | `results/controls/`; per-recording anchor section of `results/tables/computed_tables.md` |
+| V-C | Residual, constants, and Ko-PER spatial gate | `results/recorded/identity_hota25_overlap.csv`; `results/recorded/supplement/` |
+| V-D | BEVHeight reference | `docs/BEVHEIGHT.md`; `results/bevheight/` |
+| V-E | CPU localization-path latency | `docs/ORIN.md`; `results/orin/runtime.md` |
 
 ## Main tables and figures
 
 | Manuscript | Contents | Artifact |
 | --- | --- | --- |
-| Table II | Strata and matched-detection counts | `scripts/protocol.py` `GROUPS`; array lengths in `results/recorded/loc_support/` |
-| Table III | Fixed anchors, HSG, and HSG-SRL | `scripts/eval_fixed_anchors.py`; `results/recorded/ipm_baseline.json`; `scripts/build_tables.py` |
-| Table IV | Group localization and four-gate BEV-HOTA | `results/recorded/loc_support/`; `results/recorded/identity_hota25.csv`; `identity_hota25_overlap.csv` |
-| Table V | Single-cue anchors and per-domain fixed anchors | `results/recorded/ipm_baseline.json`; `results/controls/RESULTS.md` |
-| Table VI | Constant offset, full MLP, bound-only and penalties-only | `results/controls/RESULTS.md`; `results/controls/constraint_split/summary.md` |
-| Table VII | BEVHeight greedy and unique containment, plus mixed tracking | `results/bevheight/score_three.md`; `results/bevheight/unique_containment.json`; `results/bevheight/m3_untranslated.json` |
-| Table VIII | Localization-path latency | `results/orin/runtime.md` |
-| Fig. 1–5 | Overview, workflow, sensitivity, recording effects, Ko-PER overlap | Manuscript drawings. Scoring does not read them |
+| Table I | Method-input comparison | No computed table |
+| Table II | Domains and 935,566 matched detections | Lengths of `results/recorded/loc_support/*.npz` |
+| Table III | Fixed anchors, HSG, and HSG-SRL | `scripts/build_tables.py`; `results/tables/computed_tables.md` |
+| Table IV | HSG versus HSG-SRL, localization and HOTA | Same summary, plus `results/recorded/identity_hota25_overlap.csv` |
+| Table V | Sensitivity-only, shape-only, and per-domain anchors | `results/controls/`; fixed-anchor section of `results/tables/computed_tables.md` |
+| Table VI | Constant offset, MLP, and constraint ranges | `results/controls/constant/`; `results/controls/constraint_split/` |
+| Table VII | BEVHeight under two matching rules | `results/bevheight/` |
+| Table VIII | Localization path, 1.12–1.20 ms | `results/orin/runtime.md` |
+| Fig. 1–5 | Overview, sensitivity, recording effects, Ko-PER gate | Drawings in `paper/fab5B_assets/` when that tree is present. Not used by scoring |
 
 ## Supplement
 
 | Manuscript | Contents | Artifact |
 | --- | --- | --- |
-| S1 | Provenance, split timing, assignment statistics, Ko-PER footprint center | `docs/DATASETS.md`; `docs/REPRODUCTION.md`; `results/controls/time_isolation.json`; `results/controls/match_probe_stage_a.md`; `results/controls/match_summary.md`; `src/importers/import_koper.py` |
-| S2 | Projection, pairs, loss, association, s0/eta neighborhood, constraint removal | `configs/paper_defaults.yaml`; `results/controls/hsg_constants_robustness.md`; `results/controls/constraint_split/summary.md`; `results/controls/unconstrained/summary.md` |
-| S3 | Per-recording anchors, sensitivity and class bins, shared cameras, domain anchors, spatial gate, MVC | `results/tables/computed_tables.md`; `results/tables/supplement_controls.md`; `results/controls/` |
-| S4 | Tracking decomposition and per-recording HOTA | `scripts/build_tables.py`; `results/anchor_tracking/summary.md` |
-| S5 | BEVHeight greedy and unique containment | `results/bevheight/score_three.md`; `results/bevheight/unique_containment.json` |
-| S6 | Orin component slices | `results/orin/runtime.md`; `docs/ORIN.md` |
-| Table S1 | Pair times versus the test-interval start | `results/controls/time_isolation.json` |
-| Table S2 | Midpoint-coordinate reassignment | `results/controls/match_probe_stage_a.md` |
-| Table S3 | Per-camera assignment counts | `results/controls/match_summary.md` |
-| Table S4 | Neighboring s0 and eta | `results/controls/hsg_constants_robustness.md` |
+| S1 | Provenance, splits, and detector-to-GT matching | `docs/DATASETS.md`; `docs/REPRODUCTION.md`; `src/evaluation/eval_fab2_det_gt_match.py` |
+| S2 | Projection, pairs, loss, eligibility, overlap gate | `scripts/protocol.py`; unread record in `configs/paper_defaults.yaml`; `scripts/train_recording.py`; `src/geometry/overlap_gate.py` |
+| S3 | Anchor, residual, constant, affine, and gating checks | `results/controls/`; `results/tables/computed_tables.md` |
+| S4 | TrackEval representation and tracking tables | `scripts/replay_trackeval.py`; `results/recorded/tracking_decomposition_recording.csv` |
+| S5 | BEVHeight training and both matching rules | `docs/BEVHEIGHT.md`; `reference/bevheight/` |
+| S6 | CPU slices and the separate detector pass | `reference/orin/`; `results/orin/runtime.md` |
+| Table S1 | Pair times versus the test interval | Released pair arrays under each site after `scripts/freeze_pairs.py` |
+| Table S2 | Assignment and clock-source checks | `scripts/assignment/clock_check.py`; `results/controls/clock_check.md` |
+| Table S3 | Per-camera assignment counts | `scripts/assignment/table_s3_closure.py`; `results/controls/table_s3_closure.md` |
+| Table S4 | Neighborhood of the HSG constants | `results/controls/hsg_constants_robustness.md` |
 | Table S5 | Pair counts and eligible cameras | `results/recorded/pair_counts/`; `results/recorded/residual_support.csv` |
-| Table S6 | Fixed configuration | `configs/paper_defaults.yaml` |
-| Table S7 | Bound-only, penalties-only, and unconstrained residuals | `results/controls/constraint_split/summary.md`; `results/controls/unconstrained/summary.md` |
-| Table S8 | Per-recording geometric anchors | `results/recorded/ipm_baseline.json`; per-recording table in `results/tables/computed_tables.md` |
-| Tables S9–S11 | Sensitivity tertiles, detector class, shared cameras C08–C10 | `results/controls/conditional_error.md`; `results/controls/class_breakdown.md` |
-| Table S12 | Per-domain fixed anchor | `results/controls/beta_selection.md`; `results/controls/RESULTS.md` |
-| Tables S13–S14 | Group localization and per-recording bootstrap | `results/tables/computed_tables.md` |
-| Table S15 | Per-camera constant and affine corrections | `results/controls/RESULTS.md`; `results/controls/affine/` |
-| Table S16 | Sensitivity coverage of the frozen pairs | `results/controls/pair_alpha_coverage/summary.md` |
-| Tables S17–S19 | Spatial gate, regions, and the symmetric MVC control | `scripts/build_supplement_tables.py`; `results/tables/supplement_controls.md` |
-| Table S20 | Tracking of geometric anchors and the constant correction | `results/anchor_tracking/summary.md`; `results/controls/table_v.md`; `results/controls/RESULTS.md` |
-| Tables S21–S23 | DetA, AssA, LocA, and per-recording HOTA | `results/tables/computed_tables.md` |
-| Tables S24–S25 | Greedy BEVHeight and unique containment | `results/bevheight/score_three.md`; `results/bevheight/unique_containment.json`; `results/tables/supplement_controls.md` |
-| Table S26 | Orin slices | `results/orin/runtime.md` |
+| Table S6 | Shared settings | Executed constants in `scripts/protocol.py`; unread record in `configs/paper_defaults.yaml` |
+| Table S7 | Constraint removals | `results/controls/constraint_split/summary.md`; `results/controls/unconstrained/summary.md` |
+| Table S8 | Per-recording geometric anchors | Per-recording section of `results/tables/computed_tables.md` |
+| Tables S9–S19 | Sensitivity, class, placement, constants, affine, coverage, gating, symmetric loss | `results/controls/` and `results/recorded/supplement/` |
+| Tables S20–S23 | Tracking anchors, DetA, AssA, LocA, per-recording HOTA | `results/anchor_tracking/summary.md`; `results/recorded/tracking_decomposition_recording.csv` |
+| Tables S24–S25 | BEVHeight subsets | `results/bevheight/score_three.md` |
+| Table S26 | CPU slices of one localization call | `results/orin/runtime.md` |
 
-`results/recorded/identity_hota25_support.csv` holds the "Without spatial gating" HOTA rows for LUMPI and Synthehicle; `results/recorded/hota_sources/ko_per__full__s*.json` holds them for Ko-PER. These rows still match the saved bins. They are not the published overlap-gated method.
-
-`results/controls/README.md` states which control tables are recorded summaries and which commands rebuild the primary scores. The optional translation audit in `scripts/eval_offset_sensitivity.py` is not a manuscript table.
+The optional ChArUco board chain in `src/pipeline/multi_camera_bev_stitch.py`, `tools/`, and `results/board_capture/` is not part of this manuscript.

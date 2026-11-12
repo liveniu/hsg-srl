@@ -9,6 +9,6 @@
 | Town05 | greedy containment | 15,983 | 0.564 / 0.836 | 0.266 / 1.333 | 3 / 443 | 0.019% / 2.772% |
 | Town05 | unique containment | 11,021 | 0.544 / 0.782 | 0.292 / 0.835 | 3 / 115 | 0.027% / 1.043% |
 
-Full-input mixed tracking (BEVHeight coordinates on matched observations, HSG elsewhere), BEV-HOTA4: M6 35.3, M3 31.9, Town05 56.8. HSG and seed-0 HSG-SRL full-input scores are in the untranslated rescore.
+Full-input mixed tracking (BEVHeight coordinates on matched observations, HSG elsewhere), BEV-HOTA4: M6 35.3, M3 31.9, Town05 56.8. HSG and seed-0 HSG-SRL full-input scores use the stored footprint-center references.
 
 M3 rates under unique containment are 28 and 33 of 32,341 and are reported as counts; no significance claim.

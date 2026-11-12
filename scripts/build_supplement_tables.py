@@ -5,7 +5,7 @@ S17 and S18 are recomputed from the geometry databases: the same residual with
 and without the overlap mask, plus inside and outside the frozen polygons.
 S19 scores the pair-symmetric checkpoints on the overlap mask. S24 reads the
 stored BEVHeight matched-subset arrays and the published tracking tables.
-M3 BEVHeight localization is read from m3_untranslated.json.
+M3 BEVHeight localization is read from lumpi_M3_bevheight_subset.json.
 """
 
 from __future__ import annotations
@@ -204,13 +204,9 @@ def symmetric_table(recording_rows: list[dict]) -> list[dict]:
     return out
 
 
-def m3_untranslated_entry(geo, overlap) -> dict:
-    """M3 subset errors after dropping the retired audit translation.
-
-    ``lumpi_M3_bevheight_subset.npz`` was scored with that translation and is
-    not the published comparison. ``m3_untranslated.json`` is.
-    """
-    raw = json.loads((BH / "m3_untranslated.json").read_text(encoding="utf-8"))
+def m3_bevheight_entry(geo, overlap) -> dict:
+    """M3 BEVHeight subset errors on the stored footprint centers."""
+    raw = json.loads((BH / "lumpi_M3_bevheight_subset.json").read_text(encoding="utf-8"))
     greedy = raw["greedy"]
     entry = {"site": "lumpi_M3", "n": int(greedy["n"])}
     for key, source in (("hsg", "hsg"), ("overlap_seed0", "srl"), ("bevheight", "bevheight")):
@@ -233,7 +229,7 @@ def bevheight_rows() -> list[dict]:
     rows = []
     for site in BH_SITES:
         if site == "lumpi_M3":
-            rows.append(m3_untranslated_entry(geo, overlap))
+            rows.append(m3_bevheight_entry(geo, overlap))
             continue
         blob = np.load(BH / f"{site}_bevheight_subset.npz")
         entry = {"site": site, "n": int(blob["hsg"].shape[0])}

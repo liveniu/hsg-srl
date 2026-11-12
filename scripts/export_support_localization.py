@@ -17,7 +17,7 @@ from pathlib import Path
 import numpy as np
 
 from bootstrap import ARTIFACT_ROOT
-from db_access import audit_bias, matched_rows, positions
+from db_access import matched_rows, positions
 from protocol import SEEDS, SITES
 
 RECORDED = ARTIFACT_ROOT / "results" / "recorded"
@@ -52,10 +52,9 @@ def main() -> None:
         recording = sites_root / site
         db = recording / "geometry.db"
         keys = recording / "test_keys.csv"
-        verdict = recording / "reference_verdict.txt"
         if not db.exists() or not keys.exists():
             raise SystemExit(f"missing geometry inputs for {site}: {db}")
-        rows, by_track = matched_rows(site, db, keys, verdict if verdict.exists() else None)
+        rows, by_track = matched_rows(site, db, keys)
         cluster = np.empty(len(rows), np.int32)
         for index, members in enumerate(by_track.values()):
             cluster[members] = index
@@ -68,10 +67,7 @@ def main() -> None:
             if saved.shape != geo.shape:
                 raise SystemExit(f"{site}: recomputed HSG cohort length does not match {reference.name}")
             if not np.allclose(saved, geo):
-                if float(np.linalg.norm(audit_bias(site))) == 0.0:
-                    raise SystemExit(f"{site}: recomputed HSG errors do not match the saved cohort")
-                np.savez_compressed(reference, geo=np.asarray(geo, dtype=np.float64))
-                print(f"[support] {site} replaced frozen geo with stored-footprint errors", flush=True)
+                raise SystemExit(f"{site}: recomputed HSG errors do not match the saved cohort")
         for seed in SEEDS:
             opened = masks[(site, seed)]
             deploy = {"deploy": "model" if opened else "geo", "S": sorted(opened)}

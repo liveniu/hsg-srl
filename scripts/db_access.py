@@ -18,7 +18,6 @@ from protocol import (
     match_report,
     site_dir,
     split_keys,
-    verdict_path,
 )
 
 
@@ -39,28 +38,9 @@ def load_test_keys(site: str, path: Path | None = None) -> set[tuple[str, int, i
 
 
 def load_bias(site: str, path: Path | None = None) -> np.ndarray:
-    """Published scoring uses the stored footprint centers.
-
-    ``reference_verdict.txt`` can record an audit translation. That vector is
-    not added to ground truth. ``path`` is accepted so older callers keep
-    working; it is not read.
-    """
+    """Published scoring uses the stored ground-truth footprint centers."""
     del site, path
     return np.zeros(2)
-
-
-def audit_bias(site: str, path: Path | None = None) -> np.ndarray:
-    """Read the audit translation stored in ``reference_verdict.txt``.
-
-    Published scoring does not apply this vector. The one-time bin migration
-    uses it to remove a translation that was already baked into older files.
-    """
-    from evaluation.bev_hota import parse_reference_bias
-
-    path = path or verdict_path(site)
-    if not path.exists():
-        return np.zeros(2)
-    return parse_reference_bias(path.read_text(encoding="utf-8"))
 
 
 def load_adapted(site: str, db: Path | None = None):

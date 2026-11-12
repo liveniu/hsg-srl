@@ -5,9 +5,11 @@ The published camera set is every camera that has at least one retained
 validation pair after a model is trained. Pair-distance improvement is not
 this trainer.
 
-Do not launch src/pipeline/geometry_guided_residual_mlp.py train in place
-of this script. That command does not read the frozen pairs. Its numeric
-defaults match the published loss, and it still requires --split-manifest.
+Constants come from scripts/protocol.py. configs/paper_defaults.yaml records
+the same numbers and is not imported. Do not launch
+src/pipeline/geometry_guided_residual_mlp.py train in place of this script.
+That command does not read the frozen pairs. Its numeric defaults match the
+published loss, and it still requires --split-manifest.
 """
 
 from __future__ import annotations

@@ -145,16 +145,25 @@ def split_keys(site: str, split: str) -> Path:
     return site_dir(site) / f"{split}_keys.csv"
 
 
-def verdict_path(site: str) -> Path:
-    return site_dir(site) / "reference_verdict.txt"
-
-
 def match_report(site: str) -> Path:
     return site_dir(site) / "det_gt_match_report.json"
 
 
 def overlap_path(site: str) -> Path:
     return site_dir(site) / "overlap.json"
+
+
+def published_graph(site: str) -> Path:
+    """Overlap edges for pair mining and final tracking.
+
+    The checked-in graph is used when it exists. The working copy from
+    scripts/build_overlap.py is used only for a recording with no file in
+    configs/overlap.
+    """
+    published = ARTIFACT_ROOT / "configs" / "overlap" / f"{site}.json"
+    if published.exists():
+        return published
+    return overlap_path(site)
 
 
 def python_exe() -> str:

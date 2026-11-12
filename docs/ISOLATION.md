@@ -1,8 +1,8 @@
 # Package boundary
 
-This directory is the HSG-SRL release. Training goes through `scripts/train_recording.py`, which passes the constants in `configs/paper_defaults.yaml`.
+This directory is the HSG-SRL release. Training goes through `scripts/train_recording.py`, which imports the constants in `scripts/protocol.py`. `configs/paper_defaults.yaml` records the same constants and is not loaded.
 
-`src/pipeline/geometry_guided_residual_mlp.py train` cannot replace `scripts/train_recording.py`. The published trainer fits the frozen pairs from `configs/paper_defaults.yaml` and does not call that command line. The module command is a database trainer. Its numeric defaults match the published loss, and it still requires `--split-manifest`. Checkpoint filenames use the tag `F0` for this residual.
+`src/pipeline/geometry_guided_residual_mlp.py train` cannot replace `scripts/train_recording.py`. The published trainer fits the frozen pairs and does not call that command line. The module command is a database trainer. Its numeric defaults match the published loss, and it still requires `--split-manifest`. Checkpoint filenames use the tag `F0` for this residual.
 
 Same-camera tracklet stitching is implemented and left off. There is no camera-translation stage.
 

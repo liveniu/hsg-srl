@@ -37,7 +37,7 @@ YOLO26l detections are not identical across machines. The released geometry data
 
 https://doi.org/10.5281/zenodo.23008421
 
-The thirteen domains are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. The archive root is the contents of `data/work/`. Extract it into `data/work/`, so each recording is at `data/work/sites/<recording>/`, and continue from pair mining. Pair mining and tracking read the frozen edges in `configs/overlap`. Scoring adds the residual only on an eligible camera inside that camera's overlap union. A camera is eligible when its recording keeps at least 32 training pairs and the camera appears in a retained validation pair:
+The thirteen domains are LUMPI M0–M6, Ko-PER Sequence1a–1d as one recording, and Synthehicle Town01–Town05. The archive root is the contents of `data/work/`. Extract it into `data/work/`, so each recording is at `data/work/sites/<recording>/`, and continue from pair mining. Pair mining and final tracking use `configs/overlap/<recording>.json` when that file is present. `scripts/build_overlap.py` writes `data/work/sites/<recording>/overlap.json`, and that working copy is used only for a recording with no checked-in graph. Scoring adds the residual only on an eligible camera inside that camera's overlap union. A camera is eligible when its recording keeps at least 32 training pairs and the camera appears in a retained validation pair:
 
 ```text
 python scripts/run_paper.py --site lumpi_M6 --from-stage overlap
@@ -52,7 +52,7 @@ python scripts/build_tables.py
 
 These two commands check the recorded tracking scores and write the localization chain, the pooled and per-recording geometric-anchor comparisons, recording-macro BEV-HOTA, and the per-recording bootstrap and HOTA breakdowns. The per-recording anchor table includes bottom-center median, RMSE, and p90 for all thirteen domains. They do not retrain.
 
-`python scripts/eval_anchor_tracking.py --summarize` writes the geometry-only anchor-tracking summary from stored JSON. `python scripts/report_board_capture.py` prints the board-fit residuals. `docs/REPRODUCTION.md` names the commands for the reference-frame rescore and the supervised BEVHeight comparison.
+`python scripts/eval_anchor_tracking.py --summarize` writes the geometry-only anchor-tracking summary from stored JSON. `docs/REPRODUCTION.md` names the commands for the supervised BEVHeight comparison. The ChArUco board helpers are optional and are not part of these tables.
 
 `docs/REPRODUCTION.md` gives the stage-by-stage script chain, including GT attachment, pair mining, training, scoring on the stored footprint centers, and table generation.
 
@@ -66,4 +66,4 @@ python scripts/run_paper.py --site lumpi_M6 --model data/models/yolo26l.pt
 
 This imports the media, runs YOLO26l, and builds a new geometry database. Ko-PER uses `scripts/detect_koper.py` because Sequence1a–1d are one continuous track per camera. Use this path for a new installation. It does not reproduce the published tables, because the detections will differ from the released databases.
 
-Train with `scripts/train_recording.py`. It uses the constants in `configs/paper_defaults.yaml`. `src/pipeline/geometry_guided_residual_mlp.py train` cannot replace it. That command mines pairs from the geometry database and still requires `--split-manifest`. See `docs/REPRODUCTION.md`.
+Train with `scripts/train_recording.py`. It imports the constants in `scripts/protocol.py`. `configs/paper_defaults.yaml` records those constants, including the association gates, and is not loaded. `src/pipeline/geometry_guided_residual_mlp.py train` cannot replace the published trainer. That command mines pairs from the geometry database and still requires `--split-manifest`. See `docs/REPRODUCTION.md`.
